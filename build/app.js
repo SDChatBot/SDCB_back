@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const DataBase_1 = require("./utils/DataBase");
 const app = (0, express_1.default)();
 const port = 713;
-const DB = new DataBase_1.DataBase("mongodb://192.168.1.25:2425");
+const DB = new DataBase_1.DataBase("mongodb://192.168.1.26:2425");
 app.set("view engine", "ejs");
 app.get('/', (req, res) => {
     res.send('Hello World!');

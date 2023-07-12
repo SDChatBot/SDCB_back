@@ -4,7 +4,7 @@ import { DataBase } from './utils/DataBase';
 
 const app = express()
 const port = 713
-const DB = new DataBase("mongodb://192.168.1.25:2425");
+const DB = new DataBase("mongodb://192.168.1.26:2425");
 app.set("view engine", "ejs")
 
 app.get('/', (req:any, res:any) => {
