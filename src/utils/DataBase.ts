@@ -12,4 +12,5 @@ export class DataBase{
     async init(url:string): Promise<void>{
         this.DB = await connect(url)
     }
+    
 }

@@ -3,8 +3,8 @@ import { DataBase } from './utils/DataBase';
 
 
 const app = express()
-const port = 2325
-const DB = new DataBase("mongodb://192.168.1.25:1224");
+const port = 713
+const DB = new DataBase("mongodb://192.168.1.25:2425");
 app.set("view engine", "ejs")
 
 app.get('/', (req:any, res:any) => {
@@ -20,6 +20,5 @@ app.get('/index',(req:any, res:any)=>{
 
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-    console.log(`Use this url: http://127.0.0.1:2325`)
+    console.log(`Use this url: http://127.0.0.1:${port}`)
 });
