@@ -1,10 +1,10 @@
 import { Schema, model } from "mongoose";
-import { images } from "../interfaces/images";
+import { imagesInterface } from "../interfaces/imagesInterface";
 
-const imageSchema = new Schema<images>({
-    name:{type: String, required: true},
-    SerialNumber:{type: String, required:true},
-    SerialNumber_Transcoding:{type:String, required:true},
+const imageSchema = new Schema<imagesInterface>({
+    images: { type: [String], required: true},
+    parameters:{type: {}, required:true },
+    imageInfo:{type:String, required:true},
 });
 
-export const imageModel = model<images>('imageModel', imageSchema);
+export const imageModel = model<imagesInterface>('imageModel', imageSchema);
