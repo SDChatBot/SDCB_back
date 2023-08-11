@@ -12,20 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const axios_1 = __importDefault(require("axios"));
+const DecodeBase64_1 = __importDefault(require("./DecodeBase64"));
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 const payload = {
-    prompt: "a big banana",
-    steps: 1,
+    prompt: "a cut cat",
+    seed: -1,
+    cfg_scale: 7,
+    step: 1,
 };
 let imagesBase64;
 const fetchImage = () => __awaiter(void 0, void 0, void 0, function* () {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    };
     try {
-        const response = yield axios_1.default.post(`${url}sdapi/v1/txt2img`, payload);
-        console.log(response.data);
-        imagesBase64 = response.data.images;
-        //console.log(`imagesBase64 is : ${imagesBase64}`)
-        return response.data.images;
+        const response = yield fetch(`${url}sdapi/v1/txt2img`, requestOptions);
+        const data = yield response.json();
+        imagesBase64 = data.images;
+        (0, DecodeBase64_1.default)(data.images);
+        return data.images;
     }
     catch (error) {
         console.log(`Error fetchImage response is ${error}`);

@@ -6,14 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const DataBase_1 = require("./utils/DataBase");
 const fetch_1 = __importDefault(require("./utils/tools/fetch"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-const port = 7809;
+const port = 810;
 const DB = new DataBase_1.DataBase("mongodb://192.168.1.26:2425");
-app.use((req, res, nest) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:707');
-});
-app.set("view engine", "ejs");
-app.get('/', (req, res) => {
+const corsOptions = {
+    origin: [
+        'http://localhost:707',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: ['Content-Type'],
+    optionsSuccessStatus: 200,
+};
+app.use((0, cors_1.default)(corsOptions));
+app.get('/image', (req, res) => {
     res.send('Hello World');
 });
 app.post('/image', (req, res) => {
@@ -31,11 +37,7 @@ app.post('/image', (req, res) => {
         res.status(500).send('/image post run wrong ');
     }
 });
-app.get('/index', (req, res) => {
-    //res.send('index')
-    res.render("index");
-});
 app.listen(port, () => {
-    console.log(`Use this url: http://127.0.0.1:${port}`);
+    console.log(`Use this url: http://127.0.0.1:${port}/image`);
     console.log(`http://127.0.0.1:${port}/image`);
 });
