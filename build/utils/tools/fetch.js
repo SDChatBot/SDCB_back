@@ -8,11 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const DecodeBase64_1 = __importDefault(require("./DecodeBase64"));
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 const payload = {
     prompt: "a cut cat",
@@ -31,7 +27,7 @@ const fetchImage = () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield fetch(`${url}sdapi/v1/txt2img`, requestOptions);
         const data = yield response.json();
         imagesBase64 = data.images;
-        (0, DecodeBase64_1.default)(data.images);
+        //Base64_To_Image(data.images);
         return data.images;
     }
     catch (error) {

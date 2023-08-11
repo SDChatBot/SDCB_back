@@ -20,7 +20,7 @@ const fetchImage = async () => {
         const response = await fetch(`${url}sdapi/v1/txt2img`, requestOptions);
         const data = await response.json();
         imagesBase64 = data.images;
-        Base64_To_Image(data.images);
+        //Base64_To_Image(data.images);
         return data.images;
     } catch (error) {
         console.log(`Error fetchImage response is ${error}`);
