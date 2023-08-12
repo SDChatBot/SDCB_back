@@ -2,9 +2,8 @@ import { Schema, model } from "mongoose";
 import { imagesInterface } from "../interfaces/imagesInterface";
 
 const imageSchema = new Schema<imagesInterface>({
-    images: { type: [String], required: true},
-    parameters:{type: {}, required:true },
-    imageInfo:{type:String, required:true},
+    imagesBase64Code: {type: String, required: true, base64:true},
+    imageName: {type: String, required: true},
 });
 
-export const imageModel = model<imagesInterface>('imageModel', imageSchema);
+export const ImagesModel = model<imagesInterface>('images', imageSchema);

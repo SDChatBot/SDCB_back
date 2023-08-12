@@ -2,10 +2,11 @@ import express from 'express';
 import { DataBase } from './utils/DataBase';
 import fetchImage from './utils/tools/fetch';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 
 const app = express()
 const port = 810
-const DB = new DataBase("mongodb://192.168.1.26:2425");
+const DB = new DataBase("mongodb://sdcb:sdcbpassword@192.168.1.26:2425");
 
 const corsOptions = {
     origin: [
@@ -17,15 +18,27 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json());
 
 app.get('/image',(req:any, res: any)=>{
     res.send('Hello World')
 });
 
 app.post('/image', (req: any, res: any) => {
+    const imageData = req.body;
+    //console.log(`imageData = ${JSON.stringify(req.body)}`);
+    let payload = {
+        prompt: imageData.prompt,
+        seed: -1,
+        cfg_scale: 7,
+        step: 2,
+    };
     try {
-        fetchImage().then((val) => {
+        fetchImage(payload).then((val) => { //val就是image base64 code
             //console.log(val)
+            let imageSaveData = `${val}`
+            //console.log(`imageSaveData = ${imageSaveData}`)
+            DataBase.SaveNewImage(imageSaveData);
             res.json(val);
         }).catch((e) => {
             console.log(`run time error`)

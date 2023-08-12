@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.imageModel = void 0;
+exports.ImagesModel = void 0;
 const mongoose_1 = require("mongoose");
 const imageSchema = new mongoose_1.Schema({
-    images: { type: [String], required: true },
-    parameters: { type: {}, required: true },
-    imageInfo: { type: String, required: true },
+    imagesBase64Code: { type: String, required: true, base64: true },
+    imageName: { type: String, required: true },
 });
-exports.imageModel = (0, mongoose_1.model)('imageModel', imageSchema);
+exports.ImagesModel = (0, mongoose_1.model)('images', imageSchema);

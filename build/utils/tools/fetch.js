@@ -10,14 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
-const payload = {
-    prompt: "a cut cat",
-    seed: -1,
-    cfg_scale: 7,
-    step: 1,
-};
 let imagesBase64;
-const fetchImage = () => __awaiter(void 0, void 0, void 0, function* () {
+const fetchImage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -27,8 +21,7 @@ const fetchImage = () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield fetch(`${url}sdapi/v1/txt2img`, requestOptions);
         const data = yield response.json();
         imagesBase64 = data.images;
-        //Base64_To_Image(data.images);
-        return data.images;
+        return data.images; //只回傳image Base64 code
     }
     catch (error) {
         console.log(`Error fetchImage response is ${error}`);

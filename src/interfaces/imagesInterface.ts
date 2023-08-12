@@ -1,5 +1,4 @@
 export interface imagesInterface {
-    images: string[];
-    parameters: {};
-    imageInfo: string;
+    imagesBase64Code: string,
+    imageName:string,
 }
