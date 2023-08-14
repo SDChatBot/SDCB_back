@@ -1,4 +1,5 @@
 # 此專案需事先下載 Node.js(npm)、Git bash(git) 
+**基本上不要動src資料夾以外的東西**
 **以下皆在你的終端機中運行:**
 ## First 後端
 後端需事先下載運行，請參考: https://github.com/SDChatBot/SDCB_back.git
