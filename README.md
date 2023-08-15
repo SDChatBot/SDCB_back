@@ -2,7 +2,6 @@
 **基本上不要動src資料夾以外的東西**
 **以下皆在你的終端機中運行:**
 ## First 後端
-後端需事先下載運行，請參考: https://github.com/SDChatBot/SDCB_back.git
 
 ### 1. 下載本專案(需要擁有git 指令)
     git clone https://github.com/SDChatBot/SDCB_back.git
