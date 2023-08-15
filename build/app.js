@@ -9,11 +9,13 @@ const fetch_1 = __importDefault(require("./utils/tools/fetch"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const app = (0, express_1.default)();
-const port = 810;
-const DB = new DataBase_1.DataBase("mongodb://sdcb:sdcbpassword@192.168.1.26:2425");
+const port = 7943;
+const ip = "192.168.1.26";
+const DB = new DataBase_1.DataBase("mongodb://192.168.1.26:2425");
 const corsOptions = {
     origin: [
-        'http://localhost:707',
+        'http://localhost:3000',
+        'http://192.168.1.26:3000',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type'],
@@ -50,7 +52,12 @@ app.post('/image', (req, res) => {
         res.status(500).send('/image post run wrong ');
     }
 });
+//dev 開發
 app.listen(port, () => {
     console.log(`Use this url: http://127.0.0.1:${port}/image`);
     console.log(`http://127.0.0.1:${port}/image`);
 });
+// //use 使用
+// app.listen(port, ip,() => {
+//     console.log(`Use this url: http://${ip}:${port}/image`)
+// });

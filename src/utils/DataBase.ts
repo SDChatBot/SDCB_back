@@ -1,6 +1,5 @@
 import mongoose, { connect } from "mongoose";
 import { ImagesModel } from "../models/ImagesModel";
-import { Compress, Decompress } from './tools/pako';
 
 export class DataBase{
     DB!: typeof import("mongoose");

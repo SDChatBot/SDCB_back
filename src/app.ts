@@ -5,12 +5,14 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 
 const app = express()
-const port = 810
-const DB = new DataBase("mongodb://sdcb:sdcbpassword@192.168.1.26:2425");
+const port = 7943
+const ip = "192.168.1.26";
+const DB = new DataBase("mongodb://192.168.1.26:2425");
 
 const corsOptions = {
     origin: [
-        'http://localhost:707',
+        'http://localhost:3000',
+        'http://192.168.1.26:3000',        
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type'],
@@ -50,8 +52,13 @@ app.post('/image', (req: any, res: any) => {
     }
 });
 
-
+//dev 開發
 app.listen(port, () => {
     console.log(`Use this url: http://127.0.0.1:${port}/image`)
     console.log(`http://127.0.0.1:${port}/image`)
 });
+
+// //use 使用
+// app.listen(port, ip,() => {
+//     console.log(`Use this url: http://${ip}:${port}/image`)
+// });
