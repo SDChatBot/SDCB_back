@@ -1,5 +1,6 @@
 import mongoose, { connect } from "mongoose";
 import { ImagesModel } from "../models/ImagesModel";
+import { userModel } from "../models/userModel";
 
 export class DataBase{
     DB!: typeof import("mongoose");
@@ -17,26 +18,28 @@ export class DataBase{
     static async SaveNewImage(imageCode: any): Promise<any>{
         let now = new Date();
         let imagename: string = `${now.getFullYear()}${now.getMonth()}${now.getDay()}_${now.getHours()}${now.getMinutes()}_${now.getSeconds()}`;
-        //console.log(imagename);
-        //轉碼，從base64轉成2進制(imageData)
-        // let imageData 
-        // try{
-        //     imageData = new Uint8Array(Buffer.from(imageCode, 'base64'));
-        // }catch(e){
-        //     console.log(`Buffer imagecode fail, ${e}`)
-        // }
-
-        //console.log(`imageCode = ${imageCode} (string)`);
-
         try{
             const image = new ImagesModel({
                 imagesBase64Code: imageCode,
                 imageName: imagename,     
             });
-            console.log(`save image success`);
+            // console.log(`save image success`);
             await image.save();
         }catch(e){
             console.log(`SaveNewImage fail: ${e}`)          
+        }
+    }
+
+    static async SaveNewUser(name:string, password:string): Promise<any>{
+        try{
+            const user = new userModel({
+                userName: name,
+                userPassword: password,
+            });
+            // console.log(`save user success)
+            await user.save();
+        }catch(e){
+            console.log(`save user fail: ${e}`);
         }
     }
     
