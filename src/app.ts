@@ -1,8 +1,9 @@
 import express from 'express';
 import { DataBase } from './utils/DataBase';
-import fetchImage from './utils/tools/fetch';
+import {fetchImage} from './utils/tools/fetch';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import { AiAnswer } from './utils/opanaiApi';
 
 const app = express()
 const port = 7943
@@ -22,35 +23,52 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-app.get('/image',(req:any, res: any)=>{
-    res.send('Hello World')
-});
+//app.route()方法
+app.route('/image')
+    .get((req: any, res: any) => {
+        res.send('Hello World')
+    })
+    .post((req: any, res: any) => {
+        const imageData = req.body;
+        //console.log(`imageData = ${JSON.stringify(req.body)}`);
+        let payload = {
+            prompt: imageData.prompt,
+            seed: -1,
+            cfg_scale: 7,
+            step: 2,
+        };
+        try {
+            fetchImage(payload).then((val) => { //val就是image base64 code
+                //console.log(val)
+                let imageSaveData = `${val}`
+                //console.log(`imageSaveData = ${imageSaveData}`)
+                DataBase.SaveNewImage(imageSaveData);
+                res.json(val);
+            }).catch((e) => {
+                console.log(`run time error`)
+            })
+            //res.send(fetchImage());
+        } catch (e) {
+            console.log(`fetchImage fail: ${e}`)
+            res.status(500).send('/image post run wrong ');
+        }
+    })
 
-app.post('/image', (req: any, res: any) => {
-    const imageData = req.body;
-    //console.log(`imageData = ${JSON.stringify(req.body)}`);
-    let payload = {
-        prompt: imageData.prompt,
-        seed: -1,
-        cfg_scale: 7,
-        step: 2,
-    };
-    try {
-        fetchImage(payload).then((val) => { //val就是image base64 code
-            //console.log(val)
-            let imageSaveData = `${val}`
-            //console.log(`imageSaveData = ${imageSaveData}`)
-            DataBase.SaveNewImage(imageSaveData);
+
+app.post('/aianswer',(res:any, req:any)=>{
+    try{
+        AiAnswer().then((val) => {
             res.json(val);
         }).catch((e) => {
-            console.log(`run time error`)
+            console.log(`aiapi answer error: ${e}`)
         })
-        //res.send(fetchImage());
-    } catch (e) {
-        console.log(`fetchImage fail: ${e}`)
-        res.status(500).send('/image post run wrong ');
+    }catch(e){
+        console.log(`/aianswer post error: ${e}`)
     }
+    
 });
+
+
 
 //dev 開發
 app.listen(port, () => {

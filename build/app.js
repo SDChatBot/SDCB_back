@@ -5,9 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const DataBase_1 = require("./utils/DataBase");
-const fetch_1 = __importDefault(require("./utils/tools/fetch"));
+const fetch_1 = require("./utils/tools/fetch");
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const opanaiApi_1 = require("./utils/opanaiApi");
 const app = (0, express_1.default)();
 const port = 7943;
 const ip = "192.168.1.26";
@@ -23,10 +24,12 @@ const corsOptions = {
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use(body_parser_1.default.json());
-app.get('/image', (req, res) => {
+//app.route()方法
+app.route('/image')
+    .get((req, res) => {
     res.send('Hello World');
-});
-app.post('/image', (req, res) => {
+})
+    .post((req, res) => {
     const imageData = req.body;
     //console.log(`imageData = ${JSON.stringify(req.body)}`);
     let payload = {
@@ -36,7 +39,7 @@ app.post('/image', (req, res) => {
         step: 2,
     };
     try {
-        (0, fetch_1.default)(payload).then((val) => {
+        (0, fetch_1.fetchImage)(payload).then((val) => {
             //console.log(val)
             let imageSaveData = `${val}`;
             //console.log(`imageSaveData = ${imageSaveData}`)
@@ -50,6 +53,18 @@ app.post('/image', (req, res) => {
     catch (e) {
         console.log(`fetchImage fail: ${e}`);
         res.status(500).send('/image post run wrong ');
+    }
+});
+app.post('/aianswer', (res, req) => {
+    try {
+        (0, opanaiApi_1.AiAnswer)().then((val) => {
+            res.json(val);
+        }).catch((e) => {
+            console.log(`aiapi answer error: ${e}`);
+        });
+    }
+    catch (e) {
+        console.log(`/aianswer post error: ${e}`);
     }
 });
 //dev 開發

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fetchImage = void 0;
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 let imagesBase64;
 const fetchImage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,4 +29,4 @@ const fetchImage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         return `Error => no return `;
     }
 });
-exports.default = fetchImage;
+exports.fetchImage = fetchImage;

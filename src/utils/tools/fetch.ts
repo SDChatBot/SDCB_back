@@ -4,7 +4,7 @@ import { imagesInterface } from '../../interfaces/imagesInterface';
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 
 let imagesBase64:string[]
-const fetchImage = async (payload:Object) => {
+export const fetchImage = async (payload:Object) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -20,5 +20,3 @@ const fetchImage = async (payload:Object) => {
         return `Error => no return `;
     }
 };
-
-export default fetchImage;
