@@ -1,6 +1,7 @@
 import mongoose, { connect } from "mongoose";
 import { ImagesModel } from "../models/ImagesModel";
 import { userModel } from "../models/userModel";
+import { myfavoriteModel } from "../models/myfavoriteModel";
 
 export class DataBase{
     DB!: typeof import("mongoose");
@@ -40,6 +41,21 @@ export class DataBase{
             await user.save();
         }catch(e){
             console.log(`save user fail: ${e}`);
+        }
+    }
+
+    static async SaveNewMyFavorite(Name: string, is_favorite: boolean, tag: string): Promise<any>{
+        let addtime = new Date();
+        let imagename: string = `${addtime.getFullYear()}${addtime.getMonth()}${addtime.getDay()}_${addtime.getHours()}${addtime.getMinutes()}_${addtime.getSeconds()}`;
+        try{
+            const myfavorite = new myfavoriteModel({
+                imageName: Name, 
+                is_favorite: is_favorite, 
+                tagName: tag,
+            });
+            await myfavorite.save();
+        }catch(e){
+            console.log(`SaveNewMyFavorite fail: ${e}`)
         }
     }
     
