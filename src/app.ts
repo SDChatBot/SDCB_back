@@ -55,17 +55,16 @@ app.route('/image')
     })
 
 
-app.post('/aianswer',(res:any, req:any)=>{
+app.post('/aianswer',(req:any, res:any)=>{
     try{
         AiAnswer().then((val) => {
-            res.json(val);
+            res.send(val);
         }).catch((e) => {
             console.log(`aiapi answer error: ${e}`)
         })
     }catch(e){
         console.log(`/aianswer post error: ${e}`)
     }
-    
 });
 
 

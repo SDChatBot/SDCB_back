@@ -1,0 +1,21 @@
+{
+    "id": "chatcmpl-7pFv9iqrgYVGWnTKVP9qfhQKtBDoJ",
+    "object": "chat.completion",
+    "created": 1692450283,
+    "model": "gpt-3.5-turbo-0613",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "當我們將1加上1時，答案會是2。所以，1+1等於2。"
+            },
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 23,
+        "completion_tokens": 32,
+        "total_tokens": 55
+    }
+}

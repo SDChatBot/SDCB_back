@@ -15,20 +15,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AiAnswer = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const chatgpt_1 = require("chatgpt");
+//import { ChatGPTAPI } from 'chatgpt';
 //const ChatGPTAPI = require('chatgpt');
-const api = new chatgpt_1.ChatGPTAPI({
-    apiKey: process.env.OPENAI_API_KEY || ""
+const openai_1 = __importDefault(require("openai"));
+const openai = new openai_1.default({
+    apiKey: process.env.OPEN_AI_KEY, // defaults to process.env["OPENAI_API_KEY"]
 });
 const AiAnswer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const res = yield api.sendMessage(`Hello World`);
-        console.log(`AI 的回答是: ${res.text}`);
-        return res.text;
+        const completion = yield openai.chat.completions.create({
+            messages: [{ role: 'user', content: '可以告訴我1+1等於幾嗎' }],
+            model: 'gpt-3.5-turbo',
+        });
+        //console.log(JSON.stringify(completion));
+        //console.log(completion.choices[0].message.content);
+        return completion.choices[0].message.content;
+        //return completion;
     }
     catch (_a) {
         console.log(``);
-        return "";
+        //return ""
     }
 });
 exports.AiAnswer = AiAnswer;

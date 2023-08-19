@@ -55,10 +55,10 @@ app.route('/image')
         res.status(500).send('/image post run wrong ');
     }
 });
-app.post('/aianswer', (res, req) => {
+app.post('/aianswer', (req, res) => {
     try {
         (0, opanaiApi_1.AiAnswer)().then((val) => {
-            res.json(val);
+            res.send(val);
         }).catch((e) => {
             console.log(`aiapi answer error: ${e}`);
         });
