@@ -33,12 +33,18 @@ io.on('connection', (socket) => {
     socket.join(botRoomId);
     // listen for chat message from user and send it to bot
     socket.on('chat message', (msg) => {
-        console.log(`User said: ${msg}`); // log the message to the console
-        // handle user's message here
-        // simulate bot's reply
-        const botReply = 'Hello, I am a bot.';
-        // send bot's reply to all connected users in the room
-        io.to(botRoomId).emit('chat message', botReply);
+        console.log(`User said: ${msg}`);
+        try{
+            AiAnswer(msg).then((botReply)=>{
+                // send bot's reply to all connected users in the room
+                io.to(botRoomId).emit('chat message', botReply);
+            }).catch((e)=>{
+                console.log(`get AiAnswer fail, ${e}`);
+            });
+        }catch(e){
+            console.log(`AiAnswer error: ${e}`)
+        }
+        
     });
 });
 
@@ -99,18 +105,6 @@ app.route('/image')
             res.status(500).send('/image post run wrong ');
         }
     })
-
-app.post('/aianswer',(req:any, res:any)=>{
-    try{
-        AiAnswer().then((val) => {
-            res.send(val);
-        }).catch((e) => {
-            console.log(`aiapi answer error: ${e}`)
-        })
-    }catch(e){
-        console.log(`/aianswer post error: ${e}`)
-    }
-});
 
 
 //dev 開發
