@@ -13,6 +13,7 @@ exports.DataBase = void 0;
 const mongoose_1 = require("mongoose");
 const ImagesModel_1 = require("../models/ImagesModel");
 const userModel_1 = require("../models/userModel");
+const myfavoriteModel_1 = require("../models/myfavoriteModel");
 class DataBase {
     constructor(url) {
         this.init(url).then(() => {
@@ -55,6 +56,23 @@ class DataBase {
             }
             catch (e) {
                 console.log(`save user fail: ${e}`);
+            }
+        });
+    }
+    static SaveNewMyFavorite(Name, is_favorite, tag) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let addtime = new Date();
+            let imagename = `${addtime.getFullYear()}${addtime.getMonth()}${addtime.getDay()}_${addtime.getHours()}${addtime.getMinutes()}_${addtime.getSeconds()}`;
+            try {
+                const myfavorite = new myfavoriteModel_1.myfavoriteModel({
+                    imageName: Name,
+                    is_favorite: is_favorite,
+                    tagName: tag,
+                });
+                yield myfavorite.save();
+            }
+            catch (e) {
+                console.log(`SaveNewMyFavorite fail: ${e}`);
             }
         });
     }
