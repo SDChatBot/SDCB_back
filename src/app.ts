@@ -1,12 +1,11 @@
 import express from 'express';
 import { DataBase } from './utils/DataBase';
-import {fetchImage} from './utils/tools/fetch';
+import { fetchImage } from './utils/tools/fetch';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { AiAnswer } from './utils/opanaiApi';
-import http,{createServer} from 'http';
+import http, { createServer } from 'http';
 import { Server } from "socket.io";
-import{ TranslateEn }from "./utils/translate";
 
 const app = express()
 const port = 7943
@@ -15,7 +14,7 @@ const ip = "192.168.1.26";
 const DB = new DataBase("mongodb://192.168.1.26:2425");
 const httpServer = createServer();
 
- //socketio client api
+//socketio client api
 const socket_client = `http://localhost:3000`;
 //const socket_client = `http://localhost:6532`;
 const io = new Server(httpServer, {
@@ -29,28 +28,23 @@ let enMsg: string = "";
 //聊天室socket伺服器
 io.on('connection', (socket) => {
     console.log(`connected ${socket_client} success`);
-    let botRoomId:any;
+    let botRoomId: any;
     // create a new room for the user and bot to chat
     botRoomId = 'bot_room_' + Math.random().toString(36).substr(2, 9);
     socket.join(botRoomId);
     // listen for chat message from user and send it to bot
     socket.on('chat message', (msg) => {
-        console.log(`User said: ${msg}`);
-        TranslateEn(msg).then((enMsg:string)=>{
-            console.log(`enMsg = ${enMsg}`)
-            try {
-                AiAnswer(enMsg).then((botReply) => {
-                    // send bot's reply to all connected users in the room
-                    io.to(botRoomId).emit('chat message', botReply);
-                }).catch((e) => {
-                    console.log(`get AiAnswer fail, ${e}`);
-                });
-            } catch (e) {
-                console.log(`AiAnswer error: ${e}`)
-            }
-        }).catch((e)=>{
-            console.log(`TranslateEn Error: ${e}`);
-        });
+        //console.log(`User said: ${msg}`);
+        try {
+            AiAnswer(enMsg).then((botReply) => {
+                // send bot's reply to all connected users in the room
+                io.to(botRoomId).emit('chat message', botReply);
+            }).catch((e) => {
+                console.log(`get AiAnswer fail, ${e}`);
+            });
+        } catch (e) {
+            console.log(`AiAnswer error: ${e}`)
+        }
     });
 });
 
@@ -115,9 +109,9 @@ app.route('/image')
         }
     })
 
-app.post('/prompt',(req:any, res:any)=>{
-    const userPrompt:string = req.body.prompt || `a Hotdog`;
-    console.log(`userPrompt = ${JSON.stringify(userPrompt)}`);
+app.post('/prompt', (req: any, res: any) => {
+    const userPrompt: string = req.body.prompt || `a Hotdog`;
+    //console.log(`userPrompt = ${JSON.stringify(userPrompt)}`);
 
     const funcPrompt: string = `用${userPrompt}設計一個120字以內的英文圖片提示。
     如果我今天明確提到了我想生成的圖片，你將根據描述為我設計一個單一想法的英文圖片提示。
@@ -129,11 +123,11 @@ app.post('/prompt',(req:any, res:any)=>{
     一架彩虹色的熱氣球在蔚藍天空中自由飛行，下方有一片綠意盎然的森林。、
     一隻可愛的貓咪正坐在圓形的地毯上，四周是彩色的聖誕球和禮物。咪咪的眼睛亮晶晶地看著一個正在降落的聖誕老人，聖誕老人正抱著一個大大的袋子懸浮在空中。咪咪的尾巴翹得高高，顯示它的興奮和期待。整個場景充滿了節日的氛圍，讓人感到愉快和期待。、
     `
-    AiAnswer(funcPrompt).then((prompt:string|null)=>{
-        console.log(`funcPrompt = ${funcPrompt}`);
+    AiAnswer(funcPrompt).then((prompt: string | null) => {
+        //console.log(`funcPrompt = ${funcPrompt}`);
         res.send({ imagePrompt: `${prompt}` });
     })
-    
+
 })
 
 //dev 開發

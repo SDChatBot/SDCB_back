@@ -11,7 +11,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const opanaiApi_1 = require("./utils/opanaiApi");
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
-const translate_1 = require("./utils/translate");
 const app = (0, express_1.default)();
 const port = 7943;
 const portSocket = 450;
@@ -37,23 +36,18 @@ io.on('connection', (socket) => {
     socket.join(botRoomId);
     // listen for chat message from user and send it to bot
     socket.on('chat message', (msg) => {
-        console.log(`User said: ${msg}`);
-        (0, translate_1.TranslateEn)(msg).then((enMsg) => {
-            console.log(`enMsg = ${enMsg}`);
-            try {
-                (0, opanaiApi_1.AiAnswer)(enMsg).then((botReply) => {
-                    // send bot's reply to all connected users in the room
-                    io.to(botRoomId).emit('chat message', botReply);
-                }).catch((e) => {
-                    console.log(`get AiAnswer fail, ${e}`);
-                });
-            }
-            catch (e) {
-                console.log(`AiAnswer error: ${e}`);
-            }
-        }).catch((e) => {
-            console.log(`TranslateEn Error: ${e}`);
-        });
+        //console.log(`User said: ${msg}`);
+        try {
+            (0, opanaiApi_1.AiAnswer)(enMsg).then((botReply) => {
+                // send bot's reply to all connected users in the room
+                io.to(botRoomId).emit('chat message', botReply);
+            }).catch((e) => {
+                console.log(`get AiAnswer fail, ${e}`);
+            });
+        }
+        catch (e) {
+            console.log(`AiAnswer error: ${e}`);
+        }
     });
 });
 // dev
@@ -113,7 +107,7 @@ app.route('/image')
 });
 app.post('/prompt', (req, res) => {
     const userPrompt = req.body.prompt || `a Hotdog`;
-    console.log(`userPrompt = ${JSON.stringify(userPrompt)}`);
+    //console.log(`userPrompt = ${JSON.stringify(userPrompt)}`);
     const funcPrompt = `用${userPrompt}設計一個120字以內的英文圖片提示。
     如果我今天明確提到了我想生成的圖片，你將根據描述為我設計一個單一想法的英文圖片提示。
     只需用英文回答關於圖片提示即可，其他通知、回答的訊息皆省略跳過。
@@ -125,7 +119,7 @@ app.post('/prompt', (req, res) => {
     一隻可愛的貓咪正坐在圓形的地毯上，四周是彩色的聖誕球和禮物。咪咪的眼睛亮晶晶地看著一個正在降落的聖誕老人，聖誕老人正抱著一個大大的袋子懸浮在空中。咪咪的尾巴翹得高高，顯示它的興奮和期待。整個場景充滿了節日的氛圍，讓人感到愉快和期待。、
     `;
     (0, opanaiApi_1.AiAnswer)(funcPrompt).then((prompt) => {
-        console.log(`funcPrompt = ${funcPrompt}`);
+        //console.log(`funcPrompt = ${funcPrompt}`);
         res.send({ imagePrompt: `${prompt}` });
     });
 });
