@@ -9,14 +9,18 @@ import { Server } from "socket.io";
 
 const app = express()
 const port = 7943
-const portSocket = 450
+const portSocket = 4692
 const ip = "192.168.1.26";
 const DB = new DataBase("mongodb://192.168.1.26:2425");
 const httpServer = createServer();
 
-//socketio client api
+//socketio client api Dev
 const socket_client = `http://localhost:3000`;
-//const socket_client = `http://localhost:6532`;
+
+// // Use
+// const socket_client = `http://192.168.1.26:3000`;
+
+
 const io = new Server(httpServer, {
     cors: {
         origin: socket_client,
@@ -27,7 +31,7 @@ let enMsg: string = "";
 
 //聊天室socket伺服器
 io.on('connection', (socket) => {
-    console.log(`connected ${socket_client} success`);
+    console.log(`connected Socketio ${socket_client} success`);
     let botRoomId: any;
     // create a new room for the user and bot to chat
     botRoomId = 'bot_room_' + Math.random().toString(36).substr(2, 9);
@@ -49,15 +53,16 @@ io.on('connection', (socket) => {
 });
 
 
-// dev
-httpServer.listen(portSocket, () => {
-    console.log(`Socket Server: http://localhost:${portSocket}`);
-});
-
-// // Use
+// // dev
 // httpServer.listen(portSocket, () => {
-//     console.log(`Socket Server: http://${ip}:${portSocket}`);
+//     console.log(`Socket Server: http://localhost:${portSocket}`);
 // });
+
+
+//use
+httpServer.listen(portSocket, ip, () => {
+    console.log(`Socket Server: http://${ip}:${portSocket}`);
+});
 
 //***************************************************************************************************//
 

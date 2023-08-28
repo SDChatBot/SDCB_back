@@ -13,13 +13,14 @@ const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const app = (0, express_1.default)();
 const port = 7943;
-const portSocket = 450;
+const portSocket = 4692;
 const ip = "192.168.1.26";
 const DB = new DataBase_1.DataBase("mongodb://192.168.1.26:2425");
 const httpServer = (0, http_1.createServer)();
-//socketio client api
+//socketio client api Dev
 const socket_client = `http://localhost:3000`;
-//const socket_client = `http://localhost:6532`;
+// // Use
+// const socket_client = `http://192.168.1.26:3000`;
 const io = new socket_io_1.Server(httpServer, {
     cors: {
         origin: socket_client,
@@ -29,7 +30,7 @@ const io = new socket_io_1.Server(httpServer, {
 let enMsg = "";
 //聊天室socket伺服器
 io.on('connection', (socket) => {
-    console.log(`connected ${socket_client} success`);
+    console.log(`connected Socketio ${socket_client} success`);
     let botRoomId;
     // create a new room for the user and bot to chat
     botRoomId = 'bot_room_' + Math.random().toString(36).substr(2, 9);
@@ -50,14 +51,14 @@ io.on('connection', (socket) => {
         }
     });
 });
-// dev
-httpServer.listen(portSocket, () => {
-    console.log(`Socket Server: http://localhost:${portSocket}`);
-});
-// // Use
+// // dev
 // httpServer.listen(portSocket, () => {
-//     console.log(`Socket Server: http://${ip}:${portSocket}`);
+//     console.log(`Socket Server: http://localhost:${portSocket}`);
 // });
+//use
+httpServer.listen(portSocket, ip, () => {
+    console.log(`Socket Server: http://${ip}:${portSocket}`);
+});
 //***************************************************************************************************//
 //系統伺服器
 const corsOptions = {
