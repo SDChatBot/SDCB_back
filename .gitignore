@@ -1,2 +1,5 @@
 #移除更新，Coco doc，mincrosoft上有
 /.env
+
+
+node_modules
