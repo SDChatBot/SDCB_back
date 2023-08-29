@@ -1,11 +1,11 @@
 import { Router } from "express"
-import { Contorller } from "./Contorller"
+import { Controller } from "./Controller"
 
 export abstract class Route {
 
     protected abstract url: string
 
-    protected abstract Contorller: Contorller
+    protected abstract Controller: Controller
 
     protected router = Router()
 
