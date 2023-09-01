@@ -11,6 +11,6 @@
     npm run install
 ### 3. 運行後端系統:
     npm run dev
-如果沒問題的話， 可以進入前端的部分: https://github.com/SDChatBot/SDCB
+如果沒問題的話， 可以進入前端的部分: https://github.com/SDChatBot/vite_SDCB
 或是不要開啟前端也是可以後端獨大拉
 如果出問題的話請找Coco
