@@ -1,4 +1,4 @@
-# 此專案需事先下載 Node.js(npm)、Git bash(git) 
+# 此專案需事先下載 Node.js(npm)、Git bash(git)，以及要跟coco拿.env檔案 
 **基本上不要動src資料夾以外的東西**
 **以下皆在你的終端機中運行:**
 ## First 後端
