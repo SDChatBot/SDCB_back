@@ -29,7 +29,8 @@ const io = new Server(httpServer, {
         methods: ["GET", "POST"],
     }
 });
-let enMsg: string = "";
+
+let UserPromptSupport:string=`你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。`
 
 //聊天室socket伺服器
 io.on('connection', (socket) => {
@@ -42,7 +43,7 @@ io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {
         //console.log(`User said: ${msg}`);
         try {
-            AiAnswer(enMsg).then((botReply) => {
+            AiAnswer(`${UserPromptSupport} ; ${msg}`).then((botReply) => {
                 // send bot's reply to all connected users in the room
                 io.to(botRoomId).emit('chat message', botReply);
             }).catch((e) => {
