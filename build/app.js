@@ -15,12 +15,15 @@ const app = (0, express_1.default)();
 const port = 7943;
 const portSocket = 2764;
 const ip = "192.168.1.26";
+const ip2 = "163.13.201.153";
 const DB = new DataBase_1.DataBase("mongodb://192.168.1.26:2425");
 const httpServer = (0, http_1.createServer)();
 //socketio client api Dev
 const socket_client = `http://localhost:3000`;
 // // Use
 // const socket_client = `http://192.168.1.26:3000`;
+// //Use2
+// const socket_client = `http://163.13.201.153:3000`;
 const io = new socket_io_1.Server(httpServer, {
     cors: {
         origin: socket_client,
@@ -133,5 +136,9 @@ app.listen(port, () => {
 });
 // //use 使用
 // app.listen(port, ip,() => {
+//     console.log(`Server: http://${ip}:${port}/image`)
+// });
+// //use2 使用2
+// app.listen(port, ip2, () => {
 //     console.log(`Server: http://${ip}:${port}/image`)
 // });

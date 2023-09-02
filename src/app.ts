@@ -12,6 +12,7 @@ const app = express()
 const port = 7943
 const portSocket = 2764
 const ip = "192.168.1.26";
+const ip2 = "163.13.201.153";
 const DB = new DataBase("mongodb://192.168.1.26:2425");
 const httpServer = createServer();
 
@@ -22,6 +23,9 @@ const socket_client = `http://localhost:3000`;
 
 // // Use
 // const socket_client = `http://192.168.1.26:3000`;
+
+// //Use2
+// const socket_client = `http://163.13.201.153:3000`;
 
 const io = new Server(httpServer, {
     cors: {
@@ -148,5 +152,10 @@ app.listen(port, () => {
 
 // //use 使用
 // app.listen(port, ip,() => {
+//     console.log(`Server: http://${ip}:${port}/image`)
+// });
+
+// //use2 使用2
+// app.listen(port, ip2, () => {
 //     console.log(`Server: http://${ip}:${port}/image`)
 // });
