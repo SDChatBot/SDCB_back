@@ -9,10 +9,9 @@ class PromptController extends Controller_1.Controller {
     }
     GenerPicPrompt(Request, Response) {
         const userPrompt = Request.body.prompt || `a Hotdog`;
-        //console.log(`userPrompt = ${JSON.stringify(userPrompt)}`);
-        const funcPrompt = ` 對於${userPrompt}，用英文創建100字上下，可由AI圖像生成器用來創建圖像的詳細描述 `;
-        (0, opanaiApi_1.AiAnswer)(funcPrompt).then((prompt) => {
-            //console.log(`pic prompt = ${prompt}`);
+        const funcPrompt = `${userPrompt}`;
+        (0, opanaiApi_1.AiCreatePicPrompt)(funcPrompt).then((prompt) => {
+            console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });
         });
     }
