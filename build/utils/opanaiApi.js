@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AiAnswer = exports.AiCreatePicPrompt = void 0;
+exports.AiStory = exports.AiAnswer = exports.AiCreatePicPrompt = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const openai_1 = __importDefault(require("openai"));
@@ -40,12 +40,34 @@ const AiCreatePicPrompt = (userMsg) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.AiCreatePicPrompt = AiCreatePicPrompt;
-//回答使用者
+// //回答使用者
+// export const AiAnswer = async (userMsg: string) => {
+//     try {
+//         const completion = await openai.chat.completions.create({
+//             messages: [
+//                 { role: 'assistant', content: `你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。` },
+//                 { role: 'user', content: `${userMsg}` },],
+//             model: 'gpt-3.5-turbo',
+//         });
+//         //console.log(JSON.stringify(completion));
+//         //console.log(completion.choices[0].message.content);
+//         return completion.choices[0].message.content;
+//     } catch (e) {
+//         //console.log(`AiAnswer error:${e}`)
+//         return "none";
+//     }
+// } 
+let info = {
+    eduStage: '國小',
+    eduClass: '數學',
+};
+//用ai 回答學生的問題
 const AiAnswer = (userMsg) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const completion = yield openai.chat.completions.create({
             messages: [
-                { role: 'assistant', content: `你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。` },
+                { role: 'assistant', content: `你是一位${info.eduStage}的${info.eduClass}教師，請使用蘇格拉底對話來引導學生所提出的問題，不要直接回答學生的問題。` },
+                // { role: 'assistant', content: `你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。` },
                 { role: 'user', content: `${userMsg}` },
             ],
             model: 'gpt-3.5-turbo',
@@ -60,3 +82,24 @@ const AiAnswer = (userMsg) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.AiAnswer = AiAnswer;
+//ai故事生成
+const AiStory = (userMsg) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const completion = yield openai.chat.completions.create({
+            messages: [
+                { role: 'system', content: `你是一位很有想法的故事作家。` },
+                { role: 'assistant', content: `請幫我生成大約 350 字寫一篇重生文，內容要有關於重生、國小數學加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },
+                { role: 'user', content: `${userMsg}` },
+            ],
+            model: 'gpt-3.5-turbo',
+        });
+        //console.log(JSON.stringify(completion));
+        //console.log(completion.choices[0].message.content);
+        return completion.choices[0].message.content;
+    }
+    catch (e) {
+        //console.log(`AiAnswer error:${e}`)
+        return "none";
+    }
+});
+exports.AiStory = AiStory;

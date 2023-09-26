@@ -11,7 +11,7 @@ class PromptController extends Controller_1.Controller {
         const userPrompt = Request.body.prompt || `a Hotdog`;
         const funcPrompt = `${userPrompt}`;
         (0, opanaiApi_1.AiCreatePicPrompt)(funcPrompt).then((prompt) => {
-            console.log(`pic prompt = ${prompt}`);
+            //console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });
         });
     }

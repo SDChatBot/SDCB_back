@@ -11,7 +11,7 @@ export class PromptController extends Controller{
         const userPrompt: string = Request.body.prompt || `a Hotdog`;
         const funcPrompt: string = `${ userPrompt }`;
         AiCreatePicPrompt(funcPrompt).then((prompt: string | null) => {
-            console.log(`pic prompt = ${prompt}`);
+            //console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });
         })
     }
