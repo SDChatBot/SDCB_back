@@ -45,45 +45,52 @@ export const AiCreatePicPrompt = async (userMsg:string) => {
 //     }
 // } 
 
-let info = {
-    eduStage: '國小',
-    eduClass: '數學',
-}
+// let info = {
+//     eduStage: '國小',
+//     eduClass: '數學',
+// }
 
 //用ai 回答學生的問題
-export const AiAnswer = async (userMsg: string) => {
+export const AiAnswer = async (issue:string) => {
+    //console.log(`issue = ${issue}`)
     try {
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'assistant', content:`你是一位${info.eduStage}的${info.eduClass}教師，請使用蘇格拉底對話來引導學生所提出的問題，不要直接回答學生的問題。`},
+                { role: 'system', content: `你是一位教師，請使用蘇格拉底對話來引導學生所提出的問題，不要直接回答學生的問題。` },
+                { role: 'assistant', content: `請使用第一人稱為"教師" 來回答問題`},
                 // { role: 'assistant', content: `你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。` },
-                { role: 'user', content: `${userMsg}` },],
+                { role: 'user', content: `${issue}` },],
             model: 'gpt-3.5-turbo',
         });
         //console.log(JSON.stringify(completion));
         //console.log(completion.choices[0].message.content);
         return completion.choices[0].message.content;
     } catch (e) {
-        //console.log(`AiAnswer error:${e}`)
-        return "none";
+        console.log(`AiAnswer error:${e}`)
+        return " ";
     }
 } 
 
+interface infoValInterface{
+    eduStageInfo: String,
+    eduClassInfo: String,
+}
+
 //ai故事生成
-export const AiStory = async (userMsg: string) => {
+export const AiStory = async (infoVal: infoValInterface) => {
+    //console.log(`infoval = ${JSON.stringify(infoVal)}`)
     try {
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'system', content: `你是一位很有想法的故事作家。` },
-                { role: 'assistant', content: `請幫我生成大約 350 字寫一篇重生文，內容要有關於重生、國小數學加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },
-                { role: 'user', content: `${userMsg}` },],
-            model: 'gpt-3.5-turbo',
+                { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文`},
+                { role: 'user', content: `幫我生成一篇文章其內容關於:${ infoVal.eduStageInfo }${ infoVal.eduClassInfo }、加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },],
+            model: 'gpt-4',
         });
+        //console.log('Story Generated')
         //console.log(JSON.stringify(completion));
-        //console.log(completion.choices[0].message.content);
         return completion.choices[0].message.content;
     } catch (e) {
-        //console.log(`AiAnswer error:${e}`)
+        console.log(`AiStory error:${e}`)
         return "none";
     }
 } 

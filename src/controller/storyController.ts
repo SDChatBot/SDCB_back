@@ -7,9 +7,9 @@ export class StoryController extends Controller {
     Response.send(`this is STORY get, use post in this url is FINE !`);
   }
   public GenerStory(Request: Request, Response: Response) {
-    const userPrompt: string = Request.body.prompt || `a banana`;
-    const funcPrompt: string = `${userPrompt}`;
-    AiStory(funcPrompt).then((story:string | null)=>{
+    let infoVal = Request.body;
+    // console.log(infoVal)
+    AiStory(infoVal).then((story:string | null)=>{
       Response.send({tailStory: story});
     })
   }

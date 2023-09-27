@@ -66,8 +66,8 @@ httpServer.listen(portSocket, () => {
 //系統伺服器
 const corsOptions = {
     origin: [
-        'http://localhost:3000',
-        'http://192.168.1.26:3000', //use front     
+        'http://localhost:666',
+        'http://192.168.1.26:666', //use front     
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type'],

@@ -8,9 +8,9 @@ class StoryController extends Controller_1.Controller {
         Response.send(`this is STORY get, use post in this url is FINE !`);
     }
     GenerStory(Request, Response) {
-        const userPrompt = Request.body.prompt || `a banana`;
-        const funcPrompt = `${userPrompt}`;
-        (0, opanaiApi_1.AiStory)(funcPrompt).then((story) => {
+        let infoVal = Request.body;
+        // console.log(infoVal)
+        (0, opanaiApi_1.AiStory)(infoVal).then((story) => {
             Response.send({ tailStory: story });
         });
     }
