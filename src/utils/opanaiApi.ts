@@ -82,7 +82,7 @@ export const AiStory = async (infoVal: infoValInterface) => {
     try {
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文`},
+                { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文，並根據劇情進行分段`},
                 { role: 'user', content: `幫我生成一篇文章其內容關於:${ infoVal.eduStageInfo }${ infoVal.eduClassInfo }、加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },],
             model: 'gpt-4',
         });
@@ -94,3 +94,21 @@ export const AiStory = async (infoVal: infoValInterface) => {
         return "none";
     }
 } 
+
+// 
+export const AiSleep = async (storyTheme: string) => {
+    try {
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: 'assistant', content: `你現在的角色是一位是一位父母，而我是你的小孩，請跟我講一個生動、從來沒有人說過的睡前故事，要大約800~1000字` },
+                { role: 'user', content: `請跟我講一個關於"${storyTheme}" 的故事` },],
+            model: 'gpt-3.5-turbo',
+        });
+        //console.log(JSON.stringify(completion));
+        //console.log(completion.choices[0].message.content);
+        return completion.choices[0].message.content;
+    } catch (e) {
+        //console.log(`AiAnswer error:${e}`)
+        return "none";
+    }
+}

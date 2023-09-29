@@ -15,6 +15,7 @@ class StoryRoute extends Route_1.Route {
     setRoutes() {
         this.router.get(`${this.url}/story`, this.Controller.test);
         this.router.post(`${this.url}/story`, this.Controller.GenerStory);
+        this.router.post(`${this.url}/sleep`, this.Controller.SleepStory);
     }
 }
 exports.StoryRoute = StoryRoute;

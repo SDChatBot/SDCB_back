@@ -14,5 +14,12 @@ class StoryController extends Controller_1.Controller {
             Response.send({ tailStory: story });
         });
     }
+    SleepStory(Request, Response) {
+        let theme = Request.body;
+        // console.log(infoVal)
+        (0, opanaiApi_1.AiStory)(theme).then((story) => {
+            Response.send({ tailStory: story });
+        });
+    }
 }
 exports.StoryController = StoryController;
