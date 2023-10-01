@@ -108,7 +108,7 @@ export const AiSleep = async (storyTheme: string) => {
         //console.log(completion.choices[0].message.content);
         return completion.choices[0].message.content;
     } catch (e) {
-        //console.log(`AiAnswer error:${e}`)
+        //console.log(`AiSleep error:${e}`)
         return "none";
     }
 }

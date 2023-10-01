@@ -120,7 +120,7 @@ const AiSleep = (storyTheme) => __awaiter(void 0, void 0, void 0, function* () {
         return completion.choices[0].message.content;
     }
     catch (e) {
-        //console.log(`AiAnswer error:${e}`)
+        //console.log(`AiSleep error:${e}`)
         return "none";
     }
 });
