@@ -76,8 +76,8 @@ interface infoValInterface{
     eduClassInfo: String,
 }
 
-//ai故事生成
-export const AiStory = async (infoVal: infoValInterface) => {
+//ai故事生成(學習用)
+export const AiStoryStudy = async (infoVal: infoValInterface) => {
     //console.log(`infoval = ${JSON.stringify(infoVal)}`)
     try {
         const completion = await openai.chat.completions.create({
@@ -94,6 +94,35 @@ export const AiStory = async (infoVal: infoValInterface) => {
         return "none";
     }
 } 
+
+//正式使用版本(生故事)
+export const AiStory = async (storyInfo: object):Promise<string> => {
+    const timeout = 50000;
+    //const start = performance.now();
+    try {
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: 'system', content: "你是一位兒童繪本專家，你的工作就是說出指定主題的故事，目標受眾是三至五歲的兒童" },
+                { role: 'assistant', content: "故事字數必須在80字以下，允許20字誤差，其他多餘的話請全部省略，故事要是兒童能輕易理解的，不要有過多不必要的修飾詞，故事內容中的中文字請用繁體中文，故事要盡可能符合現實常理，只要說出故事就好，不要有結語" },
+                { role: 'user', content: `${storyInfo}` },
+            ],
+            model: 'gpt-3.5-turbo',
+        });
+        const completionTimeCheck:any = await Promise.race([
+            completion,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('AiStory timeout')), timeout)
+            )
+        ]);
+        // const end = performance.now();
+        // console.log(`AiStory took ${end - start} milliseconds to complete`);
+
+        return completionTimeCheck.choices[0].message.content || "";
+    } catch (e) {
+        console.log(`AiStory error:${e}`)
+        return "none";
+    }
+};
 
 // 
 export const AiSleep = async (storyTheme: string) => {

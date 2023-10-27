@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AiSleep = exports.AiStory = exports.AiAnswer = exports.AiCreatePicPrompt = void 0;
+exports.AiSleep = exports.AiStory = exports.AiStoryStudy = exports.AiAnswer = exports.AiCreatePicPrompt = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const openai_1 = __importDefault(require("openai"));
@@ -84,8 +84,8 @@ const AiAnswer = (issue) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.AiAnswer = AiAnswer;
-//ai故事生成
-const AiStory = (infoVal) => __awaiter(void 0, void 0, void 0, function* () {
+//ai故事生成(學習用)
+const AiStoryStudy = (infoVal) => __awaiter(void 0, void 0, void 0, function* () {
     //console.log(`infoval = ${JSON.stringify(infoVal)}`)
     try {
         const completion = yield openai.chat.completions.create({
@@ -93,11 +93,38 @@ const AiStory = (infoVal) => __awaiter(void 0, void 0, void 0, function* () {
                 { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文，並根據劇情進行分段` },
                 { role: 'user', content: `幫我生成一篇文章其內容關於:${infoVal.eduStageInfo}${infoVal.eduClassInfo}、加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },
             ],
-            model: 'gpt-4',
+            model: 'gpt-3.5-turbo',
         });
         //console.log('Story Generated')
         //console.log(JSON.stringify(completion));
         return completion.choices[0].message.content;
+    }
+    catch (e) {
+        console.log(`AiStory error:${e}`);
+        return "none";
+    }
+});
+exports.AiStoryStudy = AiStoryStudy;
+//正式使用版本(生故事)
+const AiStory = (storyInfo) => __awaiter(void 0, void 0, void 0, function* () {
+    const timeout = 50000;
+    //const start = performance.now();
+    try {
+        const completion = yield openai.chat.completions.create({
+            messages: [
+                { role: 'system', content: "你是一位兒童繪本專家，你的工作就是說出指定主題的故事，目標受眾是三至五歲的兒童" },
+                { role: 'assistant', content: "故事字數必須在80字以下，允許20字誤差，其他多餘的話請全部省略，故事要是兒童能輕易理解的，不要有過多不必要的修飾詞，故事內容中的中文字請用繁體中文，故事要盡可能符合現實常理，只要說出故事就好，不要有結語" },
+                { role: 'user', content: `${storyInfo}` },
+            ],
+            model: 'gpt-3.5-turbo',
+        });
+        const completionTimeCheck = yield Promise.race([
+            completion,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('AiStory timeout')), timeout))
+        ]);
+        // const end = performance.now();
+        // console.log(`AiStory took ${end - start} milliseconds to complete`);
+        return completionTimeCheck.choices[0].message.content || "";
     }
     catch (e) {
         console.log(`AiStory error:${e}`);

@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataBase = void 0;
 const mongoose_1 = require("mongoose");
 const ImagesModel_1 = require("../models/ImagesModel");
-const userModel_1 = require("../models/userModel");
-const myfavoriteModel_1 = require("../models/myfavoriteModel");
+const storyModel_1 = require("../models/storyModel");
 class DataBase {
     constructor(url) {
         this.init(url).then(() => {
@@ -44,35 +43,30 @@ class DataBase {
             }
         });
     }
-    static SaveNewUser(name, password) {
+    static SaveNewStory(storyTale, storyInfo) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = new userModel_1.userModel({
-                    userName: name,
-                    userPassword: password,
+                const story = new storyModel_1.storyModel({
+                    storyTale: storyTale,
+                    storyInfo: storyInfo,
                 });
-                // console.log(`save user success)
-                yield user.save();
+                console.log(`save newstory success`);
+                yield story.save();
             }
             catch (e) {
-                console.log(`save user fail: ${e}`);
+                console.log(`SaveNewStory fail, error:${e}`);
             }
         });
     }
-    static SaveNewMyFavorite(Name, is_favorite, tag) {
+    static getStoryById(_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let addtime = new Date();
-            let imagename = `${addtime.getFullYear()}${addtime.getMonth()}${addtime.getDay()}_${addtime.getHours()}${addtime.getMinutes()}_${addtime.getSeconds()}`;
             try {
-                const myfavorite = new myfavoriteModel_1.myfavoriteModel({
-                    imageName: Name,
-                    is_favorite: is_favorite,
-                    tagName: tag,
-                });
-                yield myfavorite.save();
+                const storytail = yield storyModel_1.storyModel.findOne({ _id });
+                console.log(typeof storytail);
+                return storytail;
             }
             catch (e) {
-                console.log(`SaveNewMyFavorite fail: ${e}`);
+                console.log(`getStoryById fail, ${e}`);
             }
         });
     }

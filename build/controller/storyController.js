@@ -3,22 +3,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StoryController = void 0;
 const Controller_1 = require("../interfaces/Controller");
 const opanaiApi_1 = require("../utils/opanaiApi");
+const DataBase_1 = require("../utils/DataBase");
 class StoryController extends Controller_1.Controller {
     test(Request, Response) {
-        Response.send(`this is STORY get, use post in this url is FINE !`);
+        //Response.send(`this is STORY get, use post in this url is FINE !`);
+        DataBase_1.DataBase.getStoryById("653b89626620dbe005b01bc6").then((storytail) => {
+            Response.send(storytail);
+        });
     }
     GenerStory(Request, Response) {
         let infoVal = Request.body;
-        // console.log(infoVal)
-        (0, opanaiApi_1.AiStory)(infoVal).then((story) => {
-            Response.send({ tailStory: story });
+        let storyInfo = Request.body.storyInfo;
+        console.log(`Request.body.storyInFo = ${Request.body.storyInfo}`);
+        //生成故事
+        (0, opanaiApi_1.AiStory)(infoVal).then((storyTale) => {
+            DataBase_1.DataBase.SaveNewStory(storyTale, storyInfo);
+            // 回傳回前端Response.send({ tailStory: story });
         });
     }
     SleepStory(Request, Response) {
         let theme = Request.body;
         // console.log(infoVal)
-        (0, opanaiApi_1.AiStory)(theme).then((story) => {
+        (0, opanaiApi_1.AiSleep)(theme).then((story) => {
             Response.send({ tailStory: story });
+        });
+    }
+    //拿資料庫故事
+    GeyStoryFDB(Request, Response) {
+        let data = Request.query.id;
+        DataBase_1.DataBase.getStoryById(data).then((storytail) => {
+            // console.log(`storytail = ${storytail}`)
+            Response.send(storytail);
         });
     }
 }

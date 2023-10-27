@@ -13,7 +13,10 @@ export class StoryRoute extends Route{
    //http://localhost:7943/story
    protected setRoutes(): void {
       this.router.get(`${this.url}/story`, this.Controller.test);
+      this.router.get(`${this.url}/getstoryfdb`, this.Controller.GeyStoryFDB);
+      this.router.post(`${this.url}/getstoryfdb`, this.Controller.GeyStoryFDB);
       this.router.post(`${this.url}/story`,this.Controller.GenerStory);
       this.router.post(`${this.url}/sleep`, this.Controller.SleepStory);
+
    }
 }

@@ -2,6 +2,8 @@ import mongoose, { connect } from "mongoose";
 import { ImagesModel } from "../models/ImagesModel";
 import { userModel } from "../models/userModel";
 import { myfavoriteModel } from "../models/myfavoriteModel";
+import { storyModel } from "../models/storyModel";
+import { Client } from "socket.io/dist/client";
 
 export class DataBase{
     DB!: typeof import("mongoose");
@@ -31,32 +33,56 @@ export class DataBase{
         }
     }
 
-    static async SaveNewUser(name:string, password:string): Promise<any>{
+    static async SaveNewStory(storyTale: string, storyInfo: string):Promise<any>{
         try{
-            const user = new userModel({
-                userName: name,
-                userPassword: password,
-            });
-            // console.log(`save user success)
-            await user.save();
+            const story = new storyModel({
+                storyTale: storyTale,
+                storyInfo: storyInfo,
+                
+            })
+            console.log(`save newstory success`);
+            await story.save();
         }catch(e){
-            console.log(`save user fail: ${e}`);
+            console.log(`SaveNewStory fail, error:${e}`);
         }
     }
 
-    static async SaveNewMyFavorite(Name: string, is_favorite: boolean, tag: string): Promise<any>{
-        let addtime = new Date();
-        let imagename: string = `${addtime.getFullYear()}${addtime.getMonth()}${addtime.getDay()}_${addtime.getHours()}${addtime.getMinutes()}_${addtime.getSeconds()}`;
+    static async getStoryById(_id:string):Promise<object | any>{
         try{
-            const myfavorite = new myfavoriteModel({
-                imageName: Name, 
-                is_favorite: is_favorite, 
-                tagName: tag,
-            });
-            await myfavorite.save();
+            const storytail = await storyModel.findOne({_id});
+            console.log(typeof storytail)
+            return storytail;
         }catch(e){
-            console.log(`SaveNewMyFavorite fail: ${e}`)
+            console.log(`getStoryById fail, ${e}`)
         }
     }
+
+    // static async SaveNewUser(name:string, password:string): Promise<any>{
+    //     try{
+    //         const user = new userModel({
+    //             userName: name,
+    //             userPassword: password,
+    //         });
+    //         // console.log(`save user success)
+    //         await user.save();
+    //     }catch(e){
+    //         console.log(`save user fail: ${e}`);
+    //     }
+    // }
+
+    // static async SaveNewMyFavorite(Name: string, is_favorite: boolean, tag: string): Promise<any>{
+    //     let addtime = new Date();
+    //     let imagename: string = `${addtime.getFullYear()}${addtime.getMonth()}${addtime.getDay()}_${addtime.getHours()}${addtime.getMinutes()}_${addtime.getSeconds()}`;
+    //     try{
+    //         const myfavorite = new myfavoriteModel({
+    //             imageName: Name, 
+    //             is_favorite: is_favorite, 
+    //             tagName: tag,
+    //         });
+    //         await myfavorite.save();
+    //     }catch(e){
+    //         console.log(`SaveNewMyFavorite fail: ${e}`)
+    //     }
+    // }
     
 }
