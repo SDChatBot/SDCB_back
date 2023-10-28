@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchImage = void 0;
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 let imagesBase64;
+//生成圖片
 const fetchImage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const requestOptions = {
         method: 'POST',
@@ -21,7 +22,6 @@ const fetchImage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield fetch(`${url}sdapi/v1/txt2img`, requestOptions);
         const data = yield response.json();
-        imagesBase64 = data.images;
         return data.images; //只回傳image Base64 code
     }
     catch (error) {
