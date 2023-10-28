@@ -9,10 +9,12 @@ export class PromptController extends Controller{
     }
     public GenerPicPrompt(Request:Request, Response:Response){
         const userPrompt: string = Request.body.prompt || `a Hotdog`;
-        const funcPrompt: string = `${ userPrompt }`;
-        AiCreatePicPrompt(funcPrompt).then((prompt: string | null) => {
+        // console.log(`userPrompt = ${userPrompt}`)
+        AiCreatePicPrompt(userPrompt).then((prompt: string | null) => {
             //console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });
+        }).catch((e)=>{
+            console.log(`AiCreatePicPrompt error: ${e}`)
         })
     }
 }

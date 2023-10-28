@@ -9,10 +9,12 @@ class PromptController extends Controller_1.Controller {
     }
     GenerPicPrompt(Request, Response) {
         const userPrompt = Request.body.prompt || `a Hotdog`;
-        const funcPrompt = `${userPrompt}`;
-        (0, opanaiApi_1.AiCreatePicPrompt)(funcPrompt).then((prompt) => {
+        // console.log(`userPrompt = ${userPrompt}`)
+        (0, opanaiApi_1.AiCreatePicPrompt)(userPrompt).then((prompt) => {
             //console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });
+        }).catch((e) => {
+            console.log(`AiCreatePicPrompt error: ${e}`);
         });
     }
 }

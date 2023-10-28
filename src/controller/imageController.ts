@@ -2,7 +2,7 @@ import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
 import { fetchImage } from "../utils/tools/fetch";
 import { DataBase } from "../utils/DataBase";
-import { saveBase64Image } from "../utils/tools/saveImage";
+// import { saveBase64Image } from "../utils/tools/saveImage";
 
 
 export class ImageController extends Controller {
@@ -11,7 +11,7 @@ export class ImageController extends Controller {
     }
     public getImage(Request:Request, Response:Response){
         const imageData = Request.body;
-        // console.log(`imageData = ${imageData}`);
+        // console.log(`imageData = ${JSON.stringify(imageData)}`);
         let payload = {
             "prompt": imageData.imagePrompt,
             "seed": -1,
@@ -24,10 +24,11 @@ export class ImageController extends Controller {
         try {
             fetchImage(payload).then((val) => { //val就是image base64 code
                 //console.log(val)
-                let imageSaveData = `${val}`
+                // let imageSaveData = `${val}`
                 //console.log(`imageSaveData = ${imageSaveData}`)
-                DataBase.SaveNewImage(imageSaveData);
-                Response.json(val);
+                // DataBase.SaveNewImage(imageSaveData);
+                // Response.json(val);
+                Response.send(val)
             }).catch((e) => {
                 console.log(`run time error`)
             })
@@ -55,8 +56,8 @@ export class ImageController extends Controller {
                     //saveBase64Image(`${val["0"]}`, "test.png")
                     // const keys = Object.keys(val);
                     // console.log(keys);
-                    saveBase64Image(val["0"], "test.png");
-                    response.send(val["0"]);
+                    // saveBase64Image(val["0"], "test.png");
+                    // response.send(val["0"]);
                 } catch (e) {
                     console.error(`Error saving image: ${e}`)
                 }

@@ -14,20 +14,21 @@ class StoryController extends Controller_1.Controller {
     GenerStory(Request, Response) {
         let infoVal = Request.body;
         let storyInfo = Request.body.storyInfo;
-        console.log(`Request.body.storyInFo = ${Request.body.storyInfo}`);
+        console.log(`Request.body.storyInfo = ${Request.body.storyInfo}`);
+        // console.log(`infoVal= ${JSON.stringify(infoVal)}`)
         //生成故事
         (0, opanaiApi_1.AiStory)(infoVal).then((storyTale) => {
             DataBase_1.DataBase.SaveNewStory(storyTale, storyInfo);
-            // 回傳回前端Response.send({ tailStory: story });
+            Response.send(`story gener ans save success`);
         });
     }
-    SleepStory(Request, Response) {
-        let theme = Request.body;
-        // console.log(infoVal)
-        (0, opanaiApi_1.AiSleep)(theme).then((story) => {
-            Response.send({ tailStory: story });
-        });
-    }
+    // public SleepStory(Request: Request, Response: Response) {
+    //   let theme = Request.body;
+    //   // console.log(infoVal)
+    //   AiSleep(theme).then((story: string | null) => {
+    //     Response.send({ tailStory: story });
+    //   })
+    // }
     //拿資料庫故事
     GeyStoryFDB(Request, Response) {
         let data = Request.query.id;

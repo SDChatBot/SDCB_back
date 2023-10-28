@@ -15,7 +15,7 @@ class ImageRoute extends Route_1.Route {
     setRoutes() {
         this.router.get(`${this.url}/image`, this.Controller.test);
         this.router.post(`${this.url}/image`, this.Controller.getImage);
-        this.router.post(`${this.url}/postimageprompt`, this.Controller.getimageprmopt);
+        // this.router.post(`${this.url}/postimageprompt`, this.Controller.getimageprmopt);
     }
 }
 exports.ImageRoute = ImageRoute;

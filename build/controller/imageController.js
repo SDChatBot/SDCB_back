@@ -3,15 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageController = void 0;
 const Controller_1 = require("../interfaces/Controller");
 const fetch_1 = require("../utils/tools/fetch");
-const DataBase_1 = require("../utils/DataBase");
-const saveImage_1 = require("../utils/tools/saveImage");
+// import { saveBase64Image } from "../utils/tools/saveImage";
 class ImageController extends Controller_1.Controller {
     test(Request, Response) {
         Response.send(`Hello imageRoute`);
     }
     getImage(Request, Response) {
         const imageData = Request.body;
-        // console.log(`imageData = ${imageData}`);
+        // console.log(`imageData = ${JSON.stringify(imageData)}`);
         let payload = {
             "prompt": imageData.imagePrompt,
             "seed": -1,
@@ -24,10 +23,11 @@ class ImageController extends Controller_1.Controller {
         try {
             (0, fetch_1.fetchImage)(payload).then((val) => {
                 //console.log(val)
-                let imageSaveData = `${val}`;
+                // let imageSaveData = `${val}`
                 //console.log(`imageSaveData = ${imageSaveData}`)
-                DataBase_1.DataBase.SaveNewImage(imageSaveData);
-                Response.json(val);
+                // DataBase.SaveNewImage(imageSaveData);
+                // Response.json(val);
+                Response.send(val);
             }).catch((e) => {
                 console.log(`run time error`);
             });
@@ -55,8 +55,8 @@ class ImageController extends Controller_1.Controller {
                     //saveBase64Image(`${val["0"]}`, "test.png")
                     // const keys = Object.keys(val);
                     // console.log(keys);
-                    (0, saveImage_1.saveBase64Image)(val["0"], "test.png");
-                    response.send(val["0"]);
+                    // saveBase64Image(val["0"], "test.png");
+                    // response.send(val["0"]);
                 }
                 catch (e) {
                     console.error(`Error saving image: ${e}`);

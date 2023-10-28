@@ -12,30 +12,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AiSleep = exports.AiStory = exports.AiStoryStudy = exports.AiAnswer = exports.AiCreatePicPrompt = void 0;
+exports.AiSleep = exports.ImproveStory = exports.AiStory = exports.AiStoryStudy = exports.AiAnswer = exports.AiCreatePicPrompt = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const openai_1 = __importDefault(require("openai"));
-const HUGGINGFACE_DEFAULT_STABLE_DIFFUSION_MODEL = "prompthero/openjourney";
 const openai = new openai_1.default({
     apiKey: process.env.OPEN_AI_KEY, // defaults to process.env["OPENAI_API_KEY"]
 });
-//生成圖片的prompt
+//生成圖片的英文 prompt
 const AiCreatePicPrompt = (userMsg) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const completion = yield openai.chat.completions.create({
+            //把它回傳的物件樣是設定為: {prompt: .....} 的指令為: The returned format is {prompt: }
             messages: [
-                { role: 'system', content: `Whever I ask you in any language to draw an image, use English to respond with the following JSON: { "model": "${HUGGINGFACE_DEFAULT_STABLE_DIFFUSION_MODEL}", "prompt": string, "negative_prompt": string }, and fill in prompt with very detailed tags used in Stable Diffusion, and fill in negative_prompt with common negative tags used in Stable Diffusion.\nOnly English should be used in prompt and negative_prompt.` },
-                { role: 'user', content: `${userMsg}` },
+                { role: 'system', content: `Whever I ask you in any language to draw an image, use English to respond.Only the english picture prmpt needs to be returned, and no redundant information needs to be returned. ` },
+                { role: 'user', content: `Generate an English description about the generated image of ${userMsg}. Just generate the image prompt for the description within {}, and there is no need to generate other redundant prompts.` },
             ],
             model: 'gpt-3.5-turbo',
         });
-        //console.log(JSON.stringify(completion));
-        //console.log(completion.choices[0].message.content);
+        // console.log(JSON.stringify(completion));
+        // console.log(completion.choices[0].message.content);
         return completion.choices[0].message.content;
     }
     catch (e) {
-        //console.log(`AiCreatePicPrompt error:${e}`)
+        console.log(`AiCreatePicPrompt error:${e}`);
         return "none";
     }
 });
@@ -106,15 +106,15 @@ const AiStoryStudy = (infoVal) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.AiStoryStudy = AiStoryStudy;
 //正式使用版本(生故事)
-const AiStory = (storyInfo) => __awaiter(void 0, void 0, void 0, function* () {
-    const timeout = 50000;
+const AiStory = (storyObject) => __awaiter(void 0, void 0, void 0, function* () {
+    const timeout = 80000;
     //const start = performance.now();
     try {
         const completion = yield openai.chat.completions.create({
             messages: [
                 { role: 'system', content: "你是一位兒童繪本專家，你的工作就是說出指定主題的故事，目標受眾是三至五歲的兒童" },
                 { role: 'assistant', content: "故事字數必須在80字以下，允許20字誤差，其他多餘的話請全部省略，故事要是兒童能輕易理解的，不要有過多不必要的修飾詞，故事內容中的中文字請用繁體中文，故事要盡可能符合現實常理，只要說出故事就好，不要有結語" },
-                { role: 'user', content: `${storyInfo}` },
+                { role: 'user', content: `${storyObject.storyInfo}` },
             ],
             model: 'gpt-3.5-turbo',
         });
@@ -124,6 +124,18 @@ const AiStory = (storyInfo) => __awaiter(void 0, void 0, void 0, function* () {
         ]);
         // const end = performance.now();
         // console.log(`AiStory took ${end - start} milliseconds to complete`);
+        try {
+            (0, exports.ImproveStory)(completionTimeCheck.choices[0].message.content).then((fixedStory) => {
+                return fixedStory;
+            }).catch((e) => {
+                console.log(` ImproveStory success : ${e}`);
+                return "none";
+            });
+        }
+        catch (e) {
+            console.log(`ImproveStory fail : ${e}`);
+            return "none";
+        }
         return completionTimeCheck.choices[0].message.content || "";
     }
     catch (e) {
@@ -132,7 +144,26 @@ const AiStory = (storyInfo) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.AiStory = AiStory;
-// 
+//  修正故事
+const ImproveStory = (story) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const completion = yield openai.chat.completions.create({
+            messages: [
+                { role: 'system', content: "你的任務是把以下的故事變的順暢且更易於理解，同時去除多餘的字詞，並且加深感情，最後用兒童繪本的分段方式進行分段，每敘述完一張圖片就進行換行" },
+                { role: 'user', content: `${story}` },
+                { role: 'assistant', content: `嚴厲禁止加長故事篇幅，另外請在分段處加上\n\n` },
+            ],
+            model: 'gpt-3.5-turbo',
+        });
+        return completion.choices[0].message.content || "";
+    }
+    catch (e) {
+        console.log(`getStory Error: ${e}`);
+        return "none";
+    }
+});
+exports.ImproveStory = ImproveStory;
+// 睡前故事
 const AiSleep = (storyTheme) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const completion = yield openai.chat.completions.create({

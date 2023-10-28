@@ -15,21 +15,22 @@ export class StoryController extends Controller {
   public GenerStory(Request: Request, Response: Response) {
     let infoVal = Request.body;
     let storyInfo = Request.body.storyInfo;
-    console.log(`Request.body.storyInFo = ${Request.body.storyInfo}`)
-
+    console.log(`Request.body.storyInfo = ${Request.body.storyInfo}`)
+    // console.log(`infoVal= ${JSON.stringify(infoVal)}`)
     //生成故事
     AiStory(infoVal).then((storyTale: string) => {
       DataBase.SaveNewStory(storyTale, storyInfo)
-      // 回傳回前端Response.send({ tailStory: story });
+      Response.send(`story gener ans save success`);
     })
   }
-  public SleepStory(Request: Request, Response: Response) {
-    let theme = Request.body;
-    // console.log(infoVal)
-    AiSleep(theme).then((story: string | null) => {
-      Response.send({ tailStory: story });
-    })
-  }
+  
+  // public SleepStory(Request: Request, Response: Response) {
+  //   let theme = Request.body;
+  //   // console.log(infoVal)
+  //   AiSleep(theme).then((story: string | null) => {
+  //     Response.send({ tailStory: story });
+  //   })
+  // }
 
   //拿資料庫故事
   public GeyStoryFDB(Request: Request, Response: Response) {
