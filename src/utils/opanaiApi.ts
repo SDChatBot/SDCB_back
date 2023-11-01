@@ -7,13 +7,16 @@ const openai = new OpenAI({
 });
 
 //生成圖片的英文 prompt
-export const AiCreatePicPrompt = async (userMsg:string) => {
+export const AiCreatePicPrompt = async (userMsg: string) => {
     try {
         const completion = await openai.chat.completions.create({
             //把它回傳的物件樣是設定為: {prompt: .....} 的指令為: The returned format is {prompt: }
             messages: [
-                { role: 'system', content: `Whever I ask you in any language to draw an image, use English to respond.Only the english picture prmpt needs to be returned, and no redundant information needs to be returned. ` },
-                { role: 'user', content: `Generate an English description about the generated image of ${userMsg}. Just generate the image prompt for the description within {}, and there is no need to generate other redundant prompts.`},],
+                {
+                    role: 'system',
+                    content: `I want you to act as a prompt generator for Midjourney's artificial intelligence program. Your job is to provide detailed and creative descriptions that will inspire unique and interesting images from the AI. Keep in mind that the AI is capable of understanding a wide range of language and can interpret abstract concepts, so feel free to be as imaginative and descriptive as possible. For example, you could describe a scene from a futuristic city, or a surreal landscape filled with strange creatures. The more detailed and imaginative your description, the more interesting the resulting image will be. Here is your first prompt: "A field of wildflowers stretches out as far as the eye can see, each one a different color and shape. In the distance, a massive tree towers over the landscape, its branches reaching up to the sky like tentacles." Rule: make the prompt less than 100 words , write in English(US) language.`
+                },
+                { role: 'user', content: `Generated ${userMsg} Midjourney's prompt. Please write in English(US) language.` },],
             model: 'gpt-3.5-turbo',
         });
         // console.log(JSON.stringify(completion));
@@ -23,7 +26,7 @@ export const AiCreatePicPrompt = async (userMsg:string) => {
         console.log(`AiCreatePicPrompt error:${e}`)
         return "none";
     }
-} 
+}
 
 
 // //回答使用者
@@ -50,13 +53,13 @@ export const AiCreatePicPrompt = async (userMsg:string) => {
 // }
 
 //用ai 回答學生的問題
-export const AiAnswer = async (issue:string) => {
+export const AiAnswer = async (issue: string) => {
     //console.log(`issue = ${issue}`)
     try {
         const completion = await openai.chat.completions.create({
             messages: [
                 { role: 'system', content: `你是一位教師，請使用蘇格拉底對話來引導學生所提出的問題，不要直接回答學生的問題。` },
-                { role: 'assistant', content: `請使用第一人稱為"教師" 來回答問題`},
+                { role: 'assistant', content: `請使用第一人稱為"教師" 來回答問題` },
                 // { role: 'assistant', content: `你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。` },
                 { role: 'user', content: `${issue}` },],
             model: 'gpt-3.5-turbo',
@@ -68,9 +71,9 @@ export const AiAnswer = async (issue:string) => {
         console.log(`AiAnswer error:${e}`)
         return " ";
     }
-} 
+}
 
-interface infoValInterface{
+interface infoValInterface {
     eduStageInfo: String,
     eduClassInfo: String,
 }
@@ -81,8 +84,8 @@ export const AiStoryStudy = async (infoVal: infoValInterface) => {
     try {
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文，並根據劇情進行分段`},
-                { role: 'user', content: `幫我生成一篇文章其內容關於:${ infoVal.eduStageInfo }${ infoVal.eduClassInfo }、加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },],
+                { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文，並根據劇情進行分段` },
+                { role: 'user', content: `幫我生成一篇文章其內容關於:${infoVal.eduStageInfo}${infoVal.eduClassInfo}、加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },],
             model: 'gpt-3.5-turbo',
         });
         //console.log('Story Generated')
@@ -92,25 +95,25 @@ export const AiStoryStudy = async (infoVal: infoValInterface) => {
         console.log(`AiStory error:${e}`)
         return "none";
     }
-} 
-interface storyObject{
-    storyInfo?:string;
+}
+interface storyObject {
+    storyInfo?: string;
 }
 
-//正式使用版本(生故事)
-export const AiStory = async (storyObject: storyObject):Promise<string> => {
+//(第一次)正式使用版本(生故事)
+export const AiStory = async (storyObject: storyObject): Promise<string> => {
     const timeout = 80000;
     //const start = performance.now();
     try {
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'system', content: "你是一位兒童繪本專家，你的工作就是說出指定主題的故事，目標受眾是三至五歲的兒童" },
-                { role: 'assistant', content: "故事字數必須在80字以下，允許20字誤差，其他多餘的話請全部省略，故事要是兒童能輕易理解的，不要有過多不必要的修飾詞，故事內容中的中文字請用繁體中文，故事要盡可能符合現實常理，只要說出故事就好，不要有結語" },
-                { role: 'user', content: `${storyObject.storyInfo}` },
+                { role: 'system', content: `你是一位兒童繪本專家，你的工作就是說出指定主題的故事，目標受眾是三至五歲的兒童` },
+                { role: 'assistant', content: `你現在的角色是一位專業的兒童讀物作家，請你幫我輸入的訊息內容，加上一個能讓孩子學習到的故事主旨。最後生成一篇給3~5歲童讀的zh-Tw繁體中文繪本讀物故事內容給我。回答的內容僅zh-Tw繁體中文撰寫的繪本故事內容。排除故事標題、總結和其他與故事無關的訊息。` },
+                { role: 'user', content: `幫我生成以 ${storyObject.storyInfo} 為故事主題的繪本故事` },
             ],
             model: 'gpt-3.5-turbo',
         });
-        const completionTimeCheck:any = await Promise.race([
+        const completionTimeCheck: any = await Promise.race([
             completion,
             new Promise((_, reject) =>
                 setTimeout(() => reject(new Error('AiStory timeout')), timeout)
@@ -119,14 +122,14 @@ export const AiStory = async (storyObject: storyObject):Promise<string> => {
         // const end = performance.now();
         // console.log(`AiStory took ${end - start} milliseconds to complete`);
 
-        try{
-            ImproveStory(completionTimeCheck.choices[0].message.content).then((fixedStory)=>{
+        try {
+            ImproveStory(completionTimeCheck.choices[0].message.content).then((fixedStory) => {
                 return fixedStory;
-            }).catch((e)=>{
+            }).catch((e) => {
                 console.log(` ImproveStory success : ${e}`);
                 return "none";
             })
-        }catch(e){
+        } catch (e) {
             console.log(`ImproveStory fail : ${e}`)
             return "none";
         }
@@ -137,14 +140,14 @@ export const AiStory = async (storyObject: storyObject):Promise<string> => {
     }
 };
 
-//  修正故事
+//  (第二次)修正故事
 export const ImproveStory = async (story: string) => {
     try {
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'system', content: "你的任務是把以下的故事變的順暢且更易於理解，同時去除多餘的字詞，並且加深感情，最後用兒童繪本的分段方式進行分段，每敘述完一張圖片就進行換行" },
+                { role: 'system', content: "你的任務是把我傳給你的故事內容改成順暢、帶有口語情感的逐字稿，同時去除多餘的字詞，僅需保留故事內容。檢查zh-Tw 繁體中文撰寫。最後用兒童繪本的分段方式進行分段，每敘述完一張圖片就進行換行" },
                 { role: 'user', content: `${story}` },
-                { role: 'assistant', content: `嚴厲禁止加長故事篇幅，另外請在分段處加上\n\n` },
+                { role: 'assistant', content: `嚴厲禁止加長故事篇幅，另外請在分段處加上\n\n，最後回傳給我用zh-Tw繁體中文的故事內容逐字稿` },
             ],
             model: 'gpt-3.5-turbo',
         });
