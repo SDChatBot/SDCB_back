@@ -1,6 +1,6 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
-import { AiStory, AiSleep } from "../utils/opanaiApi";
+import { AiStory} from "../utils/opanaiApi";
 import { DataBase } from "../utils/DataBase";
 
 export class StoryController extends Controller {
@@ -23,14 +23,6 @@ export class StoryController extends Controller {
       Response.send(`story gener ans save success`);
     })
   }
-  
-  // public SleepStory(Request: Request, Response: Response) {
-  //   let theme = Request.body;
-  //   // console.log(infoVal)
-  //   AiSleep(theme).then((story: string | null) => {
-  //     Response.send({ tailStory: story });
-  //   })
-  // }
 
   //拿資料庫故事
   public GeyStoryFDB(Request: Request, Response: Response) {

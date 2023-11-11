@@ -29,30 +29,7 @@ export const AiCreatePicPrompt = async (userMsg: string) => {
 }
 
 
-// //回答使用者
-// export const AiAnswer = async (userMsg: string) => {
-//     try {
-//         const completion = await openai.chat.completions.create({
-//             messages: [
-//                 { role: 'assistant', content: `你現在的角色為一位國小美術老師，我是你的學生，我會告訴你我的創作想法。請你用100字上下，活潑，輕鬆的語氣誇獎我的想法或是建議我怎麼去改善我的想法。` },
-//                 { role: 'user', content: `${userMsg}` },],
-//             model: 'gpt-3.5-turbo',
-//         });
-//         //console.log(JSON.stringify(completion));
-//         //console.log(completion.choices[0].message.content);
-//         return completion.choices[0].message.content;
-//     } catch (e) {
-//         //console.log(`AiAnswer error:${e}`)
-//         return "none";
-//     }
-// } 
-
-// let info = {
-//     eduStage: '國小',
-//     eduClass: '數學',
-// }
-
-//用ai 回答學生的問題
+//用ai 回答學生的問題(這個用在chatroom裡面)
 export const AiAnswer = async (issue: string) => {
     //console.log(`issue = ${issue}`)
     try {
@@ -73,34 +50,11 @@ export const AiAnswer = async (issue: string) => {
     }
 }
 
-interface infoValInterface {
-    eduStageInfo: String,
-    eduClassInfo: String,
-}
-
-//ai故事生成(學習用)
-export const AiStoryStudy = async (infoVal: infoValInterface) => {
-    //console.log(`infoval = ${JSON.stringify(infoVal)}`)
-    try {
-        const completion = await openai.chat.completions.create({
-            messages: [
-                { role: 'assistant', content: `是一位很有想法的故事作家，請幫我生成大約100字寫一篇重生文，並根據劇情進行分段` },
-                { role: 'user', content: `幫我生成一篇文章其內容關於:${infoVal.eduStageInfo}${infoVal.eduClassInfo}、加減乘除的奇幻小說故事。請幫我在故事中安差關於加減乘除的知識，如果可以，在想出一個需要用到排列組合的情境題` },],
-            model: 'gpt-3.5-turbo',
-        });
-        //console.log('Story Generated')
-        //console.log(JSON.stringify(completion));
-        return completion.choices[0].message.content;
-    } catch (e) {
-        console.log(`AiStory error:${e}`)
-        return "none";
-    }
-}
 interface storyObject {
     storyInfo?: string;
 }
 
-//(第一次)正式使用版本(生故事)
+//(第一次)正式使用版本(生故事)(留)
 export const AiStory = async (storyObject: storyObject): Promise<string> => {
     const timeout = 80000;
     //const start = performance.now();
@@ -154,25 +108,6 @@ export const ImproveStory = async (story: string) => {
         return completion.choices[0].message.content || "";
     } catch (e) {
         console.log(`getStory Error: ${e}`);
-        return "none";
-    }
-}
-
-
-// 睡前故事
-export const AiSleep = async (storyTheme: string) => {
-    try {
-        const completion = await openai.chat.completions.create({
-            messages: [
-                { role: 'assistant', content: `你現在的角色是一位是一位父母，而我是你的小孩，請跟我講一個生動、從來沒有人說過的睡前故事，要大約800~1000字` },
-                { role: 'user', content: `請跟我講一個關於"${storyTheme}" 的故事` },],
-            model: 'gpt-3.5-turbo',
-        });
-        //console.log(JSON.stringify(completion));
-        //console.log(completion.choices[0].message.content);
-        return completion.choices[0].message.content;
-    } catch (e) {
-        //console.log(`AiSleep error:${e}`)
         return "none";
     }
 }

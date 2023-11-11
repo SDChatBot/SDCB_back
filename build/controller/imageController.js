@@ -13,6 +13,7 @@ class ImageController extends Controller_1.Controller {
     test(Request, Response) {
         Response.send(`Hello imageRoute`);
     }
+    //這邊之後會改，改成從本地端拿圖片
     getImage(Request, Response) {
         const imageData = Request.body;
         // console.log(`imageData = ${JSON.stringify(imageData)}`);
@@ -43,6 +44,7 @@ class ImageController extends Controller_1.Controller {
             Response.status(500).send('/image post run wrong ');
         }
     }
+    //拿圖片的prompt
     getimageprmopt(request, response) {
         const imageData = request.body;
         let payload = {
@@ -75,6 +77,7 @@ class ImageController extends Controller_1.Controller {
             response.status(500).send('/image post run wrong ');
         }
     }
+    //拿本地圖片
     getLocalpic(request, response) {
         const filename = `${request.query.picnum}.png`; // 文件名
         const filePath = path_1.default.join(`D:/NewCodeFile/SDCB/GitHub_SDCB/demobooks`, `${request.query.story_id}`, filename); // 文件的绝对路径
@@ -89,6 +92,7 @@ class ImageController extends Controller_1.Controller {
             }
         });
     }
+    //從本地拿取故事的聲音
     getStoryVoice(request, response) {
         const filename = `${request.query.picnum}.mp3`; // 文件名
         const filePath = path_1.default.join(`D:/NewCodeFile/SDCB/GitHub_SDCB/voices`, `${request.query.story_id}`, filename); // 文件的绝对路径
