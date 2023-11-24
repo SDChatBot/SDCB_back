@@ -6,10 +6,9 @@ const opanaiApi_1 = require("../utils/opanaiApi");
 const DataBase_1 = require("../utils/DataBase");
 class StoryController extends Controller_1.Controller {
     test(Request, Response) {
-        //Response.send(`this is STORY get, use post in this url is FINE !`);
-        DataBase_1.DataBase.getStoryById("653b89626620dbe005b01bc6").then((storytail) => {
-            Response.send(storytail);
-        });
+        Response.send(`this is STORY get, use post in this url is FINE !`);
+        // DataBase.getStoryById("653b89626620dbe005b01bc6").then((storytail)=>{
+        // })
     }
     GenerStory(Request, Response) {
         let infoVal = Request.body;
@@ -28,6 +27,20 @@ class StoryController extends Controller_1.Controller {
         DataBase_1.DataBase.getStoryById(data).then((storytail) => {
             // console.log(`storytail = ${storytail}`)
             Response.send(storytail);
+        });
+    }
+    //拿最新創建的故事id
+    GetNewestStoryID(Request, Response) {
+        DataBase_1.DataBase.getNewestId().then((newestId) => {
+            Response.send(newestId);
+        }).catch((e) => {
+            console.log(` GetNewestStoryID fail :${e}`);
+        });
+    }
+    //拿整理好的books (storyId: string; storyName: string;)
+    GetBooks(Request, Response) {
+        DataBase_1.DataBase.getBooks().then((books) => {
+            Response.send(JSON.stringify(books));
         });
     }
 }

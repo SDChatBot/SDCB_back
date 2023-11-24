@@ -6,4 +6,4 @@ const storySchema = new Schema<storyInterface>({
    storyInfo: { type: String, required: true },
 });
 
-export const storyModel = model<storyInterface>('storyModel', storySchema);
+export const storyModel = model<storyInterface>('stories', storySchema);

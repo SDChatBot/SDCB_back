@@ -4,6 +4,7 @@ import { userModel } from "../models/userModel";
 import { myfavoriteModel } from "../models/myfavoriteModel";
 import { storyModel } from "../models/storyModel";
 import { Client } from "socket.io/dist/client";
+import {books} from "../interfaces/books";
 
 export class DataBase{
     DB!: typeof import("mongoose");
@@ -56,6 +57,35 @@ export class DataBase{
             console.log(`getStoryById fail, ${e}`)
         }
     }
+
+    static async getNewestId():Promise<object | any>{
+        try{
+            let array= await storyModel.find({})
+            // console.log(`array all = ${array[array.length-1]._id}`)
+            return array[array.length - 1]._id;
+        }catch(e){
+            console.log(`getNewestI in db is error:${e}`);
+        }
+    }
+
+    static async getBooks(): Promise<object | any> {
+        try {
+            let array = await storyModel.find({})
+            let booksArray: books[] = [];
+            for(let i=0; i< array.length; i++){
+                let booksReady: books = {
+                    storyId: `${array[i]._id}`,
+                    storyName: array[i].storyInfo,
+                }
+                booksArray.push(booksReady);
+            }
+            // console.log(`booksArray = ${JSON.stringify(booksArray)}`)
+            return booksArray;
+        } catch (e) {
+            console.log(`getNewestI in db is error:${e}`);
+        }
+    }
+
 
     // static async SaveNewUser(name:string, password:string): Promise<any>{
     //     try{

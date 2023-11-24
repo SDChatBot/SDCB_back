@@ -1,14 +1,14 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
-import { AiStory} from "../utils/opanaiApi";
+import { AiStory } from "../utils/opanaiApi";
 import { DataBase } from "../utils/DataBase";
+import { books } from "../interfaces/books";
 
 export class StoryController extends Controller {
   public test(Request: Request, Response: Response) {
-    //Response.send(`this is STORY get, use post in this url is FINE !`);
-    DataBase.getStoryById("653b89626620dbe005b01bc6").then((storytail)=>{
-      Response.send(storytail)
-    })
+    Response.send(`this is STORY get, use post in this url is FINE !`);
+    // DataBase.getStoryById("653b89626620dbe005b01bc6").then((storytail)=>{
+    // })
   }
 
 
@@ -30,6 +30,22 @@ export class StoryController extends Controller {
     DataBase.getStoryById(data as string).then((storytail) => {
       // console.log(`storytail = ${storytail}`)
       Response.send(storytail)
+    })
+  }
+
+  //拿最新創建的故事id
+  public GetNewestStoryID(Request: Request, Response: Response) {
+    DataBase.getNewestId().then((newestId: string) => {
+      Response.send(newestId);
+    }).catch((e) => {
+      console.log(` GetNewestStoryID fail :${e}`);
+    })
+  }
+
+  //拿整理好的books (storyId: string; storyName: string;)
+  public GetBooks(Request:Request, Response:Response){
+    DataBase.getBooks().then((books:books[])=>{
+      Response.send(JSON.stringify(books));
     })
   }
 

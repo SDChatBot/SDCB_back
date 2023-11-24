@@ -70,5 +70,37 @@ class DataBase {
             }
         });
     }
+    static getNewestId() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let array = yield storyModel_1.storyModel.find({});
+                // console.log(`array all = ${array[array.length-1]._id}`)
+                return array[array.length - 1]._id;
+            }
+            catch (e) {
+                console.log(`getNewestI in db is error:${e}`);
+            }
+        });
+    }
+    static getBooks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let array = yield storyModel_1.storyModel.find({});
+                let booksArray = [];
+                for (let i = 0; i < array.length; i++) {
+                    let booksReady = {
+                        storyId: `${array[i]._id}`,
+                        storyName: array[i].storyInfo,
+                    };
+                    booksArray.push(booksReady);
+                }
+                // console.log(`booksArray = ${JSON.stringify(booksArray)}`)
+                return booksArray;
+            }
+            catch (e) {
+                console.log(`getNewestI in db is error:${e}`);
+            }
+        });
+    }
 }
 exports.DataBase = DataBase;

@@ -6,4 +6,4 @@ const storySchema = new mongoose_1.Schema({
     storyTale: { type: String, required: true },
     storyInfo: { type: String, required: true },
 });
-exports.storyModel = (0, mongoose_1.model)('storyModel', storySchema);
+exports.storyModel = (0, mongoose_1.model)('stories', storySchema);
