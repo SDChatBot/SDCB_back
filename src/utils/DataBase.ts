@@ -74,8 +74,8 @@ export class DataBase{
             let booksArray: books[] = [];
             for(let i=0; i< array.length; i++){
                 let booksReady: books = {
-                    storyId: `${array[i]._id}`,
                     storyName: array[i].storyInfo,
+                    storyId: `${array[i]._id}`,
                 }
                 booksArray.push(booksReady);
             }

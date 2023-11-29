@@ -49,4 +49,6 @@ export class StoryController extends Controller {
     })
   }
 
+  // 拿故事列表(全部)
+
 }
