@@ -20,6 +20,8 @@ export class ImageController extends Controller {
         let payload = {
             "prompt": imageData.imagePrompt,
             "seed": -1,
+            "width": 1920,
+            "height": 1080,
             "cfg_scale": 7,
             "step": 2,
             "enable_hr": false,
@@ -111,6 +113,4 @@ export class ImageController extends Controller {
             }
         });
     }
-
-
 }

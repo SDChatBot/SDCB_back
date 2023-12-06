@@ -8,8 +8,9 @@ export class PromptController extends Controller{
         Response.send(`this is prompt get, use post in this url is FINE !`);
     }
     public GenerPicPrompt(Request:Request, Response:Response){
+        console.log(`body = ${JSON.stringify(Request.body)}`);
         const userPrompt: string = Request.body.prompt || `a Hotdog`;
-        // console.log(`userPrompt = ${userPrompt}`)
+        console.log(`userPrompt = ${userPrompt}`)
         AiCreatePicPrompt(userPrompt).then((prompt: string | null) => {
             //console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });

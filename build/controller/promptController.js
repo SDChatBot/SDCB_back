@@ -8,8 +8,9 @@ class PromptController extends Controller_1.Controller {
         Response.send(`this is prompt get, use post in this url is FINE !`);
     }
     GenerPicPrompt(Request, Response) {
+        console.log(`body = ${JSON.stringify(Request.body)}`);
         const userPrompt = Request.body.prompt || `a Hotdog`;
-        // console.log(`userPrompt = ${userPrompt}`)
+        console.log(`userPrompt = ${userPrompt}`);
         (0, opanaiApi_1.AiCreatePicPrompt)(userPrompt).then((prompt) => {
             //console.log(`pic prompt = ${prompt}`);
             Response.send({ imagePrompt: `${prompt}` });

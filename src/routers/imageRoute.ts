@@ -17,7 +17,6 @@ export class ImageRoute extends Route{
         this.router.post(`${this.url}/image`, this.Controller.getImage);
         // this.router.post(`${this.url}/postimageprompt`, this.Controller.getimageprmopt);
         this.router.get(`${this.url}/demobpic`, this.Controller.getLocalpic);
-
         this.router.get(`${this.url}/storyvoice`, this.Controller.getStoryVoice);
     }
 }

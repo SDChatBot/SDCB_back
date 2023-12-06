@@ -27,7 +27,8 @@ const AiCreatePicPrompt = (userMsg) => __awaiter(void 0, void 0, void 0, functio
             messages: [
                 {
                     role: 'system',
-                    content: `I want you to act as a prompt generator for Midjourney's artificial intelligence program. Your job is to provide detailed and creative descriptions that will inspire unique and interesting images from the AI. Keep in mind that the AI is capable of understanding a wide range of language and can interpret abstract concepts, so feel free to be as imaginative and descriptive as possible. For example, you could describe a scene from a futuristic city, or a surreal landscape filled with strange creatures. The more detailed and imaginative your description, the more interesting the resulting image will be. Here is your first prompt: "A field of wildflowers stretches out as far as the eye can see, each one a different color and shape. In the distance, a massive tree towers over the landscape, its branches reaching up to the sky like tentacles." Rule: make the prompt less than 100 words , write in English(US) language.`
+                    //content: `I want you to act as a prompt generator for Midjourney's artificial intelligence program. Your job is to provide detailed and creative descriptions that will inspire unique and interesting images from the AI. Keep in mind that the AI is capable of understanding a wide range of language and can interpret abstract concepts, so feel free to be as imaginative and descriptive as possible. For example, you could describe a scene from a futuristic city, or a surreal landscape filled with strange creatures. The more detailed and imaginative your description, the more interesting the resulting image will be. Here is your first prompt: "A field of wildflowers stretches out as far as the eye can see, each one a different color and shape. In the distance, a massive tree towers over the landscape, its branches reaching up to the sky like tentacles." Rule: make the prompt less than 100 words , write in English(US) language.`
+                    content: `Please generate a midjourney image prompt:"${userMsg}"`,
                 },
                 { role: 'user', content: `Generated ${userMsg} Midjourney's prompt. Please write in English(US) language.` },
             ],
@@ -86,6 +87,7 @@ const AiStory = (storyObject) => __awaiter(void 0, void 0, void 0, function* () 
         // const end = performance.now();
         // console.log(`AiStory took ${end - start} milliseconds to complete`);
         try {
+            //二次修正在這邊
             (0, exports.ImproveStory)(completionTimeCheck.choices[0].message.content).then((fixedStory) => {
                 return fixedStory;
             }).catch((e) => {
@@ -105,7 +107,7 @@ const AiStory = (storyObject) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.AiStory = AiStory;
-//  (第二次)修正故事
+//  (第二次)修正故事(留，第一次修正中有用到)
 const ImproveStory = (story) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const completion = yield openai.chat.completions.create({
