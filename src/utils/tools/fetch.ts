@@ -20,3 +20,21 @@ export const fetchImage = async (payload:Object) => {
         return `Error => no return `;
     }
 };
+
+//http://163.13.201.153:8188/prompt
+const useComfy3D = `http://163.13.201.153:8188/prompt`
+export const fetchComfy = async(prompt:any) => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prompt)
+    };
+    try {
+        const response = await fetch(`${useComfy3D}`, requestOptions);
+        const data = await response.json();
+        return data.images; 
+    } catch (error) {
+        console.log(`Error fetchImage response is ${error}`);
+        return `Error => no return `;
+    }
+}

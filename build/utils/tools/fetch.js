@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchImage = void 0;
+exports.fetchComfy = exports.fetchImage = void 0;
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 let imagesBase64;
 //生成圖片
@@ -30,3 +30,22 @@ const fetchImage = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.fetchImage = fetchImage;
+//http://163.13.201.153:8188/prompt
+const useComfy3D = `http://163.13.201.153:8188/prompt`;
+const fetchComfy = (prompt) => __awaiter(void 0, void 0, void 0, function* () {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prompt)
+    };
+    try {
+        const response = yield fetch(`${useComfy3D}`, requestOptions);
+        const data = yield response.json();
+        return data.images;
+    }
+    catch (error) {
+        console.log(`Error fetchImage response is ${error}`);
+        return `Error => no return `;
+    }
+});
+exports.fetchComfy = fetchComfy;
