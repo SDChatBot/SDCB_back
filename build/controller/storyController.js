@@ -4,6 +4,7 @@ exports.StoryController = void 0;
 const Controller_1 = require("../interfaces/Controller");
 const opanaiApi_1 = require("../utils/opanaiApi");
 const DataBase_1 = require("../utils/DataBase");
+const LLMapi_1 = require("../utils/LLMapi");
 class StoryController extends Controller_1.Controller {
     test(Request, Response) {
         Response.send(`this is STORY get, use post in this url is FINE !`);
@@ -41,6 +42,15 @@ class StoryController extends Controller_1.Controller {
     GetBooks(Request, Response) {
         DataBase_1.DataBase.getBooks().then((books) => {
             Response.send(JSON.stringify(books));
+        });
+    }
+    // 拿故事列表(全部)
+    //llm generation story
+    llmgenStory(Request, Response) {
+        (0, LLMapi_1.LLMGenStory)().then(response => {
+            Response.send(response);
+        }).catch(e => {
+            console.error(`llmgenStory fail: ${e}`);
         });
     }
 }

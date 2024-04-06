@@ -1,8 +1,9 @@
 import { Controller } from "../interfaces/Controller";
-import { Request, Response } from "express";
+import { Request, Response, response } from "express";
 import { AiStory } from "../utils/opanaiApi";
 import { DataBase } from "../utils/DataBase";
 import { books } from "../interfaces/books";
+import { LLMGenStory } from "../utils/LLMapi";
 
 export class StoryController extends Controller {
   public test(Request: Request, Response: Response) {
@@ -50,5 +51,16 @@ export class StoryController extends Controller {
   }
 
   // 拿故事列表(全部)
+
+
+
+  //llm generation story
+  public llmgenStory(Request:Request, Response:Response){
+    LLMGenStory().then(response=>{
+      Response.send(response);
+    }).catch(e=>{
+      console.error(`llmgenStory fail: ${e}`);
+    });
+  }
 
 }

@@ -18,5 +18,7 @@ export class StoryRoute extends Route{
       this.router.get(`${this.url}/getbooks`, this.Controller.GetBooks);
       this.router.get(`${this.url}/getstoryfdb`, this.Controller.GeyStoryFDB);
       // this.router.post(`${this.url}/sleep`, this.Controller.SleepStory);
+      this.router.post(`${this.url}/llm/genstory`, this.Controller.llmgenStory);
+      //http://localhost:7943/story/llm/genstory
    }
 }
