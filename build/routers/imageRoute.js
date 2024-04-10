@@ -11,9 +11,9 @@ class ImageRoute extends Route_1.Route {
         this.setRoutes();
     }
     //http://localhost:7943/image
-    //http://192.168.1.26/image
     setRoutes() {
         this.router.get(`${this.url}/image`, this.Controller.test);
+        this.router.post(`${this.url}/image/prompt`, this.Controller.LLMGenImgPrompt);
         this.router.post(`${this.url}/image`, this.Controller.getImage);
         // this.router.post(`${this.url}/postimageprompt`, this.Controller.getimageprmopt);
         this.router.get(`${this.url}/demobpic`, this.Controller.getLocalpic);

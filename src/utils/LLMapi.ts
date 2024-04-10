@@ -1,6 +1,3 @@
-import { response } from "express";
-import { ConsoleLoggingListener } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/ConsoleLoggingListener";
-
 const LLM_generate_api = `http://163.13.201.153:11434/api/generate`; //generation only, no chatting function
 const LLM_chat_api = `http://163.13.201.153:11434/api/chat`; //has chatting function
 
