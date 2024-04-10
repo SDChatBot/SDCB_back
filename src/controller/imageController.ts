@@ -7,7 +7,7 @@ import { DataBase } from "../utils/DataBase";
 import fs from 'fs';
 import path from 'path';
 
-import { GenImg_prompt_1st_2nd } from "../utils/tools/LLM/fetch_images";
+import { GenImg_prompt_1st_2nd } from "../utils/tools/images/LLM_fetch_images";
 
 export class ImageController extends Controller {
     public test(Request:Request, Response:Response){
