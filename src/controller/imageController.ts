@@ -36,7 +36,7 @@ export class ImageController extends Controller {
         let story_1st:string = ""
         let payload1 = {
             "model": "codegemma:latest",
-            "prompt": `請你用繁體中文幫我生成一篇關於${Request.body.imagePrompt}的適合小孩子的模型，請你以以下格式回答我的問題: {故事內容}`,
+            "prompt": `請你用繁體中文幫我生成一篇關於${Request.body.imagePrompt}的適合小孩子的故事，請你以以下格式回答我的問題: {故事內容}`,
             "stream": false,
             "format": "json"
         }
@@ -44,14 +44,14 @@ export class ImageController extends Controller {
             // console.log(`response = ${response}`);
             story_1st = response;
         }).catch(error => {
-            console.error(`Error in test2: ${error}`);
+            console.error(`Error in GenImg_prompt_1st_2nd 1: ${error}`);
             Response.status(500).send('Internal Server Error');
         });
 
         // 第二次生成
         let payload2 = {
             "model": "codegemma:latest",
-            "prompt": `請你幫我檢視並修改以下故事，確保他是和小朋友: ${story_1st}`,
+            "prompt": `請你幫我檢視並修改以下故事，確保他是適合小朋友的故事: ${story_1st}`,
             "stream": false,
             "format": "json"
         }
@@ -60,86 +60,92 @@ export class ImageController extends Controller {
             if(story_1st !="")
                 Response.send(response);
         }).catch(error => {
-            console.error(`Error in test2: ${error}`);
+            console.error(`Error in GenImg_prompt_1st_2nd 2: ${error}`);
             Response.status(500).send('Internal Server Error');
         });
     }
 
+    /** 使用SD 生成圖片
+     * @param {string} Request.body.imagePrompt 想生成的故事內容
+     * @param {string} Response 圖片生成完畢後先暫時不返回東西，僅返回success
+     * @todo 修改使其返回圖片的 base64 編碼
+     * url: http://localhost:7943/image
+     * Request body 
+     * {
+            "imagePrompt":"喜歡狗狗，想要生成關於狗狗的故事"
+       }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //這邊之後會改，改成從本地端拿圖片
-    public getImage(Request:Request, Response:Response){
+     * 獲得sd model list: get, http://163.13.201.153:7860/sdapi/v1/sd-models
+     */
+    public async getImage(Request: Request, Response: Response) {
         const imageData = Request.body;
-        // console.log(`imageData = ${JSON.stringify(imageData)}`);
+        console.log(`imageData = ${JSON.stringify(imageData)}`);
         let payload = {
             "prompt": imageData.imagePrompt,
             "seed": -1,
             "width": 1920,
             "height": 1080,
             "cfg_scale": 7,
-            "step": 2,
+            "step": 8,
             "enable_hr": false,
             "denoising_strength": 100,
             "restore_faces": false,
+            "override_settings" : {
+                "sd_model_checkpoint": "v1-5-pruned-emaonly.ckpt"
+            }
         }
         try {
-            fetchImage(payload).then((val) => { //val就是image base64 code
-                //console.log(val)
-                // let imageSaveData = `${val}`
-                //console.log(`imageSaveData = ${imageSaveData}`)
-                // DataBase.SaveNewImage(imageSaveData);
-                // Response.json(val);
-                Response.send(val)
+            fetchImage(payload).then((val) => {
+                Response.send("success")
             }).catch((e) => {
-                console.log(`run time error`)
+                console.error(`run time error`)
             })
-            //res.send(fetchImage());
         } catch (e) {
             console.log(`fetchImage fail: ${e}`)
             Response.status(500).send('/image post run wrong ');
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //拿圖片的prompt
     public getimageprmopt(request: Request, response: Response) {

@@ -3,7 +3,7 @@ import { imagesInterface } from '../../interfaces/imagesInterface';
 const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
 
 let imagesBase64:string[]
-//生成圖片
+//生成圖片(stable diffusion)
 export const fetchImage = async (payload:Object) => {
     const requestOptions = {
         method: 'POST',
