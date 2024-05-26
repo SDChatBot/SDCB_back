@@ -2,7 +2,8 @@ import { Controller } from "../interfaces/Controller";
 import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
 import { books } from "../interfaces/books";
-import { LLMGenStory_1st_2nd } from "../utils/LLMapi";
+import { LLMGenStory_1st_2nd } from "../utils/tools/LLMapi";
+import { GenImg_prompt_En_array } from "../utils/tools/images/LLM_fetch_images";
 
 
 export class StoryController extends Controller {
@@ -36,13 +37,22 @@ export class StoryController extends Controller {
   }
 
 
-
   public async LLMGenStory(Request: Request, Response: Response) {
     let storyInfo: string = Request.body.storyInfo;
-    
-    const generateStory = async (storyInfo: string): Promise<void> => {
-      await LLMGenStory_1st_2nd(storyInfo, Response);
+    let generated_story_array: string[] | undefined;
+
+    // TODO 修改這裡
+    const GenImagePrompt = async (generated_story_array: string[]): Promise<void> => {
+      if (generated_story_array) {
+        await GenImg_prompt_En_array(generated_story_array, Response);
+      }
     };
+
+    const generateStory = async (storyInfo: string): Promise<void> => {
+      generated_story_array = await LLMGenStory_1st_2nd(storyInfo, Response);
+      await GenImagePrompt(generated_story_array || []);
+    };
+
 
     const promises = [
       generateStory(storyInfo),
