@@ -37,3 +37,5 @@ export const fetchImage = async (payload:Object) => {
 //         return `Error => no return `;
 //     }
 // }
+
+

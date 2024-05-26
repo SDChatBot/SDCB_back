@@ -27,40 +27,34 @@ export class ImageController extends Controller {
      * method: POST
      * body-raw-json:
      *  {
-            "imagePrompt":"會變身的狗狗"
+            "storyInfo":"會變身的狗狗"
         }
     */
     public async LLMGenImgPrompt(Request:Request, Response:Response){
-        // console.log(`imageData = ${JSON.stringify(Request.body.imagePrompt)}`);
-        // 第一次生成
-        let story_1st:string = ""
+        let story_1st: string = "";
         let payload1 = {
-            "model": "codegemma:latest",
-            "prompt": `請你用繁體中文幫我生成一篇關於${Request.body.imagePrompt}的適合小孩子的故事，請你以以下格式回答我的問題: {故事內容}`,
-            "stream": false,
-            "format": "json"
-        }
+            "message": `用繁體中文幫我生成一篇關於${Request.body.storyInfo}的適合小孩子的故事，請你以以下格式回答我的問題: {故事內容}`,
+            "mode": "chat"
+        };
         GenImg_prompt_1st_2nd(payload1).then(response => {
-            // console.log(`response = ${response}`);
             story_1st = response;
+            // console.log(`story_1st = ${story_1st}`);
+
+            // 第二次生成
+            let payload2 = {
+                "message": `幫我檢視並修改以下故事，使用生動、活潑、有趣、的口語重新描述一遍故事，並確保他是適合小朋友的故事，使用繁體中文回應所有答覆。以下是我要修改的故事: ${story_1st}`,
+                "mode": "chat"
+            };
+            GenImg_prompt_1st_2nd(payload2).then(response => {
+                // console.log(`response2 = ${response}`);
+                if (story_1st !== "")
+                    Response.send(`{ "storyPrompt": ${response} }`);
+            }).catch(error => {
+                console.error(`Error in GenImg_prompt_1st_2nd 2: ${error}`);
+                Response.status(500).send('Internal Server Error');
+            });
         }).catch(error => {
             console.error(`Error in GenImg_prompt_1st_2nd 1: ${error}`);
-            Response.status(500).send('Internal Server Error');
-        });
-
-        // 第二次生成
-        let payload2 = {
-            "model": "codegemma:latest",
-            "prompt": `請你幫我檢視並修改以下故事，確保他是適合小朋友的故事: ${story_1st}`,
-            "stream": false,
-            "format": "json"
-        }
-        GenImg_prompt_1st_2nd(payload2).then(response => {
-            // console.log(`response = ${response}`);
-            if(story_1st !="")
-                Response.send(response);
-        }).catch(error => {
-            console.error(`Error in GenImg_prompt_1st_2nd 2: ${error}`);
             Response.status(500).send('Internal Server Error');
         });
     }
@@ -105,42 +99,6 @@ export class ImageController extends Controller {
             Response.status(500).send('/image post run wrong ');
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

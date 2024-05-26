@@ -34,17 +34,16 @@ export class DataBase{
         }
     }
 
-    static async SaveNewStory(storyTale: string, storyInfo: string):Promise<any>{
+    static async SaveNewStory(storyTale: string, storyInfo: string, res:any):Promise<any>{
         try{
             const story = new storyModel({
                 storyTale: storyTale,
-                storyInfo: storyInfo,
-                
+                storyInfo: storyInfo,                
             })
             console.log(`save newstory success`);
             await story.save();
         }catch(e){
-            console.log(`SaveNewStory fail, error:${e}`);
+            console.log(`SaveNewStory fail, error:${e}`);      
         }
     }
 

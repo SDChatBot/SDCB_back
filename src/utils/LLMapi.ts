@@ -1,62 +1,68 @@
-const LLM_generate_api = `http://163.13.201.157:11434/api/generate`; //generation only, no chatting function
-const LLM_chat_api = `http://163.13.201.157:11434/api/chat`; //has chatting function
-
-// 生成故事內容
-const aa = JSON.stringify({
-    "model": "Llama3-TAIDE-LX-8B-Chat-Alpha1.Q8_0.gguf:latest",
-    "prompt": ` PARAMETER num_keep 24
-                PARAMETER num_ctx 8192
-                PARAMETER system "你是一個來自台灣的AI助理，你的名字是TAIDE，樂於以台灣人的立場幫助使用者，會用繁體中文回答問題。如果你回答完畢的時候，請給我<|end|>"
-                PARAMETER temperature 0
-                PARAMETER prompt "請你幫我用200 個字生成一篇兒童睡前故事"
-                PARAMETER stop "||>"
-                PARAMETER stop "\nUser:"
-                PARAMETER stop "<|diff_marker|>"
-                PARAMETER stop "<|eot_id|>"
-                PARAMETER stop "<|start_header_id|>"
-                PARAMETER stop "<|end_header_id|>"
-                PARAMETER stop "<|reserved_special_token"
-                PARAMETER stop "<|end|>"
-                PARAMETER stop "|end|"
-                PARAMETER stop "｜end｜"
-                PARAMETER stop "< |\n"
-                PARAMETER stop "〈\n"
-
-                #TEMPLATE
-                {{ if .System }}<|start_header_id|>system<|end_header_id|>
-
-                {{ .System }}<|eot_id|>{{ end }}{{ if .Prompt }}<|start_header_id|>user<|end_header_id|>
-
-                {{ .Prompt }}<|eot_id|>{{ end }}<|start_header_id|>assistant<|end_header_id|>
-
-                {{ .Response }}<|eot_id|>{{ end }}<|start_header_id|>text:<|end_header_id|>
-
-                #EXAMPLE
-                system: 你現在是一位兒童故事專家。
-                prompt: 請你幫我用200 個字生成一篇兒童睡前故事。
-                response: {text:有一隻喜歡冒險的狗狗，它叫做汪奇，他最喜歡去森林冒險。}
-                `,
-    "stream": false,
-    "format": "json"
-  })
+import { DataBase } from "../utils/DataBase";
+import dotenv from 'dotenv';
+dotenv.config();
   
-
-export const LLMGenStory = async() =>{
+//向 LLM 送一次對話請求
+/**
+ * 
+ * @param {string Object} storyInfo 根據不同需求送入不同的對話json 就可以了 
+ * @returns 回傳LLM 生成的對話回應
+ * @example
+ * {
+        "message": `對話內容`,
+        "mode": "chat"
+ * }
+ */
+const LLMGenChat = async (storyInfo: Object): Promise<string> => {
     const requestOptions = {
         method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: aa,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer EV2ZYNX-DBVMRJ0-K8JYKME-36AQGKF',
+        },
+        body: JSON.stringify(storyInfo),
     };
     try {
-        const response = await fetch(LLM_generate_api, requestOptions); 
+        const response = await fetch(process.env.LLM_generate_api!, requestOptions);
         if (response.ok) {
-            const jsonResponse = await response.json();
-            console.log(`response: ${JSON.stringify(jsonResponse)}`);
-            return jsonResponse.response;
+            const story = await response.json();
+            return story.textResponse;
         } else {
             throw new Error('Request failed with status ' + response.status);
         }
     } catch (error) {
-        console.error(`LLMGenStory fail: ${error}`);
+        console.error(`LLMGenChat fail: ${error}`);
+        throw error;
+    }
+}
+
+/**
+ * 生成完整的故事內容(送了兩次請求，一次生成，一次修改)
+ * @param {string} storyInfo 想生成的故事主題 
+ * @param {Response} Response 回應status code，不回傳其他東西
+ */
+export const LLMGenStory_1st_2nd = async (storyInfo:string, Response:any) =>{
+    try {
+        // 第一次生成
+        let payload1:object = {
+            "message": `用繁體中文幫我生成一篇關於${storyInfo}的適合小孩子的故事，請你以以下格式回答我的問題: {故事內容}`,
+            "mode": "chat"
+        };
+        const story_1st = await LLMGenChat(payload1);
+        console.log(`story_1st success`);
+        // 第二次生成
+        let payload2 = {
+            "message": `幫我檢視並修改以下故事，使用生動、活潑、有趣、的口語重新描述一遍故事，並確保他是適合小朋友的故事，使用繁體中文回應所有答覆。以下是我要修改的故事: ${story_1st}`,
+            "mode": "chat"
+        };
+        const story_2nd:string = await LLMGenChat(payload2);
+        console.log(`story_2nd success`);
+        if (story_2nd !== "") {
+            // Response.send(`{ "storyPrompt": ${story_2nd} }`);
+            DataBase.SaveNewStory(storyInfo, story_2nd, Response);
+        }
+    } catch (error) {
+        console.error(`Error in LLMGenStory_1st_2nd: ${error}`);
+        Response.status(500).send('Internal Server Error');
     }
 }

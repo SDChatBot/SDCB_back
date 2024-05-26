@@ -1,28 +1,13 @@
 import { Controller } from "../interfaces/Controller";
-import { Request, Response, response } from "express";
-import { AiStory } from "../utils/opanaiApi";
+import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
 import { books } from "../interfaces/books";
-import { LLMGenStory } from "../utils/LLMapi";
+import { LLMGenStory_1st_2nd } from "../utils/LLMapi";
+
 
 export class StoryController extends Controller {
   public test(Request: Request, Response: Response) {
     Response.send(`this is STORY get, use post in this url is FINE !`);
-    // DataBase.getStoryById("653b89626620dbe005b01bc6").then((storytail)=>{
-    // })
-  }
-
-
-  public GenerStory(Request: Request, Response: Response) {
-    let infoVal = Request.body;
-    let storyInfo = Request.body.storyInfo;
-    console.log(`Request.body.storyInfo = ${Request.body.storyInfo}`)
-    // console.log(`infoVal= ${JSON.stringify(infoVal)}`)
-    //生成故事
-    AiStory(infoVal).then((storyTale: string) => {
-      DataBase.SaveNewStory(storyTale, storyInfo)
-      Response.send(`story gener ans save success`);
-    })
   }
 
   //拿資料庫故事
@@ -44,23 +29,37 @@ export class StoryController extends Controller {
   }
 
   //拿整理好的books (storyId: string; storyName: string;)
-  public GetBooks(Request:Request, Response:Response){
-    DataBase.getBooks().then((books:books[])=>{
+  public GetBooks(Request: Request, Response: Response) {
+    DataBase.getBooks().then((books: books[]) => {
       Response.send(JSON.stringify(books));
     })
   }
 
-  // 拿故事列表(全部)
 
 
+  public async LLMGenStory(Request: Request, Response: Response) {
+    let storyInfo: string = Request.body.storyInfo;
+    
+    const generateStory = async (storyInfo: string): Promise<void> => {
+      await LLMGenStory_1st_2nd(storyInfo, Response);
+    };
 
-  //llm generation story
-  public llmgenStory(Request:Request, Response:Response){
-    LLMGenStory().then(response=>{
-      Response.send(response);
-    }).catch(e=>{
-      console.error(`llmgenStory fail: ${e}`);
-    });
+    const promises = [
+      generateStory(storyInfo),
+      // 在這裡添加其他需要同步執行的異步操作
+    ];
+
+    try {
+      // 等待所有異步操作完成
+      await Promise.all(promises);
+      // 所有異步操作完成後，回傳成功的狀態碼
+      return Response.status(200).send('All operations have been completed successfully');
+    } catch (error) {
+      console.error(`Error in LLMGenStory: ${error}`);
+      return Response.status(500).send('Internal Server Error');
+    }
   }
+
+
 
 }
