@@ -86,18 +86,18 @@ export class DataBase{
     }
 
 
-    // static async SaveNewUser(name:string, password:string): Promise<any>{
-    //     try{
-    //         const user = new userModel({
-    //             userName: name,
-    //             userPassword: password,
-    //         });
-    //         // console.log(`save user success)
-    //         await user.save();
-    //     }catch(e){
-    //         console.log(`save user fail: ${e}`);
-    //     }
-    // }
+    static async SaveNewUser(name:string, password:string): Promise<any>{
+        try{
+            const user = new userModel({
+                userName: name,
+                userPassword: password,
+            });
+            // console.log(`save user success`)
+            await user.save();
+        }catch(e){
+            console.log(`save user fail: ${e}`);
+        }
+    }
 
     // static async SaveNewMyFavorite(Name: string, is_favorite: boolean, tag: string): Promise<any>{
     //     let addtime = new Date();
