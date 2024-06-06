@@ -1,10 +1,15 @@
 import dotenv from "dotenv";
+import { Timeout } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Timeout";
 dotenv.config();
 
 export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
+   const controller:AbortController = new AbortController();
+   const timeoutId = setTimeout(()=>controller.abort(), 15000);
+
    let payload: object = {
-      "message": `
-            I want you to help me make requests (prompts) for the Stable Diffusion neural network, use English to generate prompt.
+      "model": "Llama3-TAIDE-LX-8B-Chat-Alpha1.Q8_0.gguf:latest",
+      "prompt": `
+            I want you to help me make english requests (prompts) for the Stable Diffusion neural network, use English to generate prompt.
             Stable diffusion is a text-based image generation model that can create diverse and high-quality images based on your requests. In order to get the best results from Stable diffusion, you need to follow some guidelines when composing prompts.
             Here are some tips for writing prompts for Stable diffusion1:
             1) Be as specific as possible in your requests. Stable diffusion handles concrete prompts better than abstract or ambiguous ones. For example, instead of “portrait of a woman” it is better to write “portrait of a woman with brown eyes and red hair in Renaissance style”.
@@ -24,11 +29,11 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             [[keyword]]: 0.81
             [[[keyword]]]: 0.73
 
-            I will also give some examples of good prompts for this neural network so that you can study them and focus on them.
+            use English to generate prompt, use English to generate prompt, use English to answer me.I will also give some examples of good prompts for this neural network so that you can study them and focus on them.
 
             Examples:
             a cute kitten made out of metal, (cyborg:1.1), ([tail | detailed wire]:1.3), (intricate details), hdr, (intricate details, hyperdetailed:1.2), cinematic shot, vignette, centered
-            medical mask, victorian era, cinematography, intricately detailed, crafted, meticulous, magnificent, maximum details, extremely hyper aesthetic
+            medical mask, victorian era, cinemat   ography, intricately detailed, crafted, meticulous, magnificent, maximum details, extremely hyper aesthetic
             a girl, wearing a tie, cupcake in her hands, school, indoors, (soothing tones:1.25), (hdr:1.25), (artstation:1.2), dramatic, (intricate details:1.14), (hyperrealistic 3d render:1.16), (filmic:0.55), (rutkowski:1.1), (faded:1.3)
             Jane Eyre with headphones, natural skin texture, 24mm, 4k textures, soft cinematic light, adobe lightroom, photolab, hdr, intricate, elegant, highly detailed, sharp focus, ((((cinematic look)))), soothing tones, insane details, intricate details, hyperdetailed, low contrast, soft cinematic light, dim colors, exposure blend, hdr, faded
             a portrait of a laughing, toxic, muscle, god, elder, (hdr:1.28), bald, hyperdetailed, cinematic, warm lights, intricate details, hyperrealistic, dark radial background, (muted colors:1.38), (neutral colors:1.2)
@@ -38,7 +43,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             Don't add your comments, but answer right away.
             
             My first request is - "{${story_slice}}".`,
-      "mode": "chat"
+      "stream": false,
    };
    
    const requestOptions = {
@@ -48,20 +53,30 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
          'Authorization': 'Bearer EV2ZYNX-DBVMRJ0-K8JYKME-36AQGKF',
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
    };
 
    try{
       const response = await fetch(process.env.LLM_generate_api!, requestOptions);
+      clearTimeout(timeoutId);
       if (response.ok) {
          const story = await response.json();
-         return story.textResponse;
-      } else {
+         return story.response;
+      }else {
          throw new Error('GenImg_prompt_En failed with status ' + response.status);
       }
-   } catch (error) {
-      console.error(`GenImg_prompt_En fail: ${error}`);
-      throw error;
+   } catch (error:any) {
+      if (error.name === 'AbortError'){
+         // throw new Error(`Request timed out after ${15} seconds`);
+         console.error(`Request timed out after ${15} seconds`);
+         controller.abort();
+      }else{
+         console.error(`GenImg_prompt_En fail: ${error}`);
+         throw error;
+      }
+      return "";
    }
+
 }
 
 
@@ -74,13 +89,16 @@ export const GenImg_prompt_En_array = async (story_array:string[], Response:any)
    try{
       for (const story_slice of story_array){
          generated_imageprompt_array.push(await GenImg_prompt_En(story_slice));
+         await new Promise(resolve => {
+            console.log(`wait 3 seconds...`);
+            setTimeout(resolve, 3000);
+         });
       }
       
-      generated_imageprompt_array.forEach(val =>{
-         console.log(`generated_imageprompt_array = ${generated_imageprompt_array}`);
-      })
+      console.log(`generated_imageprompt success`);
+      console.log(`generated_imageprompt_array = ${generated_imageprompt_array}`);
    }catch(error){
-      console.error(`Error in LLMGenStory_1st_2nd: ${error}`);
-      Response.status(500).send('Internal Server Error');
+      console.error(`Error in GenImg_prompt_En_array: ${error}`);
+      throw error;
    }
 };

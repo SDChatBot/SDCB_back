@@ -36,12 +36,19 @@ export class StoryController extends Controller {
     })
   }
 
+  
+
 
   public async LLMGenStory(Request: Request, Response: Response) {
     let storyInfo: string = Request.body.storyInfo;
     let generated_story_array: string[] | undefined;
 
-    // TODO 修改這裡
+    async function delayedExecution(): Promise<void> {
+      console.log('Waiting for 3 seconds...');
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 等待 5 秒鐘
+      console.log('3 seconds have passed. Executing the next code...');
+    }
+
     const GenImagePrompt = async (generated_story_array: string[]): Promise<void> => {
       if (generated_story_array) {
         await GenImg_prompt_En_array(generated_story_array, Response);
@@ -50,17 +57,16 @@ export class StoryController extends Controller {
 
     const generateStory = async (storyInfo: string): Promise<void> => {
       generated_story_array = await LLMGenStory_1st_2nd(storyInfo, Response);
+      delayedExecution();
       await GenImagePrompt(generated_story_array || []);
     };
 
 
     const promises = [
       generateStory(storyInfo),
-      // 在這裡添加其他需要同步執行的異步操作
     ];
 
     try {
-      // 等待所有異步操作完成
       await Promise.all(promises);
       // 所有異步操作完成後，回傳成功的狀態碼
       return Response.status(200).send('All operations have been completed successfully');
