@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import { Timeout } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Timeout";
 dotenv.config();
 
 export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
