@@ -3,7 +3,6 @@ import { ImagesModel } from "../models/ImagesModel";
 import { userModel } from "../models/userModel";
 import { myfavoriteModel } from "../models/myfavoriteModel";
 import { storyModel } from "../models/storyModel";
-import { Client } from "socket.io/dist/client";
 import {books} from "../interfaces/books";
 
 export class DataBase{
@@ -34,14 +33,18 @@ export class DataBase{
         }
     }
 
-    static async SaveNewStory(storyTale: string, storyInfo: string, res:any):Promise<any>{
+    static async SaveNewStory_returnID(storyTale: string, storyInfo: string, res:any):Promise<any>{
         try{
-            const story = new storyModel({
+            const newstory = new storyModel({
                 storyTale: storyTale,
                 storyInfo: storyInfo,                
             })
             console.log(`save newstory success`);
-            await story.save();
+            await newstory.save();
+
+            const newStoryId = newstory._id;
+            return newStoryId;
+
         }catch(e){
             console.log(`SaveNewStory fail, error:${e}`);      
         }
@@ -49,11 +52,24 @@ export class DataBase{
 
     static async getStoryById(_id:string):Promise<object | any>{
         try{
-            const storytail = await storyModel.findOne({_id});
-            console.log(typeof storytail)
-            return storytail;
+            const storyTale = await storyModel.findOne({_id});
+            console.log(typeof storyTale)
+            return storyTale;
         }catch(e){
             console.log(`getStoryById fail, ${e}`)
+        }
+    }
+
+    static async Update_StoryImagePrompt(_id: string, imagePrompt: string[]):Promise<object | any>{
+        try{
+            await storyModel.findOneAndUpdate(
+                { _id },
+                { $set: { image_prompt: imagePrompt } },
+                // { new: true }
+            );
+            console.log(`Success update id ${_id} story's image_prompt array`);
+        }catch(e){
+            console.log(`Update_StoryImagePrompt fail, ${e}`)
         }
     }
 

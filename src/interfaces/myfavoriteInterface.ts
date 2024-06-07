@@ -1,7 +1,6 @@
 import { books } from "./books"
 
 export interface myfavoriteInterface {
-    // imageName: string,
     book:books,
     is_favorite: boolean,
     addDate: Date,

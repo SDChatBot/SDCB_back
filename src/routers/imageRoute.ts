@@ -13,7 +13,7 @@ export class ImageRoute extends Route{
     //http://localhost:7943/image
     protected setRoutes():void{
         this.router.get(`${this.url}/image`,this.Controller.test);
-        this.router.post(`${this.url}/image/prompt`, this.Controller.LLMGenImgPrompt);
+        // this.router.post(`${this.url}/image/prompt`, this.Controller.LLMGenImgPrompt);
         this.router.post(`${this.url}/image`, this.Controller.getImage);
 
         

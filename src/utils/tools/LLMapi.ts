@@ -55,7 +55,7 @@ export declare let generated_story_array:string[];
  * 生成完整的故事內容(送了兩次請求，一次生成，一次修改)
  * @param {string} storyInfo 想生成的故事主題 
  * @param {Response} Response 回應status code，不回傳其他東西
- * @return {string[]} generated_story_array 切片後的故事片段
+ * @return {Object<string>} Saved_storyID 剛儲存好故事的唯一id
  */
 export const LLMGenStory_1st_2nd = async (storyInfo:string, Response:any) =>{
     try {
@@ -96,8 +96,8 @@ export const LLMGenStory_1st_2nd = async (storyInfo:string, Response:any) =>{
         if (story_2nd !== "") {
             generated_story_array = story_2nd.split("\n");
             // console.log(`generated_story_array = ${generated_story_array}`);
-            DataBase.SaveNewStory(storyInfo, story_2nd, Response);
-            return generated_story_array;
+            let Saved_storyID = await DataBase.SaveNewStory_returnID(story_2nd, storyInfo, Response);
+            return Saved_storyID;
         }
     } catch (error) {
         console.error(`Error in LLMGenStory_1st_2nd: ${error}`);

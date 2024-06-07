@@ -4,6 +4,8 @@ import { DataBase } from "../utils/DataBase";
 import { books } from "../interfaces/books";
 import { LLMGenStory_1st_2nd } from "../utils/tools/LLMapi";
 import { GenImg_prompt_En_array } from "../utils/tools/images/LLM_fetch_images";
+import fs from "fs";
+import { storyInterface } from "../interfaces/storyInterface";
 
 
 export class StoryController extends Controller {
@@ -43,22 +45,35 @@ export class StoryController extends Controller {
     let storyInfo: string = Request.body.storyInfo;
     let generated_story_array: string[] | undefined;
 
+    // const writeFile_tt = (data:string) =>{
+    //   const line = `Thiszz ${data}\n\n\n`;
+    //   fs.appendFile("a.txt", line, (err) => {
+    //     if (err) throw err;
+    //     console.log(`已成功寫入檔案：${line}`);
+    //   });
+    // };
+
     async function delayedExecution(): Promise<void> {
       console.log('Waiting for 3 seconds...');
       await new Promise(resolve => setTimeout(resolve, 3000)); // 等待 5 秒鐘
-      console.log('3 seconds have passed. Executing the next code...');
     }
 
-    const GenImagePrompt = async (generated_story_array: string[]): Promise<void> => {
+    let generated_imageprompt_array: string[] = [];
+    let Saved_storyID: string = "";
+
+    const GenImagePrompt = async (generated_story_array: string[], _id:string): Promise<void> => {
       if (generated_story_array) {
-        await GenImg_prompt_En_array(generated_story_array, Response);
+        generated_imageprompt_array = await GenImg_prompt_En_array(generated_story_array);
+        await DataBase.Update_StoryImagePrompt(_id, generated_imageprompt_array);
       }
     };
 
     const generateStory = async (storyInfo: string): Promise<void> => {
-      generated_story_array = await LLMGenStory_1st_2nd(storyInfo, Response);
+      Saved_storyID = await LLMGenStory_1st_2nd(storyInfo, Response);
+      const story:storyInterface = await DataBase.getStoryById(Saved_storyID);
+      generated_story_array = story.storyTale.split("\n");
       delayedExecution();
-      await GenImagePrompt(generated_story_array || []);
+      await GenImagePrompt(generated_story_array || [] , Saved_storyID);
     };
 
 

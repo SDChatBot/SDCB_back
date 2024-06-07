@@ -79,12 +79,12 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
 }
 
 
-export let generated_imageprompt_array: string[] = [];
+let generated_imageprompt_array: string[] = [];
 
 /**
  * 生成圖片prompt(輸出應為英文，這樣才不會出錯)
  */
-export const GenImg_prompt_En_array = async (story_array:string[], Response:any) => {
+export const GenImg_prompt_En_array = async (story_array:string[]):Promise<string[]> => {
    try{
       for (const story_slice of story_array){
          generated_imageprompt_array.push(await GenImg_prompt_En(story_slice));
@@ -95,7 +95,8 @@ export const GenImg_prompt_En_array = async (story_array:string[], Response:any)
       }
       
       console.log(`generated_imageprompt success`);
-      console.log(`generated_imageprompt_array = ${generated_imageprompt_array}`);
+      return generated_imageprompt_array;
+      // console.log(`generated_imageprompt_array = ${generated_imageprompt_array}`);
    }catch(error){
       console.error(`Error in GenImg_prompt_En_array: ${error}`);
       throw error;

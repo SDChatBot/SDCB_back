@@ -1,5 +1,5 @@
 export interface storyInterface{
    storyTale:string,
    storyInfo:string,
-   name:string,
+   image_prompt?:string[]
 }

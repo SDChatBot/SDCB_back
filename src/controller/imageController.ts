@@ -2,12 +2,11 @@ import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
 import { fetchImage } from "../utils/tools/fetch";
 import { DataBase } from "../utils/DataBase";
-// import { saveBase64Image } from "../utils/tools/saveImage";
 
 import fs from 'fs';
 import path from 'path';
 
-import { GenImg_prompt_1st_2nd } from "../utils/tools/images/LLM_fetch_images";
+// import { GenImg_prompt_1st_2nd } from "../utils/tools/images/LLM_fetch_images";
 
 export class ImageController extends Controller {
     public test(Request:Request, Response:Response){
@@ -18,46 +17,6 @@ export class ImageController extends Controller {
     public async test2(Request:Request, Response:Response){
     }
 
-    /**用LLM 生成故事提示詞(第一次+第二次)
-     * @param {string} imagePrompt 想要生成的故事提示詞(使用者輸入)
-     * @Response {Promise<string>} LLM 生成傳回來的 JSON 字串
-     * @example
-     * postman
-     * url:  http://127.0.0.1:7943/image/prompt
-     * method: POST
-     * body-raw-json:
-     *  {
-            "storyInfo":"會變身的狗狗"
-        }
-    */
-    public async LLMGenImgPrompt(Request:Request, Response:Response){
-        let story_1st: string = "";
-        let payload1 = {
-            "message": `用繁體中文幫我生成一篇關於${Request.body.storyInfo}的適合小孩子的故事，請你以以下格式回答我的問題: {故事內容}`,
-            "mode": "chat"
-        };
-        GenImg_prompt_1st_2nd(payload1).then(response => {
-            story_1st = response;
-            // console.log(`story_1st = ${story_1st}`);
-
-            // 第二次生成
-            let payload2 = {
-                "message": `幫我檢視並修改以下故事，使用生動、活潑、有趣、的口語重新描述一遍故事，並確保他是適合小朋友的故事，使用繁體中文回應所有答覆。以下是我要修改的故事: ${story_1st}`,
-                "mode": "chat"
-            };
-            GenImg_prompt_1st_2nd(payload2).then(response => {
-                // console.log(`response2 = ${response}`);
-                if (story_1st !== "")
-                    Response.send(`{ "storyPrompt": ${response} }`);
-            }).catch(error => {
-                console.error(`Error in GenImg_prompt_1st_2nd 2: ${error}`);
-                Response.status(500).send('Internal Server Error');
-            });
-        }).catch(error => {
-            console.error(`Error in GenImg_prompt_1st_2nd 1: ${error}`);
-            Response.status(500).send('Internal Server Error');
-        });
-    }
 
     /** 使用SD 生成圖片
      * @param {string} Request.body.imagePrompt 想生成的故事內容
