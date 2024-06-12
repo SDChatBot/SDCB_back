@@ -33,7 +33,7 @@ export class DataBase{
         }
     }
 
-    static async SaveNewStory_returnID(storyTale: string, storyInfo: string, res:any):Promise<any>{
+    static async SaveNewStory_returnID(storyTale: string, storyInfo: string):Promise<any>{
         try{
             const newstory = new storyModel({
                 storyTale: storyTale,
@@ -70,6 +70,19 @@ export class DataBase{
             console.log(`Success update id ${_id} story's image_prompt array`);
         }catch(e){
             console.log(`Update_StoryImagePrompt fail, ${e}`)
+        }
+    }
+
+    static async Update_StoryImage_Base64(_id: string, imageBase64: string[]): Promise<object | any> {
+        try {
+            await storyModel.findOneAndUpdate(
+                { _id },
+                { $set: { image_base64: imageBase64 } },
+                // { new: true }
+            );
+            console.log(`Success update id ${_id} story's image_base64 array`);
+        } catch (e) {
+            console.log(`Update_StoryImage_Base64 fail, ${e}`)
         }
     }
 

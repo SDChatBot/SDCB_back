@@ -15,7 +15,7 @@ dotenv.config();
  */
 export const LLMGenChat = async (storyInfo: Object): Promise<string> => {
     const controller: AbortController = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
 
     const requestOptions = {
@@ -96,7 +96,7 @@ export const LLMGenStory_1st_2nd = async (storyInfo:string, Response:any) =>{
         if (story_2nd !== "") {
             generated_story_array = story_2nd.split("\n");
             // console.log(`generated_story_array = ${generated_story_array}`);
-            let Saved_storyID = await DataBase.SaveNewStory_returnID(story_2nd, storyInfo, Response);
+            let Saved_storyID = await DataBase.SaveNewStory_returnID(story_2nd, storyInfo);
             return Saved_storyID;
         }
     } catch (error) {
