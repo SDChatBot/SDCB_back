@@ -1,4 +1,4 @@
-const url = "http://163.13.201.153:7860/"; //http://163.13.201.153:7860/sdapi/v1/txt2img
+const url = "http://163.13.202.120:7860/"; //http://163.13.202.120:7860/sdapi/v1/txt2img
 
 let imagesBase64:string[]
 //生成圖片(stable diffusion)
@@ -36,8 +36,8 @@ export const Login_SD = async()=>{
     }
 }
 
-// //http://163.13.201.153:8188/prompt
-// const useComfy3D = `http://163.13.201.153:8188/prompt`
+// //http://163.13.202.120:8188/prompt
+// const useComfy3D = `http://163.13.202.120:8188/prompt`
 // export const fetchComfy = async(prompt:any) => {
 //     const requestOptions = {
 //         method: 'POST',

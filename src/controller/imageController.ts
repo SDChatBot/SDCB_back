@@ -28,7 +28,7 @@ export class ImageController extends Controller {
             "imagePrompt":"喜歡狗狗，想要生成關於狗狗的故事"
        }
 
-     * 獲得sd model list: get, http://163.13.201.153:7860/sdapi/v1/sd-models
+     * 獲得sd model list: get, http://163.13.202.120:7860/sdapi/v1/sd-models
      */
     public async getImage(Request: Request, Response: Response) {
         const imageData = Request.body;

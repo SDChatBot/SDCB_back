@@ -1,7 +1,6 @@
 import mongoose, { connect } from "mongoose";
 import { ImagesModel } from "../models/ImagesModel";
 import { userModel } from "../models/userModel";
-import { myfavoriteModel } from "../models/myfavoriteModel";
 import { storyModel } from "../models/storyModel";
 import {books} from "../interfaces/books";
 

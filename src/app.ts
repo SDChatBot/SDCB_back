@@ -7,8 +7,8 @@ import { router } from './Routers';
 const app = express()
 const port = 7943
 const portSocket = 2764
-const ip2 = "163.13.201.153";
-const DB = new DataBase("mongodb://163.13.201.153:2425/");
+const ip2 = "163.13.202.120";
+const DB = new DataBase("mongodb://163.13.202.120:2425/");
 
 
 
@@ -16,7 +16,7 @@ const DB = new DataBase("mongodb://163.13.201.153:2425/");
 const socket_client = `http://localhost:666`;
 
 // //Use2
-// const socket_client = `http://163.13.201.153:666`;
+// const socket_client = `http://163.13.202.120:666`;
 
 
 // //use
