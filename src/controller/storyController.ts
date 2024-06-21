@@ -3,7 +3,7 @@ import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
 import { books } from "../interfaces/books";
 import { LLMGenStory_1st_2nd } from "../utils/tools/LLMapi";
-import { GenImg_prompt_En_array } from "../utils/tools/images/LLM_fetch_images";
+import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
 import { fetchImage } from "../utils/tools/fetch";
 
@@ -22,21 +22,21 @@ export class StoryController extends Controller {
     })
   }
 
-  //拿最新創建的故事id
-  public GetNewestStoryID(Request: Request, Response: Response) {
-    DataBase.getNewestId().then((newestId: string) => {
-      Response.send(newestId);
-    }).catch((e) => {
-      console.log(` GetNewestStoryID fail :${e}`);
-    })
-  }
+  // //拿最新創建的故事id
+  // public GetNewestStoryID(Request: Request, Response: Response) {
+  //   DataBase.getNewestId().then((newestId: string) => {
+  //     Response.send(newestId);
+  //   }).catch((e) => {
+  //     console.log(` GetNewestStoryID fail :${e}`);
+  //   })
+  // }
 
-  //拿整理好的books (storyId: string; storyName: string;)
-  public GetBooks(Request: Request, Response: Response) {
-    DataBase.getBooks().then((books: books[]) => {
-      Response.send(JSON.stringify(books));
-    })
-  }
+  // //拿整理好的books (storyId: string; storyName: string;)
+  // public GetBooks(Request: Request, Response: Response) {
+  //   DataBase.getBooks().then((books: books[]) => {
+  //     Response.send(JSON.stringify(books));
+  //   })
+  // }
 
   
 
@@ -111,6 +111,10 @@ export class StoryController extends Controller {
     }
   }
 
-
+  public async genimageprompt(Request:Request, Response:Response){
+    const story_slice = Request.body.story_slice!;
+    const res= await GenImg_prompt_En(story_slice);
+    Response.send(`res = ${res}`);
+  }
 
 }
