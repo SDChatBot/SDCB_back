@@ -1,7 +1,6 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
 import { DataBase } from "../utils/DataBase";
-import { books } from "../interfaces/books";
 
 export class UserController extends Controller{
     public test(Request:Request, Response:Response){
@@ -32,27 +31,5 @@ export class UserController extends Controller{
         }).catch((e) => {
             console.error(`delete user fail: ${e}`);
         })
-    }
-
-    public AddFavorite(Request: Request, Response: Response) {
-        try {
-            let Book: books = Request.body.book;
-            Book.is_favorite = true;
-            console.log(`Successfully added book to favorite`);
-            Response.send(`Successfully added book to favorite`);
-        } catch (e) {
-            console.error(`Failed added book to favorite`);
-        }
-    }
-
-    public RemoveFavorite(Request: Request, Response: Response) {
-        try {
-            let Book: books = Request.body.book;
-            Book.is_favorite = false;
-            console.log(`Successfully removed book to favorite`);
-            Response.send(`Successfully removed book to favorite`);
-        } catch (e) {
-            console.error(`Failed removed book to favorite`);
-        }
     }
 }

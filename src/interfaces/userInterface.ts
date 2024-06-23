@@ -1,9 +1,7 @@
-import { myfavoriteInterface } from "../interfaces/myfavoriteInterface";
-import { books } from "../interfaces/books";
+import { storyInterface } from "./storyInterface";
 
 export interface userInterface {
     userName: string,
     userPassword: string,
-    favorite?: myfavoriteInterface,
-    book?: books[],
+    booklist: storyInterface[],
 }

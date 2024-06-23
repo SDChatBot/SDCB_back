@@ -2,6 +2,7 @@ import mongoose, { connect } from "mongoose";
 import { ImagesModel } from "../models/ImagesModel";
 import { userModel } from "../models/userModel";
 import { storyModel } from "../models/storyModel";
+import { CurrentTime } from "./tools/tool";
 
 export class DataBase{
     DB!: typeof import("mongoose");
@@ -35,7 +36,9 @@ export class DataBase{
         try{
             const newstory = new storyModel({
                 storyTale: storyTale,
-                storyInfo: storyInfo,                
+                storyInfo: storyInfo,   
+                is_favorite:false,    
+                addDate: CurrentTime(),
             })
             console.log(`save newstory success`);
             await newstory.save();
@@ -119,7 +122,9 @@ export class DataBase{
 
     //TODO 設定書本是否為喜歡的書籍(修改books is_favorite)
 
-
+    static async CheckOnlyUserName(name:string):Promise<any>{
+        
+    }
 
     static async SaveNewUser(name:string, password:string): Promise<any>{
         try{

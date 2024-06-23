@@ -1,7 +1,6 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
-import { books } from "../interfaces/books";
 import { LLMGenStory_1st_2nd } from "../utils/tools/LLMapi";
 import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
