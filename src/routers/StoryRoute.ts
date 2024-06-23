@@ -10,13 +10,14 @@ export class StoryRoute extends Route{
       this.setRoutes();
    }
 
-   //http://localhost:7943/story/
+   // http://localhost:7943/story
    protected setRoutes(): void {
       this.router.get(`${this.url}`, this.Controller.test);
-      this.router.get(`${this.url}/getstoryfdb`, this.Controller.GetStorylistFDB);
+      this.router.get(`${this.url}/getstorylist_fdb`, this.Controller.GetStorylistFDB);
       this.router.post(`${this.url}/llm/genstory`, this.Controller.LLMGenStory);
       this.router.post(`${this.url}/llm/genimageprompt`, this.Controller.genimageprompt);
-      //http://localhost:7943/story/llm/genstory
-      //http://localhost:7943/story/llm/genimageprompt
+      // http://localhost:7943/story/getstorylist_fdb
+      // http://localhost:7943/story/llm/genstory
+      // http://localhost:7943/story/llm/genimageprompt
    }
 }

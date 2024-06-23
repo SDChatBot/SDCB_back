@@ -15,9 +15,17 @@ export class StoryController extends Controller {
   //拿資料庫故事
   public GetStorylistFDB(Request: Request, Response: Response) {
     let { userId } = Request.query;
-    // DataBase.getStoryById(userId as string).then((storytail) => {
-    //   Response.send(storytail)
-    // })
+    console.log(`userId = ${userId}`);
+    DataBase.getstoryList(userId as string).then((result) => {
+      if (result.success){
+        return Response.status(200).send(result.message);
+      }else{
+        return Response.status(403).send(result.message);
+      }
+    }).catch((e:any)=>{
+      console.error(`GetStorylistFDB fail: ${e.message}`);
+      return Response.status(400).send('GetStorylistFDB fail');
+    });
   }
 
 

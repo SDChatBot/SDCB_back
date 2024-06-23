@@ -2,6 +2,7 @@ import { connect } from "mongoose";
 import { userModel } from "../models/userModel";
 import { storyModel } from "../models/storyModel";
 import { CurrentTime } from "./tools/tool";
+import { userInterface } from "../interfaces/userInterface";
 
 export class DataBase{
     DB!: typeof import("mongoose");
@@ -45,6 +46,22 @@ export class DataBase{
             console.log(`getStoryById fail, ${e}`)
         }
     }
+
+    // 用使用者id 拿sdtory list
+    static async getstoryList(userId: string): Promise<any> {
+        try {
+            let returnValue: any = await userModel.findById(userId); // 使用 findById 根据 _id 查询
+            if (!returnValue) {
+                return { success: false, message: 'getstoryList fail, user not found' };
+            }
+            let returnValue_booklist: userInterface['booklist'] = returnValue.booklist!;
+            console.log(`getstoryList returnValue_booklist = ${JSON.stringify(returnValue_booklist)}`);
+            return { success: true, message: "getstoryList success", value: returnValue_booklist };
+        } catch (e:any) {
+            return { success: false, message: `getstoryList fail ${e.message}` };
+        }
+    }
+
 
     static async Update_StoryImagePrompt(_id: string, imagePrompt: string[]):Promise<object | any>{
         try{
@@ -96,7 +113,7 @@ export class DataBase{
                 booklist:[],
             });
             await user.save();
-            return { result: true, message: "SaveNewUser  success" };
+            return { success: true, message: "SaveNewUser  success" };
         }catch(e:any){
             const errorMessage = `SaveNewUser  fail: ${e.message}`;
             console.error(errorMessage);
@@ -108,7 +125,7 @@ export class DataBase{
         try {
             const result = await userModel.deleteOne({ userName:name });
             if (result.deletedCount === 1) {
-                return { result: true, message: "DelUser succeed" };
+                return { success: true, message: "DelUser succeed" };
             } else {
                 return { success: false, message: `找不到使用者: ${name}` };
             }
