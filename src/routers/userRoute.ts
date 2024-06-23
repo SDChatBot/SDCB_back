@@ -14,6 +14,6 @@ export class UserRoute extends Route {
     protected setRoutes(): void {
         this.router.get(`${this.url}`,this.Controller.test);
         this.router.post(`${this.url}/adduser`, this.Controller.AddUser);
-        this.router.delete(`${this.url}/deluser`, this.Controller.DelUser);
+        this.router.delete(`${this.url}/deluser`, this.Controller.DeleteUser);
     }
 }
