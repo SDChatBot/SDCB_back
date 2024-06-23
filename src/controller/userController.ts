@@ -38,7 +38,6 @@ export class UserController extends Controller{
             console.error('userName is required to delete a user');
             return Response.status(400).send('userName is required');
         }
-
         DataBase.DelUser(username).then((result:any) => {
             if (result.success) {
                 console.log(result.message);

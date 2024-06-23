@@ -93,6 +93,7 @@ export class DataBase{
             const user = new userModel({
                 userName: name,
                 userPassword: password,
+                booklist:[],
             });
             await user.save();
             return { result: true, message: "SaveNewUser  success" };

@@ -13,11 +13,11 @@ export class StoryController extends Controller {
   }
 
   //拿資料庫故事
-  public GeyStoryFDB(Request: Request, Response: Response) {
-    let data = Request.query.id;
-    DataBase.getStoryById(data as string).then((storytail) => {
-      Response.send(storytail)
-    })
+  public GetStorylistFDB(Request: Request, Response: Response) {
+    let { userId } = Request.query;
+    // DataBase.getStoryById(userId as string).then((storytail) => {
+    //   Response.send(storytail)
+    // })
   }
 
 

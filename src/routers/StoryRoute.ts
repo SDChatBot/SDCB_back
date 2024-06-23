@@ -13,7 +13,7 @@ export class StoryRoute extends Route{
    //http://localhost:7943/story/
    protected setRoutes(): void {
       this.router.get(`${this.url}`, this.Controller.test);
-      this.router.get(`${this.url}/getstoryfdb`, this.Controller.GeyStoryFDB);
+      this.router.get(`${this.url}/getstoryfdb`, this.Controller.GetStorylistFDB);
       this.router.post(`${this.url}/llm/genstory`, this.Controller.LLMGenStory);
       this.router.post(`${this.url}/llm/genimageprompt`, this.Controller.genimageprompt);
       //http://localhost:7943/story/llm/genstory
