@@ -134,7 +134,24 @@ export class DataBase{
             console.error(errorMessage);
             return { success: false, message: errorMessage };
         }
+    }
 
+    static async AddFav(story_id: string) {
+        try {
+            const Book = await storyModel.findById(story_id);
+            // test用 
+            console.log(`Received story_id: ${story_id}`);
+
+            if (Book) {
+                Book.is_favorite = true;
+                await Book.save();
+                console.log(`DB Successfully added book to favorite`);
+            } else {
+                console.error(`Can not find this book`);
+            }
+        } catch (e) {
+            console.error(`DB Failed added book to favorite`);
+        }
     }
     
 }

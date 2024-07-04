@@ -51,4 +51,18 @@ export class UserController extends Controller{
             return Response.status(403).send('AddUser fail');
         })
     }
+
+    public AddFavorite(Request: Request, Response: Response) {
+        //let Book: storyInterface = Request.body;
+        const BookID = Request.query.bookid;
+        if(!BookID){
+            Response.status(403).send(`wrong bookID`);
+        }
+        DataBase.AddFav(BookID as string).then(() => {
+            console.log(`Successfully added book to favorite`);
+            Response.send(`Successfully added book to favorite`);
+        }).catch((e) => {
+            console.error(`Failed added book to favorite`);
+        })
+    }
 }
