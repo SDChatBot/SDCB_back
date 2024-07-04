@@ -65,4 +65,19 @@ export class UserController extends Controller{
             console.error(`Failed added book to favorite`);
         })
     }
+
+    public RemoveFavorite(Request: Request, Response: Response) {
+        //let Book: storyInterface = Request.body;
+        const BookID = Request.query.bookid;
+        if(!BookID){
+            Response.status(403).send(`wrong bookID`);
+        }
+        DataBase.RemoveFav( BookID as string ).then(() => {
+            console.log(`Successfully removed book to favorite`);
+            Response.send(`Successfully removed book to favorite`);
+        }).catch((e) => {
+            console.error(`Failed removed book to favorite`);
+        })
+
+    }
 }

@@ -16,5 +16,6 @@ export class UserRoute extends Route {
         this.router.post(`${this.url}/adduser`, this.Controller.AddUser);
         this.router.delete(`${this.url}/deluser`, this.Controller.DeleteUser);
         this.router.post(`${this.url}/addfav`, this.Controller.AddFavorite);
+        this.router.post(`${this.url}/remfav`, this.Controller.RemoveFavorite);
     }
 }

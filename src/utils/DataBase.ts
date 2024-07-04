@@ -153,5 +153,21 @@ export class DataBase{
             console.error(`DB Failed added book to favorite`);
         }
     }
+
+    static async RemoveFav(story_id: string){
+        try {
+            const Book = await storyModel.findById(story_id);
+            // test用 console.log(`Received story_id: ${story_id}`);
+            if(Book){
+                Book.is_favorite = false;
+                await Book.save();
+                console.log(`Successfully removed book to favorite`);
+            }else{
+                console.error(`Can not find this book`);
+            }
+        } catch (e) {
+            console.error(`Failed removed book to favorite`);
+        }
+    }
     
 }
