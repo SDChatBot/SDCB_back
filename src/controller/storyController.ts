@@ -38,9 +38,8 @@ export class StoryController extends Controller {
    * }
    */
   public async LLMGenStory(Request: Request, Response: Response) {
-    let storyInfo: string = Request.body.roleform.description;
     let storyRoleForm: RoleFormInterface = Request.body.roleform;
-    // console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`);
+    console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`);
     let generated_story_array: string[] | undefined;
 
     async function delayedExecution(): Promise<void> {
@@ -100,22 +99,22 @@ export class StoryController extends Controller {
 
 
     // 生成故事內容
-    const generateStory = async (storyInfo: string): Promise<void> => {
+    const generateStory = async (storyRoleForm: RoleFormInterface): Promise<void> => {
       try {
-        Saved_storyID = await LLMGenStory_1st_2nd(storyInfo, Response);
-        if (!Saved_storyID) {
-          throw new Error('Failed to generate story ID，生成故事失敗');
-        }
-        console.log(`Saved_storyID = ${Saved_storyID}`);
-        const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
-        generated_story_array = story.storyTale.split("\n");
-        delayedExecution();
-        // 生成故事圖片提示詞
-        console.log(`start GenImagePrompt`);
-        await GenImagePrompt(generated_story_array || [], Saved_storyID);
-        const generated_story_image_prompt = story.image_prompt;
-        console.log(`start GenImage`);
-        await GenImage(generated_story_image_prompt!, Saved_storyID)
+        Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
+          if (!Saved_storyID) {
+            throw new Error('Failed to generate story ID，生成故事失敗');
+          }
+          console.log(`Saved_storyID = ${Saved_storyID}`);
+          const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
+          generated_story_array = story.storyTale.split("\n");
+          delayedExecution();
+          // 生成故事圖片提示詞
+          console.log(`start GenImagePrompt`);
+          await GenImagePrompt(generated_story_array || [], Saved_storyID);
+          const generated_story_image_prompt = story.image_prompt;
+          console.log(`start GenImage`);
+          await GenImage(generated_story_image_prompt!, Saved_storyID)
       } catch (error:any) {
         console.error(`Error generating story: ${error.message}`);
         throw error;
@@ -124,7 +123,7 @@ export class StoryController extends Controller {
 
 
     const promises = [
-      generateStory(storyInfo),
+      generateStory(storyRoleForm),
     ];
 
     try {
