@@ -74,13 +74,12 @@ export class StoryController extends Controller {
           "restore_faces": false,
         };
 
-        // 将 fetchImage 包装成返回 Promise 的函数
         let fetchImagePromise = (): Promise<string> => {
           return new Promise((resolve, reject) => {
             fetchImage(payload).then((image_base64: string) => {
-              resolve(image_base64); // 成功时返回图片 base64
+              resolve(image_base64); 
             }).catch((error: any) => {
-              reject(error); // 失败时返回错误信息
+              reject(error);
             });
           });
         };
@@ -112,15 +111,16 @@ export class StoryController extends Controller {
         generated_story_array = story.storyTale.split("\n");
         delayedExecution();
         // 生成故事圖片提示詞
+        console.log(`start GenImagePrompt`);
         await GenImagePrompt(generated_story_array || [], Saved_storyID);
         const generated_story_image_prompt = story.image_prompt;
+        console.log(`start GenImage`);
         await GenImage(generated_story_image_prompt!, Saved_storyID)
       } catch (error:any) {
         console.error(`Error generating story: ${error.message}`);
         throw error;
       }
     };
-
 
 
     const promises = [
