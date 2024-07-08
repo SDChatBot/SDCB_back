@@ -75,6 +75,8 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
             "stream": false
         };
         const story_2nd:string = await LLMGenChat(payload2);
+        // REMOVE console
+        console.log(`story_2nd storyout = ${story_2nd}`);
         // console.log(`story_2nd success`);
         if (story_2nd !== "") {
             generated_story_array = story_2nd.split("\n");
