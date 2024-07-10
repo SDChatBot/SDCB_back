@@ -4,8 +4,10 @@ import { DataBase } from "../utils/DataBase";
 import { LLMGenStory_1st_2nd } from "../utils/tools/LLMapi";
 import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
-import { fetchImage } from "../utils/tools/fetch";
+import { fetchImage, sdModelOption, getSDModelList } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
+import { GenVoice } from "../utils/tools/voices";
+
 
 
 export class StoryController extends Controller {
@@ -115,6 +117,10 @@ export class StoryController extends Controller {
           const generated_story_image_prompt = story.image_prompt;
           console.log(`start GenImage`);
           await GenImage(generated_story_image_prompt!, Saved_storyID)
+
+          console.log(`start GenVoice`);
+          await GenVoice(generated_story_array, Saved_storyID);
+
       } catch (error:any) {
         console.error(`Error generating story: ${error.message}`);
         throw error;
@@ -140,6 +146,15 @@ export class StoryController extends Controller {
     const story_slice = Request.body.story_slice!;
     const res= await GenImg_prompt_En(story_slice);
     Response.send(`res = ${res}`);
+  }
+
+  public async sdOption(Request:Request, Response:Response){
+    let MODEL_NAME = `AnythingXL_xl.safetensors [8421598e93]`
+    Response.send(await sdModelOption(MODEL_NAME));
+  }
+
+  public async GetSDModelList(Request:Request, Response:Response){
+    Response.send(await getSDModelList());
   }
 
 }
