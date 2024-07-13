@@ -17,7 +17,7 @@ export class StoryRoute extends Route{
       this.router.post(`${this.url}/llm/genstory`, this.Controller.LLMGenStory);
       this.router.post(`${this.url}/llm/genimageprompt`, this.Controller.genimageprompt);
 
-      this.router.post(`${this.url}/image/ss`, this.Controller.sdOption);
+      this.router.post(`${this.url}/image/sdoption`, this.Controller.sdOption);
       this.router.get(`${this.url}/images/sdmodellist`, this.Controller.GetSDModelList);
       // http://localhost:7943/story/getstorylist_fdb
       // http://localhost:7943/story/llm/genstory
