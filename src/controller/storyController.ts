@@ -149,7 +149,8 @@ export class StoryController extends Controller {
   }
 
   public async sdOption(Request:Request, Response:Response){
-    let MODEL_NAME = `AnythingXL_xl.safetensors [8421598e93]`
+    // let MODEL_NAME = `AnythingXL_xl.safetensors [8421598e93]`
+    let MODEL_NAME:string = Request.body.modelname!;
     Response.send(await sdModelOption(MODEL_NAME));
   }
 
