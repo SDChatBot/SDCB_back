@@ -61,44 +61,34 @@ export class StoryController extends Controller {
     };
 
     const GenImage = async (generated_story_image_prompt: Array<string>, _id: string): Promise<void> => {
-      let promises: Promise<string>[] = [];
+      let promises: Promise<string[]>[] = [];
 
-      // 遍历生成的图片提示词数组
       for (let i = 0; i < generated_story_image_prompt.length; i++) {
         let payload: Object = {
           "prompt": generated_story_image_prompt[i],
           "seed": -1,
           "cfg_scale": 7,
-          "step": 2,
+          "steps": 20, // corrected from 'step'
           "enable_hr": false,
-          "denoising_strength": 100,
+          "denoising_strength": 0.75, // corrected from 100
           "restore_faces": false,
         };
 
-        let fetchImagePromise = (): Promise<string> => {
-          return new Promise((resolve, reject) => {
-            fetchImage(payload).then((image_base64: string) => {
-              resolve(image_base64); 
-            }).catch((error: any) => {
-              reject(error);
-            });
-          });
-        };
+        promises.push(fetchImage(payload));
 
-        promises.push(fetchImagePromise());
-
+        // 等待3秒再发送下一个请求
         await new Promise(resolve => setTimeout(resolve, 3000));
       }
 
       try {
-        let generated_imagebase64_array: string[] = await Promise.all(promises);
+        let generated_imagebase64_array: string[] = (await Promise.all(promises)).flat();
         await DataBase.Update_StoryImage_Base64(_id, generated_imagebase64_array);
-      } catch (error:any) {
+        // response.json({ images: generated_imagebase64_array });
+      } catch (error: any) {
         console.error(`Error in GenImage: ${error.message}`);
-        throw Error;
+        // response.status(500).send({ error: "Failed to generate or save image" });
       }
     };
-
 
     // 生成故事內容
     const generateStory = async (storyRoleForm: RoleFormInterface): Promise<void> => {
@@ -111,22 +101,21 @@ export class StoryController extends Controller {
           const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
           generated_story_array = story.storyTale.split("\n");
           delayedExecution();
-          // 生成故事圖片提示詞
           console.log(`start GenImagePrompt`);
           await GenImagePrompt(generated_story_array || [], Saved_storyID);
           const generated_story_image_prompt = story.image_prompt;
+
           console.log(`start GenImage`);
           await GenImage(generated_story_image_prompt!, Saved_storyID)
 
-          console.log(`start GenVoice`);
-          await GenVoice(generated_story_array, Saved_storyID);
+          // console.log(`start GenVoice`);
+          // await GenVoice(generated_story_array, Saved_storyID);
 
       } catch (error:any) {
         console.error(`Error generating story: ${error.message}`);
         throw error;
       }
     };
-
 
     const promises = [
       generateStory(storyRoleForm),
@@ -157,5 +146,26 @@ export class StoryController extends Controller {
   public async GetSDModelList(Request:Request, Response:Response){
     Response.send(await getSDModelList());
   }
+
+  public ReGenImage = async (Request: Request, Response: Response) => {
+    console.log(`here`);
+    let { prompt } = Request.body;
+    let payload: Object = {
+      "prompt": prompt,
+      "seed": -1,
+      "cfg_scale": 7,
+      "steps": 20,
+      "enable_hr": false,
+      "denoising_strength": 0.75,
+      "restore_faces": false,
+    };
+
+    try {
+      let images = await fetchImage(payload);
+      Response.json({ images });
+    } catch (error) {
+      Response.status(500).send({ error: "Failed to generate image" });
+    }
+  };
 
 }

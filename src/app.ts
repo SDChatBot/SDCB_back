@@ -6,23 +6,13 @@ import { router } from './Routers';
 
 const app = express()
 const port = 7943
-const portSocket = 2764
-const ip2 = "163.13.202.120";
+const ip = "163.13.202.120";
 const DB = new DataBase("mongodb://163.13.202.120:2425/");
 
-
-
-//socketio client api Dev
-const socket_client = `http://localhost:666`;
-
-// //Use2
-// const socket_client = `http://163.13.202.120:666`;
-
-
-// //use
-// httpServer.listen(portSocket, ip, () => {
-//     console.log(`Socket Server: http://${ip}:${portSocket}`);
-// });
+// // //use
+// // httpServer.listen(portSocket, ip, () => {
+// //     console.log(`Socket Server: http://${ip}:${portSocket}`);
+// // });
 
 //***************************************************************************************************//
 
@@ -30,7 +20,7 @@ const socket_client = `http://localhost:666`;
 const corsOptions = {
     origin: [
         'http://localhost:666', //dev front 
-        'http://192.168.1.26:666', //use front     
+        'http://163.13.202.120:666', //use front     
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type'],
@@ -44,17 +34,12 @@ for (const route of router) {
 }
 
 //=============================================
-//dev 開發
-app.listen(port, () => {
-    console.log(`Server: http://127.0.0.1:${port}/image`)
+// //dev 開發
+// app.listen(port, () => {
+//     console.log(`Server: http://127.0.0.1:${port}/user`)
+// });
+
+//use 使用
+app.listen(port, ip,() => {
+    console.log(`Server: http://${ip}:${port}/user`)
 });
-
-// //use 使用
-// app.listen(port, ip,() => {
-//     console.log(`Server: http://${ip}:${port}/image`)
-// });
-
-// //use2 使用2
-// app.listen(port, ip2, () => {
-//     console.log(`Server: http://${ip}:${port}/image`)
-// });
