@@ -84,6 +84,10 @@ export const getSDModelList = async () => {
     }
 }
 
+export const getVoice = async (story_id:string, ) =>{
+
+}
+
 // //http://163.13.202.120:8188/prompt
 // const useComfy3D = `http://163.13.202.120:8188/prompt`
 // export const fetchComfy = async(prompt:any) => {
