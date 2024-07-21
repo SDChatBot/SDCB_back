@@ -19,8 +19,8 @@ const DB = new DataBase("mongodb://163.13.202.120:2425/");
 //系統伺服器
 const corsOptions = {
     origin: [
-        'http://localhost:666', //dev front 
-        'http://163.13.202.120:666', //use front     
+        'http://localhost:6666', //dev front 
+        'http://163.13.202.120:6666', //use front     
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type'],
