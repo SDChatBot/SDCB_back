@@ -1,6 +1,6 @@
 export interface RoleFormInterface {
     style:string,
-    mainCharaterr:string,
+    mainCharater:string,
     description:string,
     otherCharacters:Array<string>,
 }
