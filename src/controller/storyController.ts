@@ -1,12 +1,11 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
-import { LLMGenStory_1st_2nd } from "../utils/tools/LLMapi";
+import { LLMGenStory_1st_2nd, LLMGen_release } from "../utils/tools/LLMapi";
 import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
-import { fetchImage, sdModelOption, getSDModelList } from "../utils/tools/fetch";
+import { fetchImage, sdModelOption, getSDModelList, getVoice } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
-import { GenVoice } from "../utils/tools/voices";
 
 
 
@@ -100,23 +99,21 @@ export class StoryController extends Controller {
         console.log(`Saved_storyID = ${Saved_storyID}`);
 
         const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
+        // TODO story.storyTale 完整的故事字串
         generated_story_array = story.storyTale.split("\n");
-
+        // console.log(`generated_story_array = ${generated_story_array}`);
         await delayedExecution();
 
-        console.log(`start GenImagePrompt`);
+        console.log(`start GenImagePrompt\n`);
         await GenImagePrompt(generated_story_array || [], Saved_storyID);
-
+        await LLMGen_release(); // 清除Ollama model 占用記憶體
         // Fetch the updated story data to get the generated image prompts
         const updatedStory: storyInterface = await DataBase.getStoryById(Saved_storyID);
         const generated_story_image_prompt = updatedStory.image_prompt;
 
-        console.log(`Generated Image Prompts: ${JSON.stringify(generated_story_image_prompt)}`);
-
         if (!generated_story_image_prompt || generated_story_image_prompt.length === 0) {
           throw new Error('No image prompts generated，圖片提示生成失敗');
         }
-
         console.log(`start GenImage`);
         await GenImage(generated_story_image_prompt, Saved_storyID);
 

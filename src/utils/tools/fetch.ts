@@ -84,7 +84,7 @@ export const getSDModelList = async () => {
     }
 }
 
-export const getVoice = async (story_id:string, ) =>{
+export const getVoice = async (story_id:string, speek_text:string) =>{
 
 }
 

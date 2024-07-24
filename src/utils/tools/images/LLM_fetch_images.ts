@@ -104,12 +104,16 @@ let generated_imageprompt_array: string[] = [];
  */
 export const GenImg_prompt_En_array = async (story_array:string[]):Promise<string[]> => {
    try{
+      var i=0;
+      console.log(`story_array.length = ${story_array.length}`);
       for (const story_slice of story_array){
+         console.log(`第 i 次生成: ${i}`);
          generated_imageprompt_array.push(await GenImg_prompt_En(story_slice));
          await new Promise(resolve => {
             console.log(`wait 3 seconds...`);
             setTimeout(resolve, 3000);
          });
+         i+=1;
       }
       
       console.log(`generated_imageprompt success`);
