@@ -20,11 +20,15 @@ export class StoryRoute extends Route{
       this.router.post(`${this.url}/image/sdoption`, this.Controller.sdOption);
       this.router.get(`${this.url}/images/sdmodellist`, this.Controller.GetSDModelList);
       this.router.post(`${this.url}/image/re_gen_image`, this.Controller.ReGenImage);
+
+      this.router.post(`${this.url}/voice/savevoice`, this.Controller.SaveVoice);
       // http://localhost:7943/story/getstorylist_fdb
       // http://localhost:7943/story/llm/genstory
       // http://localhost:7943/story/llm/genimageprompt
       // http://localhost:7943/story/image/sdoption
       // http://localhost:7943/story/images/sdmodellist
       // http://localhost:7943/story/image/re_gen_image
+
+      // http://localhost:7943/story/voice/savevoice
    }
 }

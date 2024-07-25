@@ -4,8 +4,10 @@ import { DataBase } from "../utils/DataBase";
 import { LLMGenStory_1st_2nd, LLMGen_release } from "../utils/tools/LLMapi";
 import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
-import { fetchImage, sdModelOption, getSDModelList, getVoice } from "../utils/tools/fetch";
+import { fetchImage, sdModelOption, getSDModelList, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
+import fs from 'fs/promises';
+import path from 'path';  
 
 
 
@@ -178,4 +180,39 @@ export class StoryController extends Controller {
     }
   };
 
+  public async SaveVoice(req: Request, res: Response) {
+    try {
+      const { storyId, storyTale } = req.body;
+
+      // 調用 getVoices 方法
+      const { audioFileName, audioBuffer } = await getVoices(storyId, storyTale);
+
+      // 設定檔案路徑 & 保證非空 
+      const filePath = path.join(process.env.dev_saveAudio!, audioFileName);
+
+      // 將 ArrayBuffer 寫入文件系統
+      await fs.writeFile(filePath, Buffer.from(audioBuffer));
+
+      res.json({
+        success: true,
+        message: "Voice generated successfully",
+        audioFilePath: filePath,
+        audioFileName: audioFileName
+      });
+
+    } catch (error) {
+      console.error("Error in voice generation test:", error);
+
+      let errorMessage = "An unknown error occurred";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Voice generation test failed",
+        error: errorMessage
+      });
+    }
+  }
 }

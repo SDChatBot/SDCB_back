@@ -84,9 +84,26 @@ export const getSDModelList = async () => {
     }
 }
 
-export const getVoice = async (story_id:string, speek_text:string) =>{
+export const getVoices = async (Saved_storyID: string, storyTale: string): Promise<{ audioFileName: string, audioBuffer: ArrayBuffer }> => {
+    const url = `http://163.13.202.120:9880/?text=${encodeURIComponent(storyTale)}&text_language=zh`;
 
+    try {
+        const response = await fetch(url, { method: 'GET' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const audioBuffer = await response.arrayBuffer();
+        const audioFileName = `Saved_${Saved_storyID}.mp3`;
+
+        return { audioFileName, audioBuffer };
+    } catch (error) {
+        console.error("Error fetching voice:", error);
+        throw error;
+    }
 }
+
 
 // //http://163.13.202.120:8188/prompt
 // const useComfy3D = `http://163.13.202.120:8188/prompt`
