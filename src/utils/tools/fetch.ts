@@ -19,22 +19,20 @@ export const fetchImage = async (payload:Object) => {
 };
 
 
-export const Login_SD = async()=>{
-    let bodyUSP = new URLSearchParams();
-    bodyUSP.append('username', 'demo01');
-    bodyUSP.append('password', 'demo');
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: JSON.stringify(bodyUSP)
-    };
-    try{
-        const response = await fetch(`${url}/login`, requestOptions)
-        
-    }catch(error){
-
-    }
-}
+// export const Login_SD = async()=>{
+//     let bodyUSP = new URLSearchParams();
+//     bodyUSP.append('username', 'demo01');
+//     bodyUSP.append('password', 'demo');
+//     const requestOptions = {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//         body: JSON.stringify(bodyUSP)
+//     };
+//     try{
+//         const response = await fetch(`${url}/login`, requestOptions)     
+//     }catch(error){
+//     }
+// }
 
 /**
  * 更改sd option，使用想要的模型生成圖片
@@ -45,7 +43,7 @@ export const sdModelOption = async (MODEL_NAME:string) =>{
         const response = await fetch(`${url}sdapi/v1/options`);
         if (!response.ok) {
             throw new Error(`sd get options error! status: ${response.status}`);
-            return { code: 403, message: `sd get options error! status: ${response.status}`};
+            // return { code: 403, message: `sd get options error! status: ${response.status}`};
         }
 
         const opt_json = await response.json();
@@ -86,17 +84,13 @@ export const getSDModelList = async () => {
 
 export const getVoices = async (Saved_storyID: string, storyTale: string): Promise<{ audioFileName: string, audioBuffer: ArrayBuffer }> => {
     const url = `http://163.13.202.120:9880/?text=${encodeURIComponent(storyTale)}&text_language=zh`;
-
     try {
         const response = await fetch(url, { method: 'GET' });
-
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const audioBuffer = await response.arrayBuffer();
         const audioFileName = `Saved_${Saved_storyID}.mp3`;
-
         return { audioFileName, audioBuffer };
     } catch (error) {
         console.error("Error fetching voice:", error);
