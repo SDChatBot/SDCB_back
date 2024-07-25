@@ -13,6 +13,7 @@ export class StoryRoute extends Route{
    // http://localhost:7943/story
    protected setRoutes(): void {
       this.router.get(`${this.url}`, this.Controller.test);
+      this.router.post(`${this.url}/startstory`, this.Controller.StartStory);
       this.router.get(`${this.url}/getstorylist_fdb`, this.Controller.GetStorylistFDB);
       this.router.post(`${this.url}/llm/genstory`, this.Controller.LLMGenStory);
       this.router.post(`${this.url}/llm/genimageprompt`, this.Controller.genimageprompt);
@@ -22,6 +23,7 @@ export class StoryRoute extends Route{
       this.router.post(`${this.url}/image/re_gen_image`, this.Controller.ReGenImage);
 
       this.router.post(`${this.url}/voice/savevoice`, this.Controller.SaveVoice);
+      // http://localhost:7943/story/startstory
       // http://localhost:7943/story/getstorylist_fdb
       // http://localhost:7943/story/llm/genstory
       // http://localhost:7943/story/llm/genimageprompt

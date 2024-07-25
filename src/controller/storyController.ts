@@ -15,6 +15,13 @@ export class StoryController extends Controller {
   public test(Request: Request, Response: Response) {
     Response.send(`this is STORY get, use post in this url is FINE !`);
   }
+  
+  // 拿單一本書的資訊並回傳
+  public async StartStory(Request:Request, Response:Response){
+    const { storyId } = Request.body;
+    const story:storyInterface = await DataBase.getStoryById(storyId);
+    Response.send(story);
+  }
 
   //拿資料庫故事
   public GetStorylistFDB(Request: Request, Response: Response) {

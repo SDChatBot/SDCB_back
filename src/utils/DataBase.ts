@@ -40,7 +40,7 @@ export class DataBase{
     static async getStoryById(_id:string):Promise<object | any>{
         try{
             const storyTale = await storyModel.findOne({_id});
-            console.log(typeof storyTale)
+            // console.log(typeof storyTale)
             return storyTale;
         }catch(e){
             console.log(`getStoryById fail, ${e}`)
