@@ -5,3 +5,6 @@
 node_modules
 
 build
+
+/src/voices/*.wav
+!/src/voices/.gitkeep
