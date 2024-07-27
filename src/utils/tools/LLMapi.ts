@@ -69,15 +69,15 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
         // 第二次生成
         let payload2 = {
             "model": "Llama3-TAIDE-LX-8B-Chat-Alpha1.Q5_K_M.gguf:latest",
-            "prompt": `幫我檢視並修改以下故事，使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{200到300字}}，並大約{{100字使用{\n}換行}}。僅須回答我修改後的故事內容，不用回覆我其他與故事無關的訊息，包括更改哪些部分或使用了什麼語氣等無用訊息。最後使用繁體中文回應所有答覆。最後這是我要修改的故事: ${story_1st}`,
+            "prompt": `幫我檢視並修改以下故事${story_1st}。使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{200到300字}}，並大約{{100字使用{\n}換行}}。僅須回答我修改後的故事內容，不用回覆我其他與故事無關的訊息，包括更改哪些部分或使用了什麼語氣等無用訊息。最後使用繁體中文回應所有答覆。以下是一個範例故事: 有一位叫喬治的小男孩，他和好朋友朵莉亞總是形影不離，這天，兩位好朋友一起吃午餐\n\n喬治：哇，這道菜看起來真好吃！\n\n朵莉亞：是啊，媽媽花了好多時間做這頓飯。你吃過那種超酷的智能米嗎？\n\n喬治：有啊，它真的很好吃！我喜歡它會隨著你吃多少量自動調整溫度，這樣就不會浪費食物了。\n\n朵莉亞：沒錯，科技真是進步得太快了。我聽說未來還會有機器人幫忙做家事，那該多好啊！\n\n喬治：我也不，我總是被那些能說話的機器和飛行汽車給吸引。你知道嗎？我前幾天在街上看到一輛全新的超音速汽車，速度簡直快得嚇人！\n\n朵莉亞：哇，那肯定很酷。但我還是喜歡我們現在的生活，慢慢來享受美食和與朋友相處的時光，比快速前進更重要。\n\n喬治：我同意。我們應該好好珍惜這些簡單的事物，因為它們才是真正快樂的源泉。\n\n在公園裡，他們跟其他小孩一起玩耍，分享著各式新穎的玩具和遊戲。雖然生活被科技包圍，但最重要的還是人與人之間的情誼，以及那些難以忘懷的美好回憶。`,
             "stream": false,
         };
         const story_2nd:string = await LLMGenChat(payload2);
         // REMOVE console
         // console.log(`story_2nd storyout = ${story_2nd}`);
         if (story_2nd !== "") {
-            generated_story_array = story_2nd.split("\n");
-            // console.log(`generated_story_array = ${generated_story_array}`);
+            generated_story_array = story_2nd.split("\n\n");
+            console.log(`generated_story_arrayAA.length = ${generated_story_array.length}`);
             let Saved_storyID = await DataBase.SaveNewStory_returnID(story_2nd, storyInfo);
             return Saved_storyID;
         }

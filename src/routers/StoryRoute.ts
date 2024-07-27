@@ -23,6 +23,7 @@ export class StoryRoute extends Route{
       this.router.post(`${this.url}/image/re_gen_image`, this.Controller.ReGenImage);
 
       this.router.post(`${this.url}/voice/savevoice`, this.Controller.SaveVoice);
+      this.router.post(`${this.url}/voice/take_voice`, this.Controller.TakeVoice);
       // http://localhost:7943/story/startstory
       // http://localhost:7943/story/getstorylist_fdb
       // http://localhost:7943/story/llm/genstory
@@ -32,5 +33,6 @@ export class StoryRoute extends Route{
       // http://localhost:7943/story/image/re_gen_image
 
       // http://localhost:7943/story/voice/savevoice
+      // http://localhost:7943/story/voice/take_voice
    }
 }

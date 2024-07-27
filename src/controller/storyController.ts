@@ -6,7 +6,9 @@ import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/
 import { storyInterface } from "../interfaces/storyInterface";
 import { fetchImage, sdModelOption, getSDModelList, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
-import fs from 'fs/promises';
+import { GenVoice } from "../utils/tools/tool";
+// import fs from 'fs/promises';
+import fs from "fs";
 import path from 'path';  
 
 
@@ -91,10 +93,8 @@ export class StoryController extends Controller {
       try {
         let generated_imagebase64_array: string[] = (await Promise.all(promises)).flat();
         await DataBase.Update_StoryImage_Base64(_id, generated_imagebase64_array);
-        // response.json({ images: generated_imagebase64_array });
       } catch (error: any) {
         console.error(`Error in GenImage: ${error.message}`);
-        // response.status(500).send({ error: "Failed to generate or save image" });
       }
     };
 
@@ -109,7 +109,7 @@ export class StoryController extends Controller {
 
         const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
         // TODO story.storyTale 完整的故事字串
-        generated_story_array = story.storyTale.split("\n");
+        generated_story_array = story.storyTale.split("\n\n");
         // console.log(`generated_story_array = ${generated_story_array}`);
         await delayedExecution();
 
@@ -126,8 +126,9 @@ export class StoryController extends Controller {
         console.log(`start GenImage`);
         await GenImage(generated_story_image_prompt, Saved_storyID);
 
-        // console.log(`start GenVoice`);
-        // await (GenVoicegenerated_story_array, Saved_storyID);
+        console.log(`start getVoices`);
+        const joinedStory = generated_story_array.join(", ");
+        await GenVoice(Saved_storyID, joinedStory);
 
       } catch (error: any) {
         console.error(`Error generating story: ${error.message}`);
@@ -143,7 +144,11 @@ export class StoryController extends Controller {
     try {
       await Promise.all(promises);
       // 所有異步操作完成後，回傳成功的狀態碼
-      return Response.status(200).send('All operations have been completed successfully');
+      let return_playload = {
+        success: true,
+        storyId: Saved_storyID
+      }
+      return Response.status(200).send(return_playload);
     } catch (error) {
       console.error(`Error in LLMGenStory: ${error}`);
       return Response.status(500).send('Internal Server Error');
@@ -190,15 +195,10 @@ export class StoryController extends Controller {
   public async SaveVoice(req: Request, res: Response) {
     try {
       const { storyId, storyTale } = req.body;
-
-      // 調用 getVoices 方法
       const { audioFileName, audioBuffer } = await getVoices(storyId, storyTale);
 
-      // 設定檔案路徑 & 保證非空 
       const filePath = path.join(process.env.dev_saveAudio!, audioFileName);
-
-      // 將 ArrayBuffer 寫入文件系統
-      await fs.writeFile(filePath, Buffer.from(audioBuffer));
+      await fs.promises.writeFile(filePath, Buffer.from(audioBuffer));
 
       res.json({
         success: true,
@@ -220,6 +220,49 @@ export class StoryController extends Controller {
         message: "Voice generation test failed",
         error: errorMessage
       });
+    }
+  }
+
+  public async TakeVoice(Request: Request, Response: Response) {
+    try {
+      const { storyId } = Request.body;
+
+      if (!storyId) {
+        return Response.status(400).send('storyId is required');
+      }
+
+      const filePath = path.resolve(process.env.dev_saveAudio!, `Saved_${storyId}.wav`);
+      console.log(`filePath = ${filePath}`);
+
+      if (!fs.existsSync(filePath)) {
+        console.error('File not found:', filePath);
+        return Response.status(404).send('File not found');
+      }
+
+      const stat = fs.statSync(filePath);
+      Response.writeHead(200, {
+        'Content-Type': 'audio/wav',
+        'Content-Length': stat.size,
+        'Content-Disposition': `attachment; filename=Saved_${storyId}.wav`
+      });
+
+      const fileStream = fs.createReadStream(filePath);
+
+      fileStream.on('error', (error) => {
+        console.error('Error reading file:', error);
+        Response.status(500).end('Error reading file');
+      });
+
+      fileStream.pipe(Response);
+
+      fileStream.on('end', () => {
+        console.log('File sent successfully');
+        Response.end();
+      });
+
+    } catch (error) {
+      console.error('Error processing request:', error);
+      Response.status(500).send('Internal Server Error');
     }
   }
 }

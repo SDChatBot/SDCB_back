@@ -90,7 +90,7 @@ export const getVoices = async (Saved_storyID: string, storyTale: string): Promi
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const audioBuffer = await response.arrayBuffer();
-        const audioFileName = `Saved_${Saved_storyID}.mp3`;
+        const audioFileName = `Saved_${Saved_storyID}.wav`;
         return { audioFileName, audioBuffer };
     } catch (error) {
         console.error("Error fetching voice:", error);
