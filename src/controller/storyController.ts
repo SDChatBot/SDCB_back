@@ -232,7 +232,7 @@ export class StoryController extends Controller {
       }
 
       const filePath = path.resolve(process.env.dev_saveAudio!, `Saved_${storyId}.wav`);
-      console.log(`filePath = ${filePath}`);
+      // console.log(`filePath = ${filePath}`);
 
       if (!fs.existsSync(filePath)) {
         console.error('File not found:', filePath);
