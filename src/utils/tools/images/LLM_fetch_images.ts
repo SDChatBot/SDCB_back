@@ -61,6 +61,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             
             My first request is - "{${story_slice}}".`,
       "stream": false,
+      "eval_count": 450,
    };
    
    const requestOptions = {

@@ -9,11 +9,6 @@ const port = 7943
 const ip = "163.13.202.120";
 const DB = new DataBase("mongodb://163.13.202.120:2425/");
 
-// // //use
-// // httpServer.listen(portSocket, ip, () => {
-// //     console.log(`Socket Server: http://${ip}:${portSocket}`);
-// // });
-
 //***************************************************************************************************//
 
 //系統伺服器
@@ -34,12 +29,12 @@ for (const route of router) {
 }
 
 //=============================================
-// //dev 開發
-// app.listen(port, () => {
-//     console.log(`Server: http://127.0.0.1:${port}/user`)
-// });
-
-//use 使用
-app.listen(port, ip,() => {
-    console.log(`Server: http://${ip}:${port}/user`)
+//dev 開發
+app.listen(port, () => {
+    console.log(`Server: http://127.0.0.1:${port}/user`)
 });
+
+// //use 使用
+// app.listen(port, ip,() => {
+//     console.log(`Server: http://${ip}:${port}/user`)
+// });
