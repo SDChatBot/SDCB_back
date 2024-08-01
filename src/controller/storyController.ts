@@ -93,7 +93,6 @@ export class StoryController extends Controller {
         console.log(`GenImage 第${i}次生成`);
         promises.push(await fetchImage(payload));
 
-        // 等待3秒再发送下一个请求
         await new Promise(resolve => setTimeout(resolve, 3000));
       }
 
@@ -116,7 +115,6 @@ export class StoryController extends Controller {
         console.log(`Saved_storyID = ${Saved_storyID}`);
 
         const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
-        // TODO story.storyTale 完整的故事字串
         generated_story_array = story.storyTale.split("\n\n");
         // console.log(`generated_story_array = ${generated_story_array}`);
         await delayedExecution();
@@ -138,6 +136,7 @@ export class StoryController extends Controller {
         const joinedStory = generated_story_array.join(", ");
         await GenVoice(Saved_storyID, joinedStory);
         console.log(`story generate finish !!`);
+        
       } catch (error: any) {
         abort_controller.abort();
         console.error(`Error generating story: ${error.message}`);
