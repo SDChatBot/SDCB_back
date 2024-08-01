@@ -27,21 +27,20 @@ export const GenVoice = async (storyId:string, storyTale:string) => {
         await fs.writeFile(filePath, Buffer.from(audioBuffer));
         
         console.log(`Voice generated successfully, and saved success`);
-        // let playload = {
-        //     success: true,
-        //     message: "Voice generated successfully",
-        //     audioFilePath: filePath,
-        //     audioFileName: audioFileName
-        // }
-        // return playload;
-
     } catch (error) {
         console.error("Error in GenVoice: ", error);
-        // let playload = {
-        //     success: false,
-        //     message: `Voice generated fail with error: ${error}`,
-        // }
-        // return playload;
     }
+}
+
+//  判斷物件內的屬性是否都存在
+export function isObjectValid(obj: any | null | undefined): boolean {
+    if (!obj) return false;
+    
+    // 該函式會返回 true 如果物件的每個屬性都不為 null、undefined
+    return Object.values(obj).every(value => 
+        value !== null && 
+        value !== undefined && 
+        (Array.isArray(value) ? value.length > 0 : true)
+    );
 }
 

@@ -6,7 +6,7 @@ import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/
 import { storyInterface } from "../interfaces/storyInterface";
 import { fetchImage, sdModelOption, getSDModelList, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
-import { GenVoice } from "../utils/tools/tool";
+import { GenVoice, isObjectValid } from "../utils/tools/tool";
 // import fs from 'fs/promises';
 import fs from "fs";
 import path from 'path';  
@@ -51,6 +51,13 @@ export class StoryController extends Controller {
    */
   public async LLMGenStory(Request: Request, Response: Response) {
     let storyRoleForm: RoleFormInterface = Request.body.roleform;
+    if (!isObjectValid(storyRoleForm)) {
+      Response.send( {
+        code: 403,
+        message: "storyRoleForm 或其中的某個屬性是 null、undefined 或空陣列",
+        success: false
+      } );
+    }
     console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`);
     let generated_story_array: string[] | undefined;
 
@@ -103,6 +110,7 @@ export class StoryController extends Controller {
       try {
         Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
         if (!Saved_storyID) {
+          abort_controller.abort();
           throw new Error('Failed to generate story ID，生成故事失敗');
         }
         console.log(`Saved_storyID = ${Saved_storyID}`);
@@ -129,10 +137,10 @@ export class StoryController extends Controller {
         console.log(`start getVoices`);
         const joinedStory = generated_story_array.join(", ");
         await GenVoice(Saved_storyID, joinedStory);
-
+        console.log(`story generate finish !!`);
       } catch (error: any) {
-        console.error(`Error generating story: ${error.message}`);
         abort_controller.abort();
+        console.error(`Error generating story: ${error.message}`);
         throw error;
       }
     };
