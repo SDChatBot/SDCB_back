@@ -1,5 +1,6 @@
 import { DataBase } from "../DataBase";
 import { RoleFormInterface } from "../../interfaces/RoleFormInterface";
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -37,7 +38,7 @@ export const LLMGenChat = async (storyInfo: Object): Promise<string> => {
         }
     } catch (error:any) {
         if (error.name === 'AbortError') {
-            console.error(`Request timed out after ${15} seconds`);
+            console.error(`Request timed out after ${15} seconds, ${error}`);
             abort_controller.abort();
         }else{
             console.error(`LLMGenChat fail: ${error}`);
