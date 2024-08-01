@@ -3,11 +3,13 @@ import { DataBase } from './utils/DataBase';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { router } from './Routers';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express()
 const port = 7943
 const ip = "163.13.202.120";
-const DB = new DataBase("mongodb://163.13.202.120:2425/");
+const DB = new DataBase(process.env.mongoDB_api!);
 
 //***************************************************************************************************//
 
