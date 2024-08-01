@@ -1,7 +1,6 @@
-const url = "http://163.13.202.120:7860/"; //http://163.13.202.120:7860/sdapi/v1/txt2img
+import dotenv from 'dotenv';
+dotenv.config();
 
-let imagesBase64:string[]
-//生成圖片(stable diffusion)
 export const fetchImage = async (payload:Object) => {
     const requestOptions = {
         method: 'POST',
@@ -9,7 +8,7 @@ export const fetchImage = async (payload:Object) => {
         body: JSON.stringify(payload)
     };
     try {
-        const response = await fetch(`${url}sdapi/v1/txt2img`, requestOptions);
+        const response = await fetch(`${process.env.stable_diffusion_api}/sdapi/v1/txt2img`, requestOptions);
         const data = await response.json();
         return data.images; //只回傳image Base64 code
     } catch (error) {
@@ -19,28 +18,13 @@ export const fetchImage = async (payload:Object) => {
 };
 
 
-// export const Login_SD = async()=>{
-//     let bodyUSP = new URLSearchParams();
-//     bodyUSP.append('username', 'demo01');
-//     bodyUSP.append('password', 'demo');
-//     const requestOptions = {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-//         body: JSON.stringify(bodyUSP)
-//     };
-//     try{
-//         const response = await fetch(`${url}/login`, requestOptions)     
-//     }catch(error){
-//     }
-// }
-
 /**
  * 更改sd option，使用想要的模型生成圖片
  * @param MODEL_NAME 要使用的sd 模型名稱
  */
 export const sdModelOption = async (MODEL_NAME:string) =>{
     try {
-        const response = await fetch(`${url}sdapi/v1/options`);
+        const response = await fetch(`${process.env.stable_diffusion_api}/sdapi/v1/options`);
         if (!response.ok) {
             throw new Error(`sd get options error! status: ${response.status}`);
             // return { code: 403, message: `sd get options error! status: ${response.status}`};
@@ -56,7 +40,7 @@ export const sdModelOption = async (MODEL_NAME:string) =>{
             body: JSON.stringify(opt_json),
         };
 
-        const updateResponse = await fetch(`${url}sdapi/v1/options`, updateOptions);
+        const updateResponse = await fetch(`${process.env.stable_diffusion_api}/sdapi/v1/options`, updateOptions);
         if (!updateResponse.ok) {
             throw new Error(`HTTP error! status: ${updateResponse.status}`);
         }
@@ -70,7 +54,7 @@ export const sdModelOption = async (MODEL_NAME:string) =>{
 
 export const getSDModelList = async () => {
     try {
-        const response = await fetch(`${url}sdapi/v1/sd-models`);
+        const response = await fetch(`${process.env.stable_diffusion_api}/sdapi/v1/sd-models`);
         if (!response.ok) {
             throw new Error(`sd get models error! status: ${response.status}`);
         }

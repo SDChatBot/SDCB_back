@@ -2,7 +2,7 @@ import { Controller } from "../interfaces/Controller";
 import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
 import { LLMGenStory_1st_2nd, LLMGen_release, abort_controller } from "../utils/tools/LLMapi";
-import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/images/LLM_fetch_images";
+import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
 import { fetchImage, sdModelOption, getSDModelList, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
