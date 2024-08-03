@@ -61,6 +61,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             
             My first request is - "{${story_slice}}".`,
       "stream": false,
+      "total_duration":14,
       "eval_count": 450,
    };
    
@@ -86,7 +87,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
    } catch (error:any) {
       if (error.name === 'AbortError'){
          // throw new Error(`Request timed out after ${15} seconds`);
-         console.error(`Request timed out after ${15} seconds`);
+         console.error(`GenImg_prompt_En Request timed out after ${15} seconds error: ${error}`);
          controller.abort();
       }else{
          console.error(`GenImg_prompt_En fail: ${error}`);

@@ -31,12 +31,12 @@ for (const route of router) {
 }
 
 //=============================================
-// //dev 開發
-// app.listen(port, () => {
-//     console.log(`Server: http://127.0.0.1:${port}/user`)
-// });
-
-//use 使用
-app.listen(port, ip,() => {
-    console.log(`Server: http://${ip}:${port}/user`)
+//dev 開發
+app.listen(port, () => {
+    console.log(`Server: http://127.0.0.1:${port}/user`)
 });
+
+// //use 使用
+// app.listen(port, ip,() => {
+//     console.log(`Server: http://${ip}:${port}/user`)
+// });
