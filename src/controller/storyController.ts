@@ -74,13 +74,14 @@ export class StoryController extends Controller {
     const GenImagePrompt = async (generated_story_array: string[], _id: string): Promise<void> => {
         if (generated_story_array) {
             generated_imageprompt_array = await GenImg_prompt_En_array(generated_story_array);
+            console.log(`generated_imageprompt_array.length = ${generated_imageprompt_array.length}`);
             await DataBase.Update_StoryImagePrompt(_id, generated_imageprompt_array);
         }
     };
 
+    // 生成圖片
     const GenImage = async (generated_story_image_prompt: Array<string>, _id: string): Promise<void> => {
         let promises: Promise<string[]>[] = [];
-
         for (let i = 0; i < generated_story_image_prompt.length; i++) {
             let payload: Object = {
                 "prompt": generated_story_image_prompt[i],
@@ -152,11 +153,14 @@ export class StoryController extends Controller {
             storyId: Saved_storyID
         };
         return Response.status(200).send(return_playload);
-    } catch (error) {
-        console.error(`Error in LLMGenStory: ${error}`);
-        return Response.status(500).send('Internal Server Error');
+    } catch (error:any) {
+      console.error(`Error in generateStory: ${error.message}`);
+      return Response.status(500).send({
+          success: false,
+          message: 'generateStory Error: ' + error.message
+      });
     }
-}
+  }
 
 
   public async genimageprompt(Request:Request, Response:Response){
