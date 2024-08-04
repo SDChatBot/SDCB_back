@@ -32,7 +32,7 @@ export function caseSdModelUse(storyStyle:string){
         }
         
         // 水彩畫風格
-        case "rachelWalkerStyle_v1.ckpt":{
+        case "rachelWalkerStyle_v1.ckpt [54ded95d83]":{
             payload.sd_name = "rachelWalkerStyle_v1.ckpt" ;
             payload.exclusive_prompt = "a watercolor painting of an owl in the evening in the rachelwalker style, high quality, denoise, clean, masterpiece, best quality, highres, intricate details, 4k, stunning" ;
             payload.negative_prompt = "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name" ;        
@@ -40,7 +40,7 @@ export function caseSdModelUse(storyStyle:string){
         }
 
         // 賽博龐克風格
-        case "splatterPunkXL_v10.safetensors":{
+        case "splatterPunkXL_v10.safetensors [b5730102eb]":{
             payload.sd_name = "splatterPunkXL_v10.safetensors" ;
             payload.exclusive_prompt = "nvinkpunk, (masterpiece, best quality, ultra-detailed, highres, best illustration), heterochromia, side lighting, lustrous skin, ray tracing,detailed hair, detailed face, depth_of_field, very detailed background, extreme light and shadow, (detailed eyes), perfect anatomy, Floating, dynamic angle, wide shot, full body, city scape , extreme light and shadow, night sky, outrun, electric light wires, neon outlines, illustrated";
             payload.negative_prompt = "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, Realism, worst quality, bad quality, poor quality, blurry, zombie, ugly, cropped, out of frame, photo, Fujifilm XT3, depth of field, bokeh, noise, film grain";        
@@ -56,7 +56,7 @@ export function caseSdModelUse(storyStyle:string){
         }
 
         // 3D卡通風格
-        case "cartoonmix_v10.safetensors":{
+        case "cartoonmix_v10.safetensors [730ecbe46a]":{
             payload.sd_name = "cartoonmix_v10.safetensors" ;
             payload.exclusive_prompt = "Best quality,masterpiece,ultra high res,\\\(photorealistic:1.4\\\),raw photo,Kodak portra 400,film grain,aki001,extremely detailed CG unity 8k wallpaper,close up";
             payload.negative_prompt = "low quality, worst quality, Anime Support-neg, Anti 3d Reality, bad_prompt_version2-neg, By bad artist -neg, EasyNegativeV2, FastNegativeV2, NGH, NIV-neg, SimpleNegativeV3, verybadimagenegative_v1.3, bad-hands-5 EasyNegativeV2 ng_deepnegative_v1_75t";        
@@ -80,7 +80,7 @@ export function caseSdModelUse(storyStyle:string){
         }
 
         // Q版漫畫風格
-        case "cuteCATCuteCitron_v2.safetensors":{
+        case "cuteCATCuteCitron_v2.safetensors [c75902b553]":{
             payload.sd_name = "cuteCATCuteCitron_v2.safetensors";
             payload.exclusive_prompt = "masterpiece, best quality, highres,standing, cowboy shot, outdoors";
             payload.negative_prompt = "EasyNegative, (worst quality, low quality:1.0), badhandv4, ng_deepnegative_v1_75t";
