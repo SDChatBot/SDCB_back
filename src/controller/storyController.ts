@@ -8,9 +8,12 @@ import { fetchImage, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
 import { GenVoice, isObjectValid, delayedExecution } from "../utils/tools/tool";
 import { caseSdModelUse } from "../utils/tools/sdModel_tool";
+// import pQueue from 'p-queue';
 import fs from "fs";
 import path from 'path';  
 
+// const MAX_CONCURRENT_REQUESTS = 5;
+// const queue = new pQueue({ concurrency: MAX_CONCURRENT_REQUESTS });
 
 
 export class StoryController extends Controller {
@@ -90,7 +93,7 @@ export class StoryController extends Controller {
                 "enable_hr": false,
                 "denoising_strength": 0.75,
                 "restore_faces": false,
-                "negative_prompt": settingPlayload.negative_prompt + "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, Realism, worst quality, bad quality, poor quality, blurry, zombie, ugly, cropped, out of frame",
+                "negative_prompt": settingPlayload.negative_prompt + "low res, text, logo, banner, extra digits, jpeg artifacts, signature,  error, sketch ,duplicate, monochrome, horror, geometry, mutation, disgusting, nsfw, nude, censored, lowres, bad anatomy, bad hands,  missing fingers, fewer digits, cropped, worst quality, low quality, normal quality, signature, watermark, username, blurry, artist name, bad quality, poor quality, zombie, ugly, out of frame",
             };
             console.log(`GenImage 第${i}次生成`);
             promises.push(fetchImage(payload));
