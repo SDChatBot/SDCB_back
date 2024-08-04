@@ -8,15 +8,14 @@ import { fetchImage, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
 import { GenVoice, isObjectValid, delayedExecution } from "../utils/tools/tool";
 import { caseSdModelUse } from "../utils/tools/sdModel_tool";
-// import pQueue from 'p-queue';
+import PQueue from 'p-queue';
 import fs from "fs";
 import path from 'path';  
 
-// const MAX_CONCURRENT_REQUESTS = 5;
-// const queue = new pQueue({ concurrency: MAX_CONCURRENT_REQUESTS });
-
 
 export class StoryController extends Controller {
+  private queue = new PQueue({concurrency: 1}); // 限制為1個並發請求
+
   public test(Request: Request, Response: Response) {
     Response.send(`this is STORY get, use post in this url is FINE !`);
   }
