@@ -14,9 +14,11 @@ dotenv.config();
         "mode": "chat"
  * }
  */
+export const abort_controller: AbortController = new AbortController();
+
 export const LLMGenChat = async (storyInfo: Object): Promise<string> => {
     const abort_controller = new AbortController(); // 每次調用時創建新的 AbortController
-    const timeoutId = setTimeout(() => abort_controller.abort(), 17000);
+    const timeoutId = setTimeout(() => abort_controller.abort(), 30000);
     const requestOptions = {
         method: "POST",
         headers: {
