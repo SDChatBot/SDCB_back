@@ -1,13 +1,13 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
-import { LLMGenStory_1st_2nd, LLMGen_release, abort_controller } from "../utils/tools/LLMapi";
-import { GenImg_prompt_En_array, GenImg_prompt_En } from "../utils/tools/LLM_fetch_images";
+import { LLMGenStory_1st_2nd, LLMGen_release } from "../utils/tools/LLMapi";
+import { GenImg_prompt_En_array, GenImg_prompt_En, sdModelOption, getSDModelList } from "../utils/tools/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
-import { fetchImage, sdModelOption, getSDModelList, getVoices } from "../utils/tools/fetch";
+import { fetchImage, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
-import { GenVoice, isObjectValid } from "../utils/tools/tool";
-// import fs from 'fs/promises';
+import { GenVoice, isObjectValid, delayedExecution } from "../utils/tools/tool";
+import { caseSdModelUse } from "../utils/tools/sdModel_tool";
 import fs from "fs";
 import path from 'path';  
 
@@ -61,11 +61,8 @@ export class StoryController extends Controller {
 
     console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`);
     let generated_story_array: string[] | undefined;
-
-    async function delayedExecution(): Promise<void> {
-        console.log('Waiting for 3 seconds...');
-        await new Promise(resolve => setTimeout(resolve, 3000)); // 等待 3 秒鐘
-    }
+    const MODEL_NAME = storyRoleForm.style;
+    await sdModelOption(MODEL_NAME);
 
     let generated_imageprompt_array: string[] = [];
     let Saved_storyID: string = "";
@@ -80,17 +77,20 @@ export class StoryController extends Controller {
     };
 
     // 生成圖片
-    const GenImage = async (generated_story_image_prompt: Array<string>, _id: string): Promise<void> => {
-        let promises: Promise<string[]>[] = [];
+    const GenImage = async (generated_story_image_prompt: Array<string>, _id: string, sd_name:string): Promise<void> => {
+      const settingPlayload = caseSdModelUse(sd_name);
+      console.log(`settingPlayload = ${JSON.stringify(settingPlayload)}`);
+      let promises: Promise<string[]>[] = [];
         for (let i = 0; i < generated_story_image_prompt.length; i++) {
             let payload: Object = {
-                "prompt": generated_story_image_prompt[i],
+                "prompt": generated_story_image_prompt[i]+settingPlayload.exclusive_prompt,
                 "seed": -1,
                 "cfg_scale": 7,
                 "steps": 20,
                 "enable_hr": false,
                 "denoising_strength": 0.75,
                 "restore_faces": false,
+                "negative_prompt": settingPlayload.negative_prompt + "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, Realism, worst quality, bad quality, poor quality, blurry, zombie, ugly, cropped, out of frame",
             };
             console.log(`GenImage 第${i}次生成`);
             promises.push(fetchImage(payload));
@@ -132,7 +132,7 @@ export class StoryController extends Controller {
                 throw new Error('No image prompts generated，圖片提示生成失敗');
             }
             console.log(`start GenImage`);
-            await GenImage(generated_story_image_prompt, Saved_storyID);
+            await GenImage(generated_story_image_prompt, Saved_storyID, storyRoleForm.style);
 
             console.log(`start getVoices`);
             const joinedStory = generated_story_array.join(", ");
@@ -170,8 +170,7 @@ export class StoryController extends Controller {
   }
 
   public async sdOption(Request:Request, Response:Response){
-    // let MODEL_NAME = `AnythingXL_xl.safetensors [8421598e93]`
-    let MODEL_NAME:string = Request.body.modelname!;
+    let MODEL_NAME:string = Request.body.modelname || "fantasyWorld_v10.safetensors";
     Response.send(await sdModelOption(MODEL_NAME));
   }
 

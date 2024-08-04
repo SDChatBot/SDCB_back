@@ -1,6 +1,46 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+/**
+ * 更改sd option，使用想要的模型生成圖片
+ * @param MODEL_NAME 要使用的sd 模型名稱
+ */
+export const sdModelOption = async (MODEL_NAME:string) =>{
+   try {
+      let payload = {
+         "sd_model_checkpoint":""
+      };
+      payload["sd_model_checkpoint"] = MODEL_NAME;
+
+      const updateOptions = {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(payload),
+      };
+      const updateResponse = await fetch(`${process.env.stable_diffusion_api}/sdapi/v1/options`, updateOptions);
+      if (!updateResponse.ok) {
+         throw new Error(`HTTP error! status: ${updateResponse.status}`);
+      }
+      return { code: 200, message:`Model option updated successfully`}
+   } catch (error: any) {
+      return { code: 405, message: `Error in sdModelOption: ${error.message}` };
+   }
+}
+
+export const getSDModelList = async () => {
+   try {
+      const response = await fetch(`${process.env.stable_diffusion_api}/sdapi/v1/sd-models`);
+      if (!response.ok) {
+         throw new Error(`sd get models error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+   } catch (error: any) {
+      console.error(`Error in getSDModelList: ${error.message}`);
+      throw new Error(`getSDModelList error! status: ${error.message}`);
+   }
+}
+
 export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
    const controller:AbortController = new AbortController();
    const timeoutId = setTimeout(()=>controller.abort(), 15000);

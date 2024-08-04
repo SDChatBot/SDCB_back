@@ -2,6 +2,11 @@ import { getVoices } from "../tools/fetch";
 import fs from 'fs/promises';
 import path from 'path';  
 
+export const delayedExecution = async(): Promise<void> => {
+    console.log('Waiting for 3 seconds...');
+    await new Promise(resolve => setTimeout(resolve, 3000)); // 等待 3 秒鐘
+}
+
 export const CurrentTime = () =>{
     const now=new Date();
     const year = now.getFullYear();
