@@ -1,20 +1,18 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response} from "express";
 import { DataBase } from "../utils/DataBase";
-import { LLMGenStory_1st_2nd, LLMGen_release } from "../utils/tools/LLMapi";
-import { GenImg_prompt_En_array, GenImg_prompt_En, sdModelOption, getSDModelList } from "../utils/tools/LLM_fetch_images";
+import { GenImg_prompt_En, sdModelOption, getSDModelList } from "../utils/tools/LLM_fetch_images";
 import { storyInterface } from "../interfaces/storyInterface";
 import { fetchImage, getVoices } from "../utils/tools/fetch";
 import { RoleFormInterface } from "../interfaces/RoleFormInterface";
-import { GenVoice, isObjectValid, delayedExecution } from "../utils/tools/tool";
-import { caseSdModelUse } from "../utils/tools/sdModel_tool";
+import { isObjectValid, generateStory } from "../utils/tools/tool";
 import PQueue from 'p-queue';
 import fs from "fs";
 import path from 'path';  
 
 
 export class StoryController extends Controller {
-  private queue = new PQueue({concurrency: 1}); // 限制為1個並發請求
+  queue = new PQueue({concurrency: 1}); // 限制為1個並發請求
 
   public test(Request: Request, Response: Response) {
     Response.send(`this is STORY get, use post in this url is FINE !`);
@@ -51,7 +49,7 @@ export class StoryController extends Controller {
    *   "roleform":{"style":"帥貓咪","mainCharacter":"","description":"","otherCharacters":[]}
    * }
    */
-  public async LLMGenStory(Request: Request, Response: Response) {
+  public LLMGenStory = async(Request: Request, Response: Response) => {
     let storyRoleForm: RoleFormInterface = Request.body.roleform;
     if (!isObjectValid(storyRoleForm)) {
         return Response.send({
@@ -62,108 +60,27 @@ export class StoryController extends Controller {
     }
 
     console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`);
-    let generated_story_array: string[] | undefined;
+    // let generated_story_array: string[] | undefined;
     const MODEL_NAME = storyRoleForm.style;
     await sdModelOption(MODEL_NAME);
 
-    let generated_imageprompt_array: string[] = [];
-    let Saved_storyID: string = "";
-
-    // 用故事內容生成故事圖片prompt
-    const GenImagePrompt = async (generated_story_array: string[], _id: string): Promise<void> => {
-        if (generated_story_array) {
-            generated_imageprompt_array = await GenImg_prompt_En_array(generated_story_array);
-            console.log(`generated_imageprompt_array.length = ${generated_imageprompt_array.length}`);
-            await DataBase.Update_StoryImagePrompt(_id, generated_imageprompt_array);
-        }
-    };
-
-    // 生成圖片
-    const GenImage = async (generated_story_image_prompt: Array<string>, _id: string, sd_name:string): Promise<void> => {
-      const settingPlayload = caseSdModelUse(sd_name);
-      console.log(`settingPlayload = ${JSON.stringify(settingPlayload)}`);
-      let promises: Promise<string[]>[] = [];
-        for (let i = 0; i < generated_story_image_prompt.length; i++) {
-            let payload: Object = {
-                "prompt": generated_story_image_prompt[i]+settingPlayload.exclusive_prompt,
-                "seed": -1,
-                "cfg_scale": 7,
-                "steps": 20,
-                "enable_hr": false,
-                "denoising_strength": 0.75,
-                "restore_faces": false,
-                "negative_prompt": settingPlayload.negative_prompt + "low res, text, logo, banner, extra digits, jpeg artifacts, signature,  error, sketch ,duplicate, monochrome, horror, geometry, mutation, disgusting, nsfw, nude, censored, lowres, bad anatomy, bad hands,  missing fingers, fewer digits, cropped, worst quality, low quality, normal quality, signature, watermark, username, blurry, artist name, bad quality, poor quality, zombie, ugly, out of frame",
-            };
-            console.log(`GenImage 第${i}次生成`);
-            promises.push(fetchImage(payload));
-
-            await new Promise(resolve => setTimeout(resolve, 3000));
-        }
-
-        try {
-            let generated_imagebase64_array: string[] = (await Promise.all(promises)).flat();
-            await DataBase.Update_StoryImage_Base64(_id, generated_imagebase64_array);
-        } catch (error: any) {
-            console.error(`Error in GenImage: ${error.message}`);
-        }
-    };
-
-    // 生成故事內容
-    const generateStory = async (storyRoleForm: RoleFormInterface): Promise<void> => {
-        try {
-            Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
-            if (!Saved_storyID) {
-                throw new Error('Failed to generate story ID，生成故事失敗');
-            }
-            console.log(`Saved_storyID = ${Saved_storyID}`);
-
-            const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
-            generated_story_array = story.storyTale.split("\n\n");
-
-            await delayedExecution();
-
-            console.log(`start GenImagePrompt\n`);
-            await GenImagePrompt(generated_story_array || [], Saved_storyID);
-            await LLMGen_release(); // 清除Ollama model 占用記憶體
-
-            // Fetch the updated story data to get the generated image prompts
-            const updatedStory: storyInterface = await DataBase.getStoryById(Saved_storyID);
-            const generated_story_image_prompt = updatedStory.image_prompt;
-
-            if (!generated_story_image_prompt || generated_story_image_prompt.length === 0) {
-                throw new Error('No image prompts generated，圖片提示生成失敗');
-            }
-            console.log(`start GenImage`);
-            await GenImage(generated_story_image_prompt, Saved_storyID, storyRoleForm.style);
-
-            console.log(`start getVoices`);
-            const joinedStory = generated_story_array.join(", ");
-            await GenVoice(Saved_storyID, joinedStory);
-            console.log(`story generate finish !!`);
-
-        } catch (error: any) {
-            console.error(`Error generating story: ${error.message}`);
-            throw error;
-        }
-    };
-
     try {
-        await generateStory(storyRoleForm);
+        const result = await this.queue.add(() => generateStory(storyRoleForm));
+        // await generateStory(storyRoleForm);
         // 所有異步操作完成後，回傳成功的狀態碼
         let return_playload = {
-            success: true,
-            storyId: Saved_storyID
+          success: true,
+          storyId: result
         };
         return Response.status(200).send(return_playload);
     } catch (error:any) {
       console.error(`Error in generateStory: ${error.message}`);
       return Response.status(500).send({
-          success: false,
-          message: 'generateStory Error: ' + error.message
+        success: false,
+        message: 'generateStory Error: ' + error.message
       });
     }
   }
-
 
   public async genimageprompt(Request:Request, Response:Response){
     const story_slice = Request.body.story_slice!;
