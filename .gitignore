@@ -5,6 +5,3 @@
 node_modules
 
 build
-
-/src/voices/*
-!/src/voices/
