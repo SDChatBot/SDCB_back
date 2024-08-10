@@ -10,7 +10,7 @@ import path from 'path';
 
 export const delayedExecution = async(): Promise<void> => {
     console.log('Waiting for 3 seconds...');
-    await new Promise(resolve => setTimeout(resolve, 3000)); // 等待 3 秒鐘
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 等待 3 秒鐘
 }
 
 export const CurrentTime = () =>{
@@ -111,19 +111,19 @@ export const GenImage = async (generated_story_image_prompt: Array<string>, _id:
         let promises: Promise<string[]>[] = [];
             for (let i = 0; i < generated_story_image_prompt.length; i++) {
                 let payload: Object = {
-                    "prompt": generated_story_image_prompt[i]+settingPlayload.exclusive_prompt,
+                    "prompt": generated_story_image_prompt[i]+", "+settingPlayload.exclusive_prompt,
                     "seed": -1,
                     "cfg_scale": 7,
                     "steps": 20,
                     "enable_hr": false,
                     "denoising_strength": 0.75,
                     "restore_faces": false,
-                    "negative_prompt": settingPlayload.negative_prompt + "low res, text, logo, banner, extra digits, jpeg artifacts, signature,  error, sketch ,duplicate, monochrome, horror, geometry, mutation, disgusting, nsfw, nude, censored, lowres, bad anatomy, bad hands,  missing fingers, fewer digits, cropped, worst quality, low quality, normal quality, signature, watermark, username, blurry, artist name, bad quality, poor quality, zombie, ugly, out of frame",
+                    "negative_prompt": settingPlayload.negative_prompt +", "+"low res, text, logo, banner, extra digits, jpeg artifacts, signature,  error, sketch ,duplicate, monochrome, horror, geometry, mutation, disgusting, nsfw, nude, censored, lowres, bad anatomy, bad hands,  missing fingers, fewer digits, cropped, worst quality, low quality, normal quality, signature, watermark, username, blurry, artist name, bad quality, poor quality, zombie, ugly, out of frame",
                 };
                 console.log(`GenImage 第${i}次生成`);
                 promises.push(fetchImage(payload));
 
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
 
             try {

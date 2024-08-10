@@ -42,7 +42,7 @@ export class StoryController extends Controller {
   }
 
   /**
-   * 
+   * 生成故事
    * @param Request storyInfo 你的故事是甚麼內容
    * @example http://localhost:7943/story/llm/genstory post
    * {
@@ -59,15 +59,12 @@ export class StoryController extends Controller {
         });
     }
 
-    console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`);
-    // let generated_story_array: string[] | undefined;
+    console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`); // 傳入的角色設定
     const MODEL_NAME = storyRoleForm.style;
     await sdModelOption(MODEL_NAME);
 
     try {
         const result = await this.queue.add(() => generateStory(storyRoleForm));
-        // await generateStory(storyRoleForm);
-        // 所有異步操作完成後，回傳成功的狀態碼
         let return_playload = {
           success: true,
           storyId: result

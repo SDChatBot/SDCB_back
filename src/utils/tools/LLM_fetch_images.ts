@@ -78,6 +78,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
 
 
             Your generated response should only include the prompt provided for generating images and nothing else. No other content should appear in your reply. Please generate only the prompt. Do not include any additional responses or confirmations. Here are a few examples of “My Request” & “Your Response” that I provided to you, and you should follow this pattern in your replies:
+
             example 1:
             My Request -> "A girl dancing in American cartoon style"
             Your Response -> "A girl dancing in American cartoon style, the girl is smiling, her eyes sparkling with joy, her body gracefully spinning, her hands elegantly waving, her fingers delicate and flexible, her feet light and lively, wearing a brightly colored dance dress, with a vibrant dance hall background, twinkling lights, and an atmosphere full of cheerfulness, other dancers are also dancing happily, the overall scene is full of dynamism and delight."
@@ -105,6 +106,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             example 7:
             My Request -> "A group of climbing students marveling at a magnificent lake, watercolor style"
             Your Response -> "A group of climbing students marveling at a magnificent lake, watercolor style, the students are standing on the mountain top with astonished expressions, eyes wide, mouths slightly open, pointing towards the lake, some students with hands on their knees, breathing heavily but excitedly, the lake is clear and blue, surrounded by lush green mountains and dense forests, a few clouds floating in the sky, soft sunlight reflecting on the lake surface, the background is a vast natural landscape, the overall scene is fresh and magnificent."
+
 
 
 
@@ -137,8 +139,9 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             
             My first request is - "{${story_slice}}".`,
       "stream": false,
-      "total_duration":14,
-      "eval_count": 450,
+      "options":{
+         "num_predict":300
+      },
    };
    
    const requestOptions = {
@@ -188,8 +191,8 @@ export const GenImg_prompt_En_array = async (story_array:string[]):Promise<strin
          console.log(`第 i 次生成: ${i}`);
          generated_imageprompt_array.push(await GenImg_prompt_En(story_slice));
          await new Promise(resolve => {
-            console.log(`wait 3 seconds...`);
-            setTimeout(resolve, 3000);
+            console.log(`wait 0.5 seconds...`);
+            setTimeout(resolve, 500);
          });
          i+=1;
       }
