@@ -56,7 +56,7 @@ export function isObjectValid(obj: any | null | undefined): boolean {
 }
 
     // 生成故事內容
-export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<void> => {
+export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<string> => {
         try {
             let Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
             if (!Saved_storyID) {
@@ -87,7 +87,7 @@ export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<v
             const joinedStory = generated_story_array.join(", ");
             await GenVoice(Saved_storyID, joinedStory);
             console.log(`story generate finish !!`);
-
+            return Saved_storyID;
         } catch (error: any) {
             console.error(`Error generating story: ${error.message}`);
             throw error;

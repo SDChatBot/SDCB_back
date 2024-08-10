@@ -64,11 +64,12 @@ export class StoryController extends Controller {
     await sdModelOption(MODEL_NAME);
 
     try {
-        const result = await this.queue.add(() => generateStory(storyRoleForm));
+        const result:string = await this.queue.add(() => generateStory(storyRoleForm));
         let return_playload = {
           success: true,
           storyId: result
         };
+        console.log(`return_playload = ${JSON.stringify(return_playload)}`);
         return Response.status(200).send(return_playload);
     } catch (error:any) {
       console.error(`Error in generateStory: ${error.message}`);
