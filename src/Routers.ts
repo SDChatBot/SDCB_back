@@ -3,7 +3,8 @@ import { Route } from "./interfaces/Route";
 // import { PromptRoute } from "./routers/promptRoute";
 import { StoryRoute } from "./routers/StoryRoute";
 import { UserRoute } from "./routers/userRoute";
+import {VoiceRoute} from "./routers/VoiceRoute";
 
 export const router:Array<Route> = [
-    new StoryRoute(), new UserRoute,
+    new StoryRoute(), new UserRoute, new VoiceRoute(),
 ];
