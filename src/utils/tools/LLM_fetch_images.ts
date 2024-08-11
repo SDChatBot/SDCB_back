@@ -140,7 +140,7 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             My first request is - "{${story_slice}}".`,
       "stream": false,
       "options":{
-         "num_predict":300
+         "num_predict":150
       },
    };
    
