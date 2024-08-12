@@ -16,11 +16,14 @@ settingPlayload
 
 ***本週修復(Coco)
 前端：
-    書本翻頁特效(react-pagefilp)
-    聲音錄製功能修改
+    故事書翻頁特效功能製作
+    故事書翻頁排版修復 (進行中)
+    聲音錄製功能修改(進行中)
+    修飾 加入角色畫面排版
+    loading 畫面
 後端:
     加強書本生成速度 (8min -> 3min)
-    修改上傳音檔api UploadVoice()
+    修改上傳音檔api UploadVoice() (進行中)
 伺服器:
     嘗試微調 8B 模型
-    更新 ollama 生成服務
+    更新 ollama 服務

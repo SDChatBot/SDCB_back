@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { DataBase } from "../utils/DataBase";
 import express from 'express';
 import { spawn } from 'child_process'; // child_process
-import { upload } from '../utils/multer';
 
 export class VoiceController extends Controller{
     public test(Request:Request, Response:Response){
@@ -11,6 +10,26 @@ export class VoiceController extends Controller{
     }
 
     public UploadVoice(Request: Request, Response:Response){
+        // /Volumes/ssdEnclosur/projects/Whispertales/Whispertales_back/src/save/test
+        if(!Request.file){
+            return Request.status(400).send("no file uploaded.");
+        }
+        const filePath = "/Volumes/ssdEnclosur/projects/Whispertales/Whispertales_back/src/save/test";
+        const fileName = "newfile.txt";
+        const echo = spawn('sh', ['-c', `echo "This is file aaa" > ${filePath}/${fileName}`]);
+
+        echo.on('error', (error) => {
+            console.error(`Error creating file: ${error.message}`);
+        });
+
+        echo.on('close', (code) => {
+            if (code === 0) {
+                console.log(`File ${fileName} created successfully in ${filePath}`);
+            } else {
+                console.log(`Process exited with code: ${code}`);
+            }
+        });
+
         Response.send("Hi");
     }
 
