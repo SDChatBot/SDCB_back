@@ -4,7 +4,6 @@ import { DataBase } from "../utils/DataBase";
 import express from 'express';
 import { spawn } from 'child_process'; // child_process
 
-///aa
 export class VoiceController extends Controller{
     public test(Request:Request, Response:Response){
         Response.send(`This is VoiceController`);
