@@ -46,7 +46,8 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
    const timeoutId = setTimeout(()=>controller.abort(), 15000);
 
    let payload: object = {
-      "model": "llama3.1_8b_chinese_chat_q8_0.gguf:latest",
+      // "model": "llama3.1_8b_chinese_chat_q8_0.gguf:latest",
+      "model": "Whsipertales_model_v1.gguf:latest",
       "prompt": `
             I want you to help me make english requests (prompts) for the Stable Diffusion neural network, use English to generate prompt.
             Stable diffusion is a text-based image generation model that can create diverse and high-quality images based on your requests. In order to get the best results from Stable diffusion, you need to follow some guidelines when composing prompts.

@@ -11,19 +11,35 @@
 
 settingPlayload
 
+http://localhost:3151/generate/creating/advanced/startStory?query=66c20f626fd565577f7f1e1d
 
+喬治
+朵莉雅
 大家一起快樂的吃午餐
 
-***本週修復(Coco)
+這禮拜完成的事情：
 前端：
-    故事書翻頁特效功能製作
-    故事書翻頁排版修復 (進行中)
-    聲音錄製功能修改(進行中)
-    修飾 加入角色畫面排版
-    loading 畫面
-後端:
-    加強書本生成速度 (8min -> 3min)
-    修改上傳音檔api UploadVoice() (進行中)
-伺服器:
-    嘗試微調 8B 模型
-    更新 ollama 服務
+    Voice.tsx 功能完成
+    檢查並修改程式碼內全部的簡體中文註解、內容
+    Advanced.tsc 開始聆聽故事按鈕樣式
+
+後端：
+    修改Voice.ts 內功能，不過伺服器服務還在研究中，所以此功能尚未完成
+    用指令訓練模型（功能未完稱，研究中）
+
+伺服器：
+    製作 Coconuty/Whispertales_Model_v1_Q8-0.gguf (private)
+    現在使用該模型中
+
+現在遇到的問題：
+    訓練的資料集有問題，需要修改，微調出來的模型 Whispertales_Model_v1_Q8-0.gguf
+    有問題，需要調整資料集後重新訓練
+
+
+下禮拜要做的事情：
+前端：
+    voice 畫面css 樣式
+    Advanced.tsc 右方圖片大小需跟左邊輸入匡大小一致
+
+
+http://localhost:3151/style/role/startStory?query=66c211696fd565577f7f1e27
