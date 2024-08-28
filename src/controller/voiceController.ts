@@ -3,34 +3,33 @@ import { Request, Response } from "express";
 import { DataBase } from "../utils/DataBase";
 import express from 'express';
 import { spawn } from 'child_process'; // child_process
-//aaaa4
+import path from 'path';
+import fs from 'fs';
+
 export class VoiceController extends Controller{
     public test(Request:Request, Response:Response){
         Response.send(`This is VoiceController`);
     }
 
-    public UploadVoice(Request: Request, Response:Response){
-        // /Volumes/ssdEnclosur/projects/Whispertales/Whispertales_back/src/save/test
-        if(!Request.file){
-            return Request.status(400).send("no file uploaded.");
+    public UploadVoice = (req: Request, res: Response) => {
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
         }
-        const filePath = "/Volumes/ssdEnclosur/projects/Whispertales/Whispertales_back/src/save/test";
-        const fileName = "newfile.txt";
-        const echo = spawn('sh', ['-c', `echo "This is file aaa" > ${filePath}/${fileName}`]);
 
-        echo.on('error', (error) => {
-            console.error(`Error creating file: ${error.message}`);
-        });
+        const file = req.file;
+        const filePath = process.env.dev_saveRecording!; // 存放使用者聲音的目錄
+        const audioName = req.body.audioName;
+        const fullPath = path.join(filePath, `${audioName}.wav`);
 
-        echo.on('close', (code) => {
-            if (code === 0) {
-                console.log(`File ${fileName} created successfully in ${filePath}`);
-            } else {
-                console.log(`Process exited with code: ${code}`);
+        fs.rename(file.path, fullPath, (err) => {
+            if (err) {
+                console.error(`Error saving file: ${err.message}`);
+                return res.status(500).send("Error saving file.");
             }
-        });
 
-        Response.send("Hi");
+            console.log(`File ${audioName} saved successfully in ${filePath}`);
+            res.send(`File ${audioName} uploaded and saved in ${filePath} successfully.`);
+        });
     }
 
     // public UploadVoice(){
