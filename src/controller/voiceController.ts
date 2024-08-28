@@ -1,17 +1,15 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
-import { DataBase } from "../utils/DataBase";
-import express from 'express';
-import { spawn } from 'child_process'; // child_process
 import path from 'path';
 import fs from 'fs';
+import {trainVoiceModel} from "../utils/tools/trainVoiceModel";
 
 export class VoiceController extends Controller{
     public test(Request:Request, Response:Response){
         Response.send(`This is VoiceController`);
     }
 
-    public UploadVoice = (req: Request, res: Response) => {
+    public UploadVoice = async(req: Request, res: Response) => {
         if (!req.file) {
             return res.status(400).send("No file uploaded.");
         }
@@ -28,8 +26,11 @@ export class VoiceController extends Controller{
             }
 
             console.log(`File ${audioName} saved successfully in ${filePath}`);
-            res.send(`File ${audioName} uploaded and saved in ${filePath} successfully.`);
+            // res.send(`File ${audioName} uploaded and saved in ${filePath} successfully.`);
         });
+
+        // ! 這邊開始寫關於用終端機生成語音模型的東西
+        await trainVoiceModel();
     }
 
     // public UploadVoice(){
