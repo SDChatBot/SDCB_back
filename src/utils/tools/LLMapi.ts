@@ -1,5 +1,6 @@
 import { DataBase } from "../DataBase";
 import { RoleFormInterface } from "../../interfaces/RoleFormInterface";
+import { spawn } from "child_process";
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -39,6 +40,7 @@ export const LLMGenChat = async (storyInfo: Object): Promise<string> => {
         }
     } catch (error:any) {
         if (error.name === 'AbortError') {
+            await kill_ollama();
             console.error(`LLMGenChat Request timed out after 30 seconds, ${error}`);
         } else {
             console.error(`LLMGenChat fail: ${error}`);
@@ -70,8 +72,9 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
 
         // 第二次生成
         let payload2 = {
-            "model": "Whispertales_model_v4.gguf:latest",
-            "prompt": `幫我檢視並修改以下故事${story_1st}。使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{700字}}內，並大約{{80字使用{\n\n}換行}}你回應的故事字數總共800字上下，一頁80字，共10段文字，也就是5頁的故事書，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}。僅須回答我修改後的故事內容，{{不用回覆我其他與故事本身無關的訊息，包括更改哪些部分或使用了什麼語氣等非故事內容的無用訊息}}。最後使用繁體中文回應所有答覆。<|eot_id|>`,
+            "model": "llama3.1_8b_chinese_chat_q8_0.gguf:latest",
+            // "model": "Whispertales_model_v4.gguf:latest",
+            "prompt": `幫我檢視並修改以下故事${story_1st}。使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{700字}}內，並大約{{80字使用{\n\n}換行}}你回應的故事字數總共800字上下，一頁80字，共10段文字，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}。僅須回答我修改後的故事內容，{{不用回覆我其他與故事本身無關的訊息，包括更改哪些部分或使用了什麼語氣等非故事內容的無用訊息}}。最後使用繁體中文回應所有答覆。<|eot_id|>`,
             "stream": false,
             "options":{
                 "num_predict":850
@@ -93,6 +96,41 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
     }
 }
 
+export const kill_ollama = async () => {
+    return new Promise((resolve, reject) => {
+      const processDo = spawn('sudo', ['-S', 'pkill', 'ollama'], { stdio: ['pipe', 'pipe', 'pipe'] });
+  
+      processDo.stdin.write(process.env.systemPassword + '\n');
+      processDo.stdin.end();
+  
+      let stdoutData = '';
+      let stderrData = '';
+  
+      processDo.stdout.on('data', (data) => {
+        stdoutData += data.toString();
+      });
+  
+      processDo.stderr.on('data', (data) => {
+        stderrData += data.toString();
+      });
+  
+      processDo.on('close', (code) => {
+        if (code === 0) {
+          console.log('pkill ollama');
+          resolve({ stdout: stdoutData, stderr: stderrData });
+        } else {
+          console.error(`fail to pkill ollama with error code: ${code}`);
+          reject(new Error(`kill_ollama code ${code}\nstderr: ${stderrData}`));
+        }
+      });
+  
+      processDo.on('error', (err) => {
+        console.error('kill_ollama error:', err);
+        reject(err);
+      });
+    });
+  };
+
 /**
  * 用來刪除Ollama model 占用的記憶體
  */
@@ -108,6 +146,7 @@ export const LLMGen_release = async () => {
             "keep_alive": 0,
         }
         const release = await LLMGenChat(payload1);
+        await kill_ollama();
         return 0;
     } catch (error) {
         console.error(`Error in  LLMGen_release: ${error}`);
