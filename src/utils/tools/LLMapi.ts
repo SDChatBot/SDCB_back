@@ -1,6 +1,7 @@
 import { DataBase } from "../DataBase";
 import { RoleFormInterface } from "../../interfaces/RoleFormInterface";
 import { spawn } from "child_process";
+import OpenCC from 'opencc-js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -82,10 +83,13 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
         };
         const story_2nd:string = await LLMGenChat(payload2);
 
-        if (story_2nd !== "") {
-            generated_story_array = story_2nd.split("\n\n");
+        const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+        const transStory: string = converter(story_2nd);
+        
+        if (transStory !== "") {
+            generated_story_array = transStory.split("\n\n");
             console.log(`generated_story_arrayAA.length = ${generated_story_array.length}`);
-            let Saved_storyID = await DataBase.SaveNewStory_returnID(story_2nd, storyInfo);
+            let Saved_storyID = await DataBase.SaveNewStory_returnID(transStory, storyInfo);
             return Saved_storyID;
         }else{
             throw new Error('Generated story is empty');

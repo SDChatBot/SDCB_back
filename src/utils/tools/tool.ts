@@ -55,44 +55,44 @@ export function isObjectValid(obj: any | null | undefined): boolean {
     );
 }
 
-    // 生成故事內容
+// 生成故事內容
 export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<string> => {
-        try {
-            let Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
-            if (!Saved_storyID) {
-                throw new Error('Failed to generate story ID，生成故事失敗');
-            }
-            console.log(`Saved_storyID = ${Saved_storyID}`);
-
-            const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
-            let generated_story_array:string[] = story.storyTale.split("\n\n");
-
-            await delayedExecution();
-
-            console.log(`start GenImagePrompt\n`);
-            await GenImagePrompt(generated_story_array || [], Saved_storyID);
-            await LLMGen_release(); // 清除Ollama model 占用記憶體
-
-            // Fetch the updated story data to get the generated image prompts
-            const updatedStory: storyInterface = await DataBase.getStoryById(Saved_storyID);
-            const generated_story_image_prompt = updatedStory.image_prompt;
-
-            if (!generated_story_image_prompt || generated_story_image_prompt.length === 0) {
-                throw new Error('No image prompts generated，圖片提示生成失敗');
-            }
-            console.log(`start GenImage`);
-            await GenImage(generated_story_image_prompt, Saved_storyID, storyRoleForm.style);
-
-            console.log(`start getVoices`);
-            const joinedStory = generated_story_array.join(", ");
-            await GenVoice(Saved_storyID, joinedStory);
-            console.log(`story generate finish !!`);
-            return Saved_storyID;
-        } catch (error: any) {
-            console.error(`Error generating story: ${error.message}`);
-            throw error;
+    try {
+        let Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
+        if (!Saved_storyID) {
+            throw new Error('Failed to generate story ID，生成故事失敗');
         }
-    };
+        console.log(`Saved_storyID = ${Saved_storyID}`);
+
+        const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
+        let generated_story_array: string[] = story.storyTale.split("\n\n");
+
+        await delayedExecution();
+
+        console.log(`start GenImagePrompt\n`);
+        await GenImagePrompt(generated_story_array || [], Saved_storyID);
+        await LLMGen_release(); // 清除Ollama model 占用記憶體
+
+        // Fetch the updated story data to get the generated image prompts
+        const updatedStory: storyInterface = await DataBase.getStoryById(Saved_storyID);
+        const generated_story_image_prompt = updatedStory.image_prompt;
+
+        if (!generated_story_image_prompt || generated_story_image_prompt.length === 0) {
+            throw new Error('No image prompts generated，圖片提示生成失敗');
+        }
+        console.log(`start GenImage`);
+        await GenImage(generated_story_image_prompt, Saved_storyID, storyRoleForm.style);
+
+        console.log(`start getVoices`);
+        const joinedStory = generated_story_array.join(", ");
+        await GenVoice(Saved_storyID, joinedStory);
+        console.log(`story generate finish !!`);
+        return Saved_storyID;
+    } catch (error: any) {
+        console.error(`Error generating story: ${error.message}`);
+        throw error;
+    }
+};
 
 let generated_imageprompt_array: string[] = [];
 // 用故事內容生成故事圖片prompt

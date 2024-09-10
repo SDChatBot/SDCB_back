@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/translate": "^8.5.0",
+    "@types/opencc-js": "^1.0.3",
     "@types/pako": "^2.0.0",
     "axios": "^1.4.0",
     "chatgpt": "^5.2.5",
@@ -27,6 +29,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.4",
     "openai": "^4.0.1",
+    "opencc-js": "^1.0.5",
     "p-queue": "^6.6.2",
     "socket.io": "^4.7.2",
     "ts-loader": "^9.4.4",
