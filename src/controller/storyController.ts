@@ -105,7 +105,7 @@ export class StoryController extends Controller {
       "steps": 20,
       "enable_hr": false,
       "denoising_strength": 0.75,
-      "restore_faces": false,
+      "restore_faces": false
     };
 
     try {

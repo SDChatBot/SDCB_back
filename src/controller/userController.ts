@@ -1,11 +1,39 @@
 import { Controller } from "../interfaces/Controller";
 import { Request, Response } from "express";
 import { DataBase } from "../utils/DataBase";
+import jwt from 'jsonwebtoken';
 
 export class UserController extends Controller{
     public test(Request:Request, Response:Response){
         Response.send(`This is userController`);
     }
+
+    public async Login(req: Request, res: Response) {
+        const { userName, userPassword } = req.body;
+        if (!userName || !userPassword) {
+            console.error('用戶名或密碼缺失');
+            return res.status(400).json({ success: false, message: '用戶名或密碼錯誤' });
+        }
+        try {
+            const result = await DataBase.VerifyUser(userName, userPassword);
+            if (result.success) {
+                console.log(`用戶 ${userName} 登入成功`);
+                const user = { id: result.userId, username: userName };
+                const token = jwt.sign(user, process.env.JWT_SECRET!, { expiresIn: '1h' });
+                return res.json({ success: true, token });
+            } else {
+                console.error(`用戶 ${userName} 登入失敗: ${result.message}`);
+                return res.status(401).json({
+                    success: false,
+                    message: '用戶名或密碼錯誤'
+                });
+            }
+        } catch (e: any) {
+            console.error(`登入失敗: ${e.message}`);
+            return res.status(500).json({ success: false, message: '登入過程中發生錯誤' });
+        }
+    }
+
 
     
     public async AddUser(Request:Request, Response:Response){

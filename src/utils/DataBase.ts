@@ -100,6 +100,24 @@ export class DataBase{
         return user !== null;
     }
 
+    static async VerifyUser(userName: string, userPassword: string): Promise<{ success: boolean; userId?: string; message: string }> {
+        try {
+            const user = await userModel.findOne({ userName: userName });
+            if (!user) {
+                return { success: false, message: "用戶不存在" };
+            }
+            
+            if (user.userPassword !== userPassword) {
+                return { success: false, message: "密碼錯誤" };
+            }
+            
+            return { success: true, userId: user._id.toString(), message: "認證成功" };
+        } catch (error: any) {
+            console.error(`認證用戶時發生錯誤：${error.message}`);
+            return { success: false, message: "認證過程中發生錯誤" };
+        }
+    }
+
     static async SaveNewUser(name:string, password:string): Promise<any>{
         if (await DataBase.isNameTaken(name)){
             console.log(`名稱 "${name}" 已經存在，無法添加使用者。`);

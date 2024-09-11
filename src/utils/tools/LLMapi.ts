@@ -102,38 +102,38 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
 
 export const kill_ollama = async () => {
     return new Promise((resolve, reject) => {
-      const processDo = spawn('sudo', ['-S', 'pkill', 'ollama'], { stdio: ['pipe', 'pipe', 'pipe'] });
-  
-      processDo.stdin.write(process.env.systemPassword + '\n');
-      processDo.stdin.end();
-  
-      let stdoutData = '';
-      let stderrData = '';
-  
-      processDo.stdout.on('data', (data) => {
-        stdoutData += data.toString();
-      });
-  
-      processDo.stderr.on('data', (data) => {
-        stderrData += data.toString();
-      });
-  
-      processDo.on('close', (code) => {
-        if (code === 0) {
-          console.log('pkill ollama');
-          resolve({ stdout: stdoutData, stderr: stderrData });
-        } else {
-          console.error(`fail to pkill ollama with error code: ${code}`);
-          reject(new Error(`kill_ollama code ${code}\nstderr: ${stderrData}`));
-        }
-      });
-  
-      processDo.on('error', (err) => {
-        console.error('kill_ollama error:', err);
-        reject(err);
-      });
+        const processDo = spawn('sudo', ['-S', 'pkill', 'ollama'], { stdio: ['pipe', 'pipe', 'pipe'] });
+
+        processDo.stdin.write(process.env.systemPassword + '\n');
+        processDo.stdin.end();
+
+        let stdoutData = '';
+        let stderrData = '';
+
+        processDo.stdout.on('data', (data) => {
+            stdoutData += data.toString();
+        });
+
+        processDo.stderr.on('data', (data) => {
+            stderrData += data.toString();
+        });
+
+        processDo.on('close', (code) => {
+            if (code === 0) {
+                console.log('pkill ollama');
+                resolve({ stdout: stdoutData, stderr: stderrData });
+            } else {
+                console.error(`fail to pkill ollama with error code: ${code}`);
+                reject(new Error(`kill_ollama code ${code}\nstderr: ${stderrData}`));
+            }
+        });
+
+        processDo.on('error', (err) => {
+            console.error('kill_ollama error:', err);
+            reject(err);
+        });
     });
-  };
+};
 
 /**
  * 用來刪除Ollama model 占用的記憶體
