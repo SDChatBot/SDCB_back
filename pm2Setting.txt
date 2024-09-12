@@ -1,0 +1,18 @@
+https://dev.to/spiritmoney/running-a-node-service-with-pm2-3319
+
+https://pm2.keymetrics.io/docs/usage/application-declaration/
+
+https://stackoverflow.com/questions/26135371/can-the-pm2-node-module-restarts-the-app-after-crash-automatically
+
+npm install pm2 -g
+
+pm2 start build/app.js --name WhispertalesService --watch
+
+pm2 startup
+pm2 save
+
+pm2 restart my-node-service
+
+pm2 start ecosystem.config.js
+
+pm2 monit
