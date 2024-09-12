@@ -39,24 +39,25 @@ export class UserController extends Controller{
     public async AddUser(Request:Request, Response:Response){
         const { userName, userPassword } = Request.body;
         if (!userName || !userPassword) {
-            console.error('userName or userPassword lost');
-            return Response.status(400).send('userName or userPassword error');
+            console.error('用戶名或密碼缺失');
+            return Response.status(400).json({ success: false, message: '用戶名或密碼錯誤' });
         }
         try {
             const result = await DataBase.SaveNewUser(userName, userPassword);
+            console.log(`result = ${JSON.stringify(result)}`)
             if (result.success) {
                 console.log(result.message);
-                return Response.status(200).send(result.message);
-            }else if(result.code==401 && result.code){
+                return Response.status(200).json({ success: true, message: result.message });
+            } else if (result.code === 401) {
                 console.error(result.message);
-                return Response.status(result.code).send(result.message);
+                return Response.status(401).json({ success: false, message: result.message });
             } else {
                 console.error(result.message);
-                return Response.status(400).send(result.message);
+                return Response.status(400).json({ success: false, message: result.message });
             }
         } catch (e:any) {
-            console.error(`AddUser fail: ${e.message}`);
-            return Response.status(500).send('AddUser fail');
+            console.error(`新增用戶失敗: ${e.message}`);
+            return Response.status(500).json({ success: false, message: '新增用戶過程中發生錯誤' });
         }
     }
 

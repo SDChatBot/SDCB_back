@@ -118,22 +118,22 @@ export class DataBase{
         }
     }
 
-    static async SaveNewUser(name:string, password:string): Promise<any>{
-        if (await DataBase.isNameTaken(name)){
-            console.log(`名稱 "${name}" 已經存在，無法添加使用者。`);
-            const errorMessage = `名稱 "${name}" 已經存在，請更換使用者名稱`;
-            return { success: false, message: errorMessage, code:401 };
-        }
-        try{
+    static async SaveNewUser(name: string, password: string): Promise<{ success: boolean; message: string; code?: number }> {
+        try {
+            if (await DataBase.isNameTaken(name)) {
+                console.log(`名稱 "${name}" 已經存在，無法添加使用者。`);
+                return { success: false, message: `名稱 "${name}" 已經存在，請更換使用者名稱`, code: 401 };
+            }
+
             const user = new userModel({
                 userName: name,
                 userPassword: password,
-                booklist:[],
+                booklist: [],
             });
             await user.save();
-            return { success: true, message: "SaveNewUser  success" };
-        }catch(e:any){
-            const errorMessage = `SaveNewUser  fail: ${e.message}`;
+            return { success: true, message: "SaveNewUser success" };
+        } catch (e: any) {
+            const errorMessage = `SaveNewUser fail: ${e.message}`;
             console.error(errorMessage);
             return { success: false, message: errorMessage };
         }
