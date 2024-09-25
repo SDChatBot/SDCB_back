@@ -11,8 +11,10 @@ pm2 start build/app.js --name WhispertalesService --watch
 pm2 startup
 pm2 save
 
-pm2 restart my-node-service
+pm2 restart WhispertalesService
 
 pm2 start ecosystem.config.js
 
 pm2 monit
+
+pm2 stop all

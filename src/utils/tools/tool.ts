@@ -2,7 +2,7 @@ import { fetchImage, getVoices } from "../tools/fetch";
 import { caseSdModelUse } from "./sdModel_tool";
 import { GenImg_prompt_En_array } from "./LLM_fetch_images";
 import { DataBase } from "../DataBase";
-import { generated_story_array, LLMGen_release, LLMGenStory_1st_2nd } from "./LLMapi";
+import { LLMGen_release, LLMGenStory_1st_2nd } from "./LLMapi";
 import { RoleFormInterface } from "../../interfaces/RoleFormInterface";
 import { storyInterface } from "../../interfaces/storyInterface";
 import fs from 'fs/promises';
