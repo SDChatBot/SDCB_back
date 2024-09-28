@@ -85,7 +85,7 @@ export const fetchImage = async (payload:Object) => {
 
 // 拿語音內容
 export const getVoices = async (Saved_storyID: string, storyTale: string, voiceModelName:string): Promise<{ audioFileName: string, audioBuffer: ArrayBuffer }> => {
-    const url = `${process.env.GPT_SOVITS_VOICE_API}`;
+    const url = `${process.env.GPT_SOVITS_VOICE_API}/tts`;
     const referPathDir = `/home/b310-21/projects/GPT-SoVITS/output/slicer_opt/${voiceModelName}`
     
     // 獲取排序後的第一個檔案
@@ -98,11 +98,12 @@ export const getVoices = async (Saved_storyID: string, storyTale: string, voiceM
     const promptText = await whisperCall(referPathDir, firstFile);
 
     const requestBody = {
-        refer_wav_path: path.join(referPathDir, firstFile),
+        ref_audio_path: path.join(referPathDir, firstFile),
         prompt_text: promptText,
-        prompt_language: "zh",
+        prompt_lang: "zh",
         text: storyTale,
-        text_language: "zh"
+        text_lang: "zh",
+        text_split_method: "cut0",
     };
 
     console.log(`requestBody: ${JSON.stringify(requestBody)}`);
@@ -131,8 +132,8 @@ export const getVoices = async (Saved_storyID: string, storyTale: string, voiceM
 
 // 設定語音模型
 export const setVoiceModel = async (modelName: string): Promise<{code:number, message:string}> => {
-    const gptWeightsDir = '/home/b310-21/projects/GPT-SoVITS/GPT_weights/';
-    const sovitsWeightsDir = '/home/b310-21/projects/GPT-SoVITS/SoVITS_weights';
+    const gptWeightsDir = '/home/b310-21/projects/GPT-SoVITS/GPT_weights_v2';
+    const sovitsWeightsDir = '/home/b310-21/projects/GPT-SoVITS/SoVITS_weights_v2';
 
     const latestGptFile = `${gptWeightsDir}/${modelName}-e15.ckpt`;
     const latestSovitsFile = findLatestFile(sovitsWeightsDir, modelName);

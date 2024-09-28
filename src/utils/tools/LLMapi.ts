@@ -5,7 +5,7 @@ import OpenCC from 'opencc-js';
 import { Ollama, GenerateRequest } from 'ollama'
 
 import dotenv from 'dotenv';
-import { json } from "express";
+
 dotenv.config();
 
 //向 LLM 送一次對話請求
@@ -22,27 +22,21 @@ export const abort_controller: AbortController = new AbortController();
 
 
 export const LLMGenChat = async (storyInfo: any): Promise<string> => {
-    const ollama = new Ollama({ host: 'http://163.13.202.120:11434' })
+    const ollama = new Ollama({ host: process.env.LLM_generate_api });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+        console.log("\nAborting LLMGenChat request...\n");
+        controller.abort();
+    }, 60000);
 
     try {
-        setTimeout(() => {
-            console.log("\nAborting LLMGenChat request...\n");
-            ollama.abort();
-        }, 60000);
-
-        const ollamaRequest: GenerateRequest & { stream: false } = { ...storyInfo, stream: false };
+        const ollamaRequest: GenerateRequest & { stream: false } = { ...storyInfo, stream: false, signal: controller.signal };
         const response = await ollama.generate(ollamaRequest);
-        let string_response = "";
-        // for await (const part of response) {
-        //     string_response += part.response;
-        // 直接從 response 中獲取回應
-
-        string_response = response.response;
-        // console.log(JSON.stringify(response));
+        clearTimeout(timeoutId);
+        let string_response = response.response;
         return string_response;
-    } catch (error:any) {
+    } catch (error: any) {
         if (error.name === 'AbortError') {
-            /// await kill_ollama();
             await LLMGen_release();
             console.error(`LLMGenChat Request timed out after 60 seconds, ${error}`);
         } else {
@@ -65,10 +59,33 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
     try {
         let payload1: object = {
             "model": "Llama3.1-8B-Chinese-Chat.Q8_0.gguf:latest",
-            "prompt": `用繁體中文幫我生成一篇{{600字}}適合小孩子的故事，並每{{40字使用{\n\n}換行}}，你回應的故事字數總共700字上下，一頁40字，共10段文字，也就是5頁的故事書，{{請確保故事總共不能超過12個段落}}。首先，故事內容請根據${storyRoleForm.description}的敘述，產生符合敘述的故事情節。再來是主角:${storyRoleForm.mainCharacter}和其他角色們:${storyRoleForm.otherCharacters}，並幫所有角色產生出符合故事情境的對話。請你直接回答故事的內容就好，{{不要出現任何非故事內容相關的文字敘述}}，{{不要出現任何非故事內容相關的文字敘述}}。<|eot_id|>`,
+            "prompt": `
+                <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+                你是一位專業的兒童故事作家,擅長創作適合小朋友閱讀的有趣故事。請根據以下要求創作一個故事:
+
+                故事主角: ${storyRoleForm.mainCharacter}
+                其他角色: ${storyRoleForm.otherCharacters} 
+                故事情節: ${storyRoleForm.description}
+
+                要求:
+                1. 故事總字數控制在700字左右
+                2. 每40個字換一次行
+                3. 全文分為10-12個段落
+                4. 故事內容要充實有趣,符合小朋友的理解能力
+                5. 角色對話要生動自然,符合故事情境
+                6. 只輸出故事內容,不要包含任何額外說明
+
+                請發揮你的創意,為小朋友們創作一個精彩的故事!
+
+                <|eot_id|><|start_header_id|>user<|end_header_id|>
+
+                請根據上述要求創作一個適合兒童的故事。
+
+                <|eot_id|><|start_header_id|>assistant<|end_header_id|>`,
             "stream": false,
             "options":{
-                "num_ctx": 700
+                "num_ctx": 700,
+                "num_predict": 100,
             },
         }
         const story_1st = await LLMGenChat(payload1);
@@ -77,10 +94,11 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
         let payload2 = {
             "model": "Llama3.1-8B-Chinese-Chat.Q8_0.gguf:latest",
             // "model": "Whispertales_model_v4.gguf:latest",
-            "prompt": `幫我檢視並修改以下故事${story_1st}。使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{600字}}內，並大約{{40字使用{\n\n}換行}}你回應的故事字數總共600字上下，一頁40字，共10段文字，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}。僅須回答我修改後的故事內容，{{不用回覆我其他與故事本身無關的訊息，包括更改哪些部分或使用了什麼語氣等非故事內容的無用訊息}}。最後使用繁體中文回應所有答覆。<|eot_id|>`,
+            "prompt": `<|begin_of_text|><|start_header_id|>system<|end_header_id|>你是一位專門為小朋友創作有趣故事的AI助手。請根據以下提示生成一個適合小朋友閱讀的故事。每40字換行，總段落數不超過12段，字數控制在600字左右。<|eot_id|><|start_header_id|>user<|end_header_id|>請修改並優化以下故事：${story_1st}，使其更生動有趣。請確保故事字數接近600字，每40字換行，總段落數不超過12段。只需返回修改後的故事內容，不要附加其他說明。<|eot_id|><|start_header_id|>assistant<|end_header_id|>`,
             "stream": false,
             "options":{
-                "num_ctx": 700
+                "num_ctx": 700, // num_ctx num_predict
+                "num_predict": 100,
             },
         };
         const story_2nd:string = await LLMGenChat(payload2);

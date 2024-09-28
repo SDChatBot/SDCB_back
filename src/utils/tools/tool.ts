@@ -72,8 +72,10 @@ export const generateStory = async (storyRoleForm: RoleFormInterface, voiceModel
 
         const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
         let generated_story_array: string[] = story.storyTale.split("\n\n")
-            .map(item => removeEnglish(item.replace(/\n/g, '').trim()))
-            .filter(item => item !== "");
+        .map(item => removeEnglish(item))
+        .map(item => item.replace(/\n/g, ''))
+        .map(item => item.trim())
+        .filter(item => item !== "");
 
         await delayedExecution();
 

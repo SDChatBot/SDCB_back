@@ -50,4 +50,18 @@ export class VoiceController extends Controller{
         const result = await whisperCall(audioName, referPathDir);
         res.send(`testwhisper: ${result.message}`);
     }
+
+    public async getVoiceList(req: Request, res: Response) {
+        try {
+            const directoryPath = '/home/b310-21/projects/GPT-SoVITS/logs';
+            const entries = await fs.promises.readdir(directoryPath, { withFileTypes: true });
+            const directories = entries
+                .filter(entry => entry.isDirectory())
+                .map(entry => entry.name);
+            res.json({ listData: directories });
+        } catch (error) {
+            console.error('讀取目錄時發生錯誤:', error);
+            res.status(500).json({ listData: [], error: '無法讀取語音模型列表' });
+        }
+    }
 }

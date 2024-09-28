@@ -53,15 +53,15 @@ export class StoryController extends Controller {
   public LLMGenStory = async(Request: Request, Response: Response) => {
     let storyRoleForm: RoleFormInterface = Request.body.roleform;
     let voiceModelName: string = Request.body.voiceModelName;
-    if (!isObjectValid(storyRoleForm)) {
+    if (!isObjectValid(Request.body)) {
         return Response.send({
             code: 403,
-            message: "storyRoleForm 或其中的某個屬性是 null、undefined 或空陣列",
+            message: "請求中的某個屬性是 null、undefined 或空陣列",
             success: false
         });
     }
 
-    console.log(`storyRoleForm = ${JSON.stringify(storyRoleForm)}`); // 傳入的角色設定
+    console.log(`Request.body = ${JSON.stringify(Request.body)}`); // 傳入的角色設定
     const MODEL_NAME = storyRoleForm.style;
     await sdModelOption(MODEL_NAME);
 

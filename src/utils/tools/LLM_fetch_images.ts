@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import { GenerateRequest, Ollama } from "ollama";
+import { LLMGen_release } from "./LLMapi";
 dotenv.config();
 
 /**
@@ -42,10 +44,11 @@ export const getSDModelList = async () => {
 }
 
 export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
-   const controller:AbortController = new AbortController();
+   const ollama = new Ollama({ host: process.env.LLM_generate_api });
+   const controller = new AbortController();
    const timeoutId = setTimeout(()=>controller.abort(), 25000);
 
-   let payload: object = {
+   let payload: any = {
       "model": "Llama3.1-8B-Chinese-Chat.Q8_0.gguf:latest",
       "prompt": `
             I want you to help me make english requests (prompts) for the Stable Diffusion neural network, use English to generate prompt.
@@ -140,41 +143,28 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
             My first request is - "{${story_slice}}".`,
       "stream": false,
       "options":{
-         "num_ctx": 200
+         "num_ctx": 200,
+         "num_predict": 50,
       },
-   };
-   
-   const requestOptions = {
-      method: "POST",
-      headers: {
-         'Content-Type': 'application/json',
-         'Authorization': 'Bearer EV2ZYNX-DBVMRJ0-K8JYKME-36AQGKF',
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
    };
 
-   try{
-      const response = await fetch(process.env.LLM_generate_api!, requestOptions);
+   try {
+      const ollamaRequest: GenerateRequest & { stream: false } = { ...payload, stream: false, signal: controller.signal };
+      const response = await ollama.generate(ollamaRequest);
       clearTimeout(timeoutId);
-      if (response.ok) {
-         const story = await response.json();
-         return story.response;
-      }else {
-         throw new Error('GenImg_prompt_En failed with status ' + response.status);
-      }
+      let string_response = response.response;
+      return string_response;
    } catch (error:any) {
       if (error.name === 'AbortError'){
          // throw new Error(`Request timed out after ${15} seconds`);
          console.error(`GenImg_prompt_En Request timed out after ${20} seconds error: ${error}`);
-         controller.abort();
+         await LLMGen_release();
       }else{
          console.error(`GenImg_prompt_En fail: ${error}`);
          throw error;
       }
       return "";
    }
-
 }
 
 
