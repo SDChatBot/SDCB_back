@@ -7,14 +7,17 @@ export class VoiceRoute extends Route {
     protected Controller = new VoiceController;
     constructor() {
         super()
-        this.url = '/voice';
+        this.url = '/voiceset';
         this.setRoutes();
     }
 
-    // http://localhost:7943/voice
-    // http://localhost:7943/voice/uploadvoices
+    // http://localhost:7943/voiceset
+    // http://localhost:7943/voiceset/uploadvoices
+
+    // https://163.13.202.120/api/voiceset/setVoiceModel
     protected setRoutes(): void {
         this.router.get(`${this.url}`,this.Controller.test);
         this.router.post(`${this.url}/uploadvoices`,upload.single("file"),this.Controller.UploadVoice);
+        this.router.post(`${this.url}/setVoiceModel`,this.Controller.testsetVoiceModel);
     }
 }

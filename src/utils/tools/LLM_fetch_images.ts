@@ -199,7 +199,6 @@ export const GenImg_prompt_En_array = async (story_array:string[]):Promise<strin
       
       console.log(`generated_imageprompt success`);
       return generated_imageprompt_array;
-      // console.log(`generated_imageprompt_array = ${generated_imageprompt_array}`);
    }catch(error){
       console.error(`Error in GenImg_prompt_En_array: ${error}`);
       throw error;

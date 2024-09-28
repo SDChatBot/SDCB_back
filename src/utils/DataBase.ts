@@ -62,8 +62,20 @@ export class DataBase{
         }
     }
 
+    static async Update_StoryImagePromptSingle(_id: string, imagePrompt: string):Promise<object | any>{
+        try{
+            await storyModel.findOneAndUpdate(
+                { _id },
+                { $push: { image_prompt: imagePrompt } },
+                { new: true }
+            );
+            console.log(`成功在 ID ${_id} 的故事中新增一筆 image_prompt`);
+        }catch(e){
+            console.log(`新增 image_prompt 失敗，錯誤：${e}`)
+        }
+    }
 
-    static async Update_StoryImagePrompt(_id: string, imagePrompt: string[]):Promise<object | any>{
+    static async Update_StoryImagePromptArray(_id: string, imagePrompt: string[]):Promise<object | any>{
         try{
             await storyModel.findOneAndUpdate(
                 { _id },

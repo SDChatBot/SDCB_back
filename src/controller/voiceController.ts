@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import path from 'path';
 import fs from 'fs';
 import { trainVoice } from "../utils/tools/trainVoiceModel";
+import { setVoiceModel } from "../utils/tools/fetch";
 
 export class VoiceController extends Controller{
     public test(Request:Request, Response:Response){
@@ -34,5 +35,12 @@ export class VoiceController extends Controller{
         } catch(err:any){
             res.send({code: 500, message: err.message});
         }
+    }
+
+    public async testsetVoiceModel(req:Request, res:Response){
+        const modelName = req.body.modelName;
+        console.log("modelName: ", modelName);
+        const result = await setVoiceModel(modelName);
+        res.send(`testsetVoiceModel: ${result.message}`);
     }
 }

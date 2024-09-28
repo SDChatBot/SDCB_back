@@ -65,7 +65,7 @@ export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<s
         console.log(`Saved_storyID = ${Saved_storyID}`);
 
         const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
-        let generated_story_array: string[] = story.storyTale.split("\n\n");
+        let generated_story_array: string[] = story.storyTale.split("\n\n").filter(item => item.trim() !== " ");
 
         await delayedExecution();
 
@@ -95,12 +95,13 @@ export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<s
 };
 
 let generated_imageprompt_array: string[] = [];
+
 // 用故事內容生成故事圖片prompt
 export const GenImagePrompt = async (generated_story_array: string[], _id: string): Promise<void> => {
     if (generated_story_array) {
         generated_imageprompt_array = await GenImg_prompt_En_array(generated_story_array);
         console.log(`generated_imageprompt_array.length = ${generated_imageprompt_array.length}`);
-        await DataBase.Update_StoryImagePrompt(_id, generated_imageprompt_array);
+        await DataBase.Update_StoryImagePromptArray(_id, generated_imageprompt_array);
     }
 };
 
