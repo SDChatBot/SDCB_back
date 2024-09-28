@@ -65,10 +65,10 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
     try {
         let payload1: object = {
             "model": "Llama3.1-8B-Chinese-Chat.Q8_0.gguf:latest",
-            "prompt": `用繁體中文幫我生成一篇{{700字}}適合小孩子的故事，並每{{80字使用{\n\n}換行}}，你回應的故事字數總共800字上下，一頁80字，共10段文字，也就是5頁的故事書，{{請確保故事總共不能超過12個段落}}。首先，故事內容請根據${storyRoleForm.description}的敘述，產生符合敘述的故事情節。再來是主角:${storyRoleForm.mainCharacter}和其他角色們:${storyRoleForm.otherCharacters}，並幫所有角色產生出符合故事情境的對話。請你直接回答故事的內容就好，{{不要出現任何非故事內容相關的文字敘述}}，{{不要出現任何非故事內容相關的文字敘述}}。<|eot_id|>`,
+            "prompt": `用繁體中文幫我生成一篇{{600字}}適合小孩子的故事，並每{{40字使用{\n\n}換行}}，你回應的故事字數總共700字上下，一頁40字，共10段文字，也就是5頁的故事書，{{請確保故事總共不能超過12個段落}}。首先，故事內容請根據${storyRoleForm.description}的敘述，產生符合敘述的故事情節。再來是主角:${storyRoleForm.mainCharacter}和其他角色們:${storyRoleForm.otherCharacters}，並幫所有角色產生出符合故事情境的對話。請你直接回答故事的內容就好，{{不要出現任何非故事內容相關的文字敘述}}，{{不要出現任何非故事內容相關的文字敘述}}。<|eot_id|>`,
             "stream": false,
             "options":{
-                "num_ctx": 1024
+                "num_ctx": 700
             },
         }
         const story_1st = await LLMGenChat(payload1);
@@ -77,10 +77,10 @@ export const LLMGenStory_1st_2nd = async (storyRoleForm: RoleFormInterface, Resp
         let payload2 = {
             "model": "Llama3.1-8B-Chinese-Chat.Q8_0.gguf:latest",
             // "model": "Whispertales_model_v4.gguf:latest",
-            "prompt": `幫我檢視並修改以下故事${story_1st}。使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{700字}}內，並大約{{80字使用{\n\n}換行}}你回應的故事字數總共800字上下，一頁80字，共10段文字，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}。僅須回答我修改後的故事內容，{{不用回覆我其他與故事本身無關的訊息，包括更改哪些部分或使用了什麼語氣等非故事內容的無用訊息}}。最後使用繁體中文回應所有答覆。<|eot_id|>`,
+            "prompt": `幫我檢視並修改以下故事${story_1st}。使用生動、活潑、有趣、的口語重新生成一篇全新的故事，確保故事字數在{{600字}}內，並大約{{40字使用{\n\n}換行}}你回應的故事字數總共600字上下，一頁40字，共10段文字，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}，{{請確保故事總共不能超過12個段落}}。僅須回答我修改後的故事內容，{{不用回覆我其他與故事本身無關的訊息，包括更改哪些部分或使用了什麼語氣等非故事內容的無用訊息}}。最後使用繁體中文回應所有答覆。<|eot_id|>`,
             "stream": false,
             "options":{
-                "num_ctx": 1024
+                "num_ctx": 700
             },
         };
         const story_2nd:string = await LLMGenChat(payload2);

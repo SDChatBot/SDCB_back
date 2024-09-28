@@ -37,6 +37,36 @@ const findLatestFile = (directory: string, prefix: string): string | null => {
     }
 };
 
+// whisper 轉文字
+export const whisperCall = async (referPathDir: string, firstFile: string) => {
+    async function query(filename: string) {
+        const data = await fs.promises.readFile(filename);
+        const response = await fetch(
+            "https://api-inference.huggingface.co/models/openai/whisper-large-v3",
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.HUGGINFACE_API}`,
+                    "Content-Type": "application/octet-stream",
+                },
+                method: "POST",
+                body: data,
+            }
+        );
+        const result = await response.json();
+        return result;
+    }
+
+    try {
+        console.log(`referPathDir: ${referPathDir}, firstFile: ${firstFile} join: ${path.join(referPathDir, firstFile)}`);
+        const response = await query(path.join(referPathDir, firstFile));
+        console.log("whisperCall response:", JSON.stringify(response));
+        return response.text;
+    } catch (error) {
+        console.error("Error in whisperCall:", error);
+        throw error;
+    }
+};
+
 export const fetchImage = async (payload:Object) => {
     const requestOptions = {
         method: 'POST',
@@ -54,13 +84,42 @@ export const fetchImage = async (payload:Object) => {
 };
 
 // 拿語音內容
-export const getVoices = async (Saved_storyID: string, storyTale: string): Promise<{ audioFileName: string, audioBuffer: ArrayBuffer }> => {
-    const url = `${process.env.GPT_SOVITS_VOICE_API}?text=${encodeURIComponent(storyTale)}&text_language=zh`;
+export const getVoices = async (Saved_storyID: string, storyTale: string, voiceModelName:string): Promise<{ audioFileName: string, audioBuffer: ArrayBuffer }> => {
+    const url = `${process.env.GPT_SOVITS_VOICE_API}`;
+    const referPathDir = `/home/b310-21/projects/GPT-SoVITS/output/slicer_opt/${voiceModelName}`
+    
+    // 獲取排序後的第一個檔案
+    const sortedFiles = fs.readdirSync(referPathDir).sort();
+    const firstFile = sortedFiles.length > 0 ? sortedFiles[0] : null;
+    if (!firstFile) {
+        throw new Error(`no file found in ${referPathDir} `);
+    }
+
+    const promptText = await whisperCall(referPathDir, firstFile);
+
+    const requestBody = {
+        refer_wav_path: path.join(referPathDir, firstFile),
+        prompt_text: promptText,
+        prompt_language: "zh",
+        text: storyTale,
+        text_language: "zh"
+    };
+
+    console.log(`requestBody: ${JSON.stringify(requestBody)}`);
+
     try {
-        const response = await fetch(url, { method: 'GET' });
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
         if (!response.ok) {
             throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
         }
+
         const audioBuffer = await response.arrayBuffer();
         const audioFileName = `Saved_${Saved_storyID}.wav`;
         return { audioFileName, audioBuffer };
@@ -96,17 +155,17 @@ export const setVoiceModel = async (modelName: string): Promise<{code:number, me
     };
 
     try {
-        const response = await fetch('http://163.13.202.120:9880/set_model', requestOptions);
+        const response = await fetch(`${process.env.GPT_SOVITS_VOICE_API}/set_model`, requestOptions);
         const result = await response.text();
-        
+
         if (!response.ok) {
-            throw new Error(`HTTP 錯誤！狀態碼：${response.status}, 回應：${result}`);
+            throw new Error(`setVoiceModel fail code：${response.status}, respomse：${result}`);
         }
-        console.log(`設置模型結果：${result}`);
-        
+        console.log(`setVoiceModel result：${result}`);
+
         return {code:200, message:result};
     } catch (error) {
-        console.error("設置語音模型時出錯:", error);
+        console.error("setVoiceModel occurred error:", error);
         throw error;
     }
 }

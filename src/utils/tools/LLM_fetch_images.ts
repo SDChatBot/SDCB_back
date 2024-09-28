@@ -178,23 +178,24 @@ export const GenImg_prompt_En = async (story_slice: string):Promise<string> =>{
 }
 
 
-let generated_imageprompt_array: string[] = [];
+let generated_imageprompt_array: string[];
 
 /**
  * 生成圖片prompt(輸出應為英文，這樣才不會出錯)
  */
 export const GenImg_prompt_En_array = async (story_array:string[]):Promise<string[]> => {
+   generated_imageprompt_array = [];
    try{
       var i=0;
       console.log(`story_array.length = ${story_array.length}`);
-      for (const story_slice of story_array){
-         console.log(`第 i 次生成: ${i}`);
+      for (let i = 0; i < story_array.length; i++) {
+         const story_slice = story_array[i];
+         console.log(`第 ${i} 次生成`);
          generated_imageprompt_array.push(await GenImg_prompt_En(story_slice));
          await new Promise(resolve => {
             console.log(`wait 0.5 seconds...`);
             setTimeout(resolve, 500);
          });
-         i+=1;
       }
       
       console.log(`generated_imageprompt success`);

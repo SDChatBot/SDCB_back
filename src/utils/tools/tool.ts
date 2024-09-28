@@ -1,4 +1,4 @@
-import { fetchImage, getVoices } from "../tools/fetch"; 
+import { fetchImage, getVoices, setVoiceModel } from "../tools/fetch"; 
 import { caseSdModelUse } from "./sdModel_tool";
 import { GenImg_prompt_En_array } from "./LLM_fetch_images";
 import { DataBase } from "../DataBase";
@@ -31,9 +31,11 @@ export const CurrentTime = () =>{
     return formattedTime;
 }
 
-export const GenVoice = async (storyId:string, storyTale:string) => {
+export const GenVoice = async (storyId:string, storyTale:string,voiceModelName:string) => {
     try {
-        const { audioFileName, audioBuffer } = await getVoices(storyId, storyTale);
+        await setVoiceModel(voiceModelName); // 設定語音模型
+
+        const { audioFileName, audioBuffer } = await getVoices(storyId, storyTale, voiceModelName);
         const filePath = path.join(process.env.dev_saveAudio!, audioFileName);
         await fs.writeFile(filePath, Buffer.from(audioBuffer));
         
@@ -55,8 +57,12 @@ export function isObjectValid(obj: any | null | undefined): boolean {
     );
 }
 
+const removeEnglish = (str: string): string => {
+    return str.replace(/[a-zA-Z]/g, '');
+};
+
 // 生成故事內容
-export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<string> => {
+export const generateStory = async (storyRoleForm: RoleFormInterface, voiceModelName:string): Promise<string> => {
     try {
         let Saved_storyID = await LLMGenStory_1st_2nd(storyRoleForm, Response);
         if (!Saved_storyID) {
@@ -65,7 +71,9 @@ export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<s
         console.log(`Saved_storyID = ${Saved_storyID}`);
 
         const story: storyInterface = await DataBase.getStoryById(Saved_storyID);
-        let generated_story_array: string[] = story.storyTale.split("\n\n").filter(item => item.trim() !== " ");
+        let generated_story_array: string[] = story.storyTale.split("\n\n")
+            .map(item => removeEnglish(item.replace(/\n/g, '').trim()))
+            .filter(item => item !== "");
 
         await delayedExecution();
 
@@ -85,7 +93,7 @@ export const generateStory = async (storyRoleForm: RoleFormInterface): Promise<s
 
         console.log(`start getVoices`);
         const joinedStory = generated_story_array.join(", ");
-        await GenVoice(Saved_storyID, joinedStory);
+        await GenVoice(Saved_storyID, joinedStory, voiceModelName);
         console.log(`story generate finish !!`);
         return Saved_storyID;
     } catch (error: any) {
@@ -105,32 +113,32 @@ export const GenImagePrompt = async (generated_story_array: string[], _id: strin
     }
 };
 
-    // 生成圖片
-export const GenImage = async (generated_story_image_prompt: Array<string>, _id: string, sd_name:string): Promise<void> => {
-        const settingPlayload = caseSdModelUse(sd_name);
-        console.log(`settingPlayload = ${JSON.stringify(settingPlayload)}`);
-        let promises: Promise<string[]>[] = [];
-            for (let i = 0; i < generated_story_image_prompt.length; i++) {
-                let payload: Object = {
-                    "prompt": generated_story_image_prompt[i]+", "+settingPlayload.exclusive_prompt,
-                    "seed": -1,
-                    "cfg_scale": 7,
-                    "steps": 20,
-                    "enable_hr": false,
-                    "denoising_strength": 0.75,
-                    "restore_faces": false,
-                    "negative_prompt": settingPlayload.negative_prompt +", "+"low res, text, logo, banner, extra digits, jpeg artifacts, signature,  error, sketch ,duplicate, monochrome, horror, geometry, mutation, disgusting, nsfw, nude, censored, lowres, bad anatomy, bad hands,  missing fingers, fewer digits, cropped, worst quality, low quality, normal quality, signature, watermark, username, blurry, artist name, bad quality, poor quality, zombie, ugly, out of frame",
-                };
-                console.log(`GenImage 第${i}次生成`);
-                promises.push(fetchImage(payload));
+// 生成圖片
+export const GenImage = async (generated_story_image_prompt: Array<string>, _id: string, sd_name: string): Promise<void> => {
+    const settingPlayload = caseSdModelUse(sd_name);
+    console.log(`settingPlayload = ${JSON.stringify(settingPlayload)}`);
+    let promises: Promise<string[]>[] = [];
+    for (let i = 0; i < generated_story_image_prompt.length; i++) {
+        let payload: Object = {
+            "prompt": generated_story_image_prompt[i] + ", " + settingPlayload.exclusive_prompt,
+            "seed": -1,
+            "cfg_scale": 7,
+            "steps": 20,
+            "enable_hr": false,
+            "denoising_strength": 0.75,
+            "restore_faces": false,
+            "negative_prompt": settingPlayload.negative_prompt + ", " + "low res, text, logo, banner, extra digits, jpeg artifacts, signature,  error, sketch ,duplicate, monochrome, horror, geometry, mutation, disgusting, nsfw, nude, censored, lowres, bad anatomy, bad hands,  missing fingers, fewer digits, cropped, worst quality, low quality, normal quality, signature, watermark, username, blurry, artist name, bad quality, poor quality, zombie, ugly, out of frame",
+        };
+        console.log(`GenImage 第${i}次生成`);
+        promises.push(fetchImage(payload));
 
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
 
-            try {
-                let generated_imagebase64_array: string[] = (await Promise.all(promises)).flat();
-                await DataBase.Update_StoryImage_Base64(_id, generated_imagebase64_array);
-            } catch (error: any) {
-                console.error(`Error in GenImage: ${error.message}`);
-            }
+    try {
+        let generated_imagebase64_array: string[] = (await Promise.all(promises)).flat();
+        await DataBase.Update_StoryImage_Base64(_id, generated_imagebase64_array);
+    } catch (error: any) {
+        console.error(`Error in GenImage: ${error.message}`);
+    }
 };

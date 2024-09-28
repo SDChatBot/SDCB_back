@@ -15,9 +15,11 @@ export class VoiceRoute extends Route {
     // http://localhost:7943/voiceset/uploadvoices
 
     // https://163.13.202.120/api/voiceset/setVoiceModel
+    // https://163.13.202.120/api/voiceset/testwhisper
     protected setRoutes(): void {
         this.router.get(`${this.url}`,this.Controller.test);
         this.router.post(`${this.url}/uploadvoices`,upload.single("file"),this.Controller.UploadVoice);
         this.router.post(`${this.url}/setVoiceModel`,this.Controller.testsetVoiceModel);
+        this.router.post(`${this.url}/testwhisper`,this.Controller.testwhisper);
     }
 }

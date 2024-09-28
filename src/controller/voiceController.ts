@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import path from 'path';
 import fs from 'fs';
 import { trainVoice } from "../utils/tools/trainVoiceModel";
-import { setVoiceModel } from "../utils/tools/fetch";
+import { setVoiceModel, whisperCall } from "../utils/tools/fetch";
 
 export class VoiceController extends Controller{
     public test(Request:Request, Response:Response){
@@ -42,5 +42,12 @@ export class VoiceController extends Controller{
         console.log("modelName: ", modelName);
         const result = await setVoiceModel(modelName);
         res.send(`testsetVoiceModel: ${result.message}`);
+    }
+
+    public async testwhisper(req:Request, res:Response){
+        const audioName = req.body.audioName;
+        const referPathDir = req.body.referPathDir;
+        const result = await whisperCall(audioName, referPathDir);
+        res.send(`testwhisper: ${result.message}`);
     }
 }

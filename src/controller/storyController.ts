@@ -46,11 +46,13 @@ export class StoryController extends Controller {
    * @param Request storyInfo 你的故事是甚麼內容
    * @example http://localhost:7943/story/llm/genstory post
    * {
-   *   "roleform":{"style":"帥貓咪","mainCharacter":"","description":"","otherCharacters":[]}
+   *   "roleform":{"style":"帥貓咪","mainCharacter":"","description":"","otherCharacters":[]},
+   *   "voiceModelName":"bbbbb3"
    * }
    */
   public LLMGenStory = async(Request: Request, Response: Response) => {
     let storyRoleForm: RoleFormInterface = Request.body.roleform;
+    let voiceModelName: string = Request.body.voiceModelName;
     if (!isObjectValid(storyRoleForm)) {
         return Response.send({
             code: 403,
@@ -64,7 +66,7 @@ export class StoryController extends Controller {
     await sdModelOption(MODEL_NAME);
 
     try {
-        const result:string = await this.queue.add(() => generateStory(storyRoleForm));
+        const result:string = await this.queue.add(() => generateStory(storyRoleForm, voiceModelName));
         let return_playload = {
           success: true,
           storyId: result
@@ -118,8 +120,8 @@ export class StoryController extends Controller {
 
   public async SaveVoice(req: Request, res: Response) {
     try {
-      const { storyId, storyTale } = req.body;
-      const { audioFileName, audioBuffer } = await getVoices(storyId, storyTale);
+      const { storyId, storyTale, voiceModelName } = req.body;
+      const { audioFileName, audioBuffer } = await getVoices(storyId, storyTale, voiceModelName);
 
       const filePath = path.join(process.env.dev_saveAudio!, audioFileName);
       await fs.promises.writeFile(filePath, Buffer.from(audioBuffer));
